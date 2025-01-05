@@ -1,0 +1,5 @@
+.tooltip {
+    -fx-background-color: lightyellow;
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+}
