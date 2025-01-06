@@ -87,7 +87,17 @@ public abstract class AbstractEarthMap implements WorldMap {
     }
 
     public WorldElement objectAt(Vector2d position) {
-        return animals.get(position);
+        WorldElement element = null;
+        if (plants.containsKey(position)) {
+            element = plants.get(position);
+        }
+        if (animals.containsKey(position)) {
+            List<Animal> animalsOnPosition = animals.get(position);
+            if (animalsOnPosition != null) {
+                element = animalsOnPosition.getLast();
+            }
+        }
+        return element;
     }
 
     public List<WorldElement> getElements() {
