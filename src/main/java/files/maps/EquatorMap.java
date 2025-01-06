@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class EquatorMap extends AbstractEarthMap {
 
-    private static final double PREFERRED_ZONE_RATIO = 0.2;
+
 
     public EquatorMap(int mapWidth, int mapHeight) {
         super(mapWidth, mapHeight);

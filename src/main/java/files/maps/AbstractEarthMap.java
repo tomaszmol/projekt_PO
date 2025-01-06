@@ -6,7 +6,7 @@ import files.util.*;
 import java.util.*;
 
 public class AbstractEarthMap implements WorldMap {
-
+    protected static final double PREFERRED_ZONE_RATIO = 0.2;
     protected HashMap<Vector2d, List<Animal>> animals; //przechowywanie zwierzakow jako listy zwierzakow na danej pozycji, poniewaz moze byc kilka zwierzakow na jedynm polu
     protected HashMap<Vector2d, Plant> plants;
     protected HashMap<Vector2d, PreferredField> preferredFields;// roslina jest tylko jedna na danej pozycji
@@ -102,43 +102,35 @@ public class AbstractEarthMap implements WorldMap {
         notifyObservers("Animal placed at " + animal.getPosition());
     }
 
-    public void placePlant(Plant plant) {
-        if (plant == null || plant.getPosition() == null) {
-            // Ignorujemy, jeżeli roślina lub jej pozycja są null
-            return;
-        }
+    public void growPlantsOnWholeMap() {
+        Random random = new Random();
 
-        // Sprawdzenie, czy na danej pozycji już jest roślina
-        if (plants.containsKey(plant.getPosition())) {
-            // Jeśli roślina już istnieje na tej pozycji, po prostu ignorujemy próbę jej umieszczenia
-            return;
-        }
+        // Iterujemy po każdej pozycji na mapie
+        Boundary bounds = getCurrentBounds();
+        Vector2d lowerLeft = bounds.lowerLeft();
+        Vector2d upperRight = bounds.upperRight();
 
-        // Umieszczamy roślinę, jeśli nie ma jej już na danej pozycji
-        plants.put(plant.getPosition(), plant);
 
-        // Aktualizacja stanu preferowanego pola, jeśli istnieje
-        PreferredField preferredField = preferredFields.get(plant.getPosition());
-        if (preferredField != null) {
-            preferredField.setPlantGrown(true);
+        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+            for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
+                Vector2d position = new Vector2d(x, y);
+
+                // Sprawdzenie, czy pole jest preferowane
+                boolean isPreferred = preferredFields.containsKey(position);
+
+                // Losowanie zgodnie z zasadą Pareto
+                double chance = isPreferred ? 0.8 : 0.2;
+                if (random.nextDouble() < chance) {
+                    // Dodaj roślinę, jeśli jej tam jeszcze nie ma
+                    if (!plants.containsKey(position)) {
+                        Plant newPlant = new Plant(position);
+                        plants.put(position, newPlant);
+                    }
+                }
+            }
         }
     }
 
-    public void placePreferredField(PreferredField preferredField) {
-        if (preferredField == null || preferredField.getPosition() == null) {
-            // Ignorujemy, jeżeli pole lub jego pozycja są null
-            return;
-        }
-
-        // Sprawdzenie, czy na danej pozycji już jest preferowane pole
-        if (preferredFields.containsKey(preferredField.getPosition())) {
-            // Jeśli preferowane pole już istnieje na tej pozycji, po prostu ignorujemy próbę jego umieszczenia
-            return;
-        }
-
-        // Umieszczamy preferowane pole, jeśli nie ma go już na danej pozycji
-        preferredFields.put(preferredField.getPosition(), preferredField);
-    }
 
 
 
@@ -202,35 +194,6 @@ public class AbstractEarthMap implements WorldMap {
 
     public UUID getId() {
         return this.id;
-    }
-
-    public void growPlantsOnWholeMap() {
-        Random random = new Random();
-
-        // Iterujemy po każdej pozycji na mapie
-        Boundary bounds = getCurrentBounds();
-        Vector2d lowerLeft = bounds.lowerLeft();
-        Vector2d upperRight = bounds.upperRight();
-
-
-        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-            for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
-                Vector2d position = new Vector2d(x, y);
-
-                // Sprawdzenie, czy pole jest preferowane
-                boolean isPreferred = preferredFields.containsKey(position);
-
-                // Losowanie zgodnie z zasadą Pareto
-                double chance = isPreferred ? 0.8 : 0.2;
-                if (random.nextDouble() < chance) {
-                    // Dodaj roślinę, jeśli jej tam jeszcze nie ma
-                    if (!plants.containsKey(position)) {
-                        Plant newPlant = new Plant(position); // Zakładamy, że Plant ma konstruktor z pozycją
-                        placePlant(newPlant);
-                    }
-                }
-            }
-        }
     }
 }
 
