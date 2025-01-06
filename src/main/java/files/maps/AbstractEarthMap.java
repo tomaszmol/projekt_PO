@@ -105,28 +105,49 @@ public class AbstractEarthMap implements WorldMap {
     }
 
     @Override
-    public void placePlant(Plant plant){
+    public void placePlant(Plant plant) {
+        if (plant == null || plant.getPosition() == null) {
+            throw new IllegalArgumentException("Plant or its position cannot be null.");
+        }
+
         plants.put(plant.getPosition(), plant);
-        if (preferredFields.containsKey(plant.getPosition())) {
-            preferredFields.get(plant.getPosition()).setPlantGrown(true);
+
+        PreferredField preferredField = preferredFields.get(plant.getPosition());
+        if (preferredField != null) {
+            preferredField.setPlantGrown(true);
         }
     }
 
     @Override
     public void placePreferredField(PreferredField preferredField) {
+        if (preferredField == null || preferredField.getPosition() == null) {
+            throw new IllegalArgumentException("PreferredField or its position cannot be null.");
+        }
+
         preferredFields.put(preferredField.getPosition(), preferredField);
     }
 
     public void removePlant(Plant plant) {
+        if (plant == null || plant.getPosition() == null) {
+            throw new IllegalArgumentException("Plant or its position cannot be null.");
+        }
+
         plants.remove(plant.getPosition());
-        if (preferredFields.containsKey(plant.getPosition())) {
-            preferredFields.get(plant.getPosition()).setPlantGrown(false);
+
+        PreferredField preferredField = preferredFields.get(plant.getPosition());
+        if (preferredField != null) {
+            preferredField.setPlantGrown(false);
         }
     }
 
     public void removePreferredField(PreferredField preferredField) {
+        if (preferredField == null || preferredField.getPosition() == null) {
+            throw new IllegalArgumentException("PreferredField or its position cannot be null.");
+        }
+
         preferredFields.remove(preferredField.getPosition());
     }
+
 
     public boolean isOccupied(Vector2d position) {
         return animals.get(position) != null;
