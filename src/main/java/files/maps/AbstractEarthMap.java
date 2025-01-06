@@ -104,28 +104,45 @@ public class AbstractEarthMap implements WorldMap {
         notifyObservers("Animal placed at " + animal.getPosition());
     }
 
-    @Override
     public void placePlant(Plant plant) {
         if (plant == null || plant.getPosition() == null) {
-            throw new IllegalArgumentException("Plant or its position cannot be null.");
+            // Ignorujemy, jeżeli roślina lub jej pozycja są null
+            return;
         }
 
+        // Sprawdzenie, czy na danej pozycji już jest roślina
+        if (plants.containsKey(plant.getPosition())) {
+            // Jeśli roślina już istnieje na tej pozycji, po prostu ignorujemy próbę jej umieszczenia
+            return;
+        }
+
+        // Umieszczamy roślinę, jeśli nie ma jej już na danej pozycji
         plants.put(plant.getPosition(), plant);
 
+        // Aktualizacja stanu preferowanego pola, jeśli istnieje
         PreferredField preferredField = preferredFields.get(plant.getPosition());
         if (preferredField != null) {
             preferredField.setPlantGrown(true);
         }
     }
 
-    @Override
     public void placePreferredField(PreferredField preferredField) {
         if (preferredField == null || preferredField.getPosition() == null) {
-            throw new IllegalArgumentException("PreferredField or its position cannot be null.");
+            // Ignorujemy, jeżeli pole lub jego pozycja są null
+            return;
         }
 
+        // Sprawdzenie, czy na danej pozycji już jest preferowane pole
+        if (preferredFields.containsKey(preferredField.getPosition())) {
+            // Jeśli preferowane pole już istnieje na tej pozycji, po prostu ignorujemy próbę jego umieszczenia
+            return;
+        }
+
+        // Umieszczamy preferowane pole, jeśli nie ma go już na danej pozycji
         preferredFields.put(preferredField.getPosition(), preferredField);
     }
+
+
 
     public void removePlant(Plant plant) {
         if (plant == null || plant.getPosition() == null) {
@@ -208,7 +225,32 @@ public class AbstractEarthMap implements WorldMap {
         return this.id;
     }
 
+    public void growPlantsOnWholeMap() {
+        Random random = new Random();
 
+        // Iterujemy po każdej pozycji na mapie
+        Boundary bounds = getCurrentBounds();
+        Vector2d lowerLeft = bounds.lowerLeft();
+        Vector2d upperRight = bounds.upperRight();
 
+        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+            for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
+                Vector2d position = new Vector2d(x, y);
 
+                // Sprawdzenie, czy pole jest preferowane
+                boolean isPreferred = preferredFields.containsKey(position);
+
+                // Losowanie zgodnie z zasadą Pareto
+                double chance = isPreferred ? 0.8 : 0.2;
+                if (random.nextDouble() < chance) {
+                    // Dodaj roślinę, jeśli jej tam jeszcze nie ma
+                    if (!plants.containsKey(position)) {
+                        Plant newPlant = new Plant(position); // Zakładamy, że Plant ma konstruktor z pozycją
+                        placePlant(newPlant);
+                    }
+                }
+            }
+        }
+    }
 }
+

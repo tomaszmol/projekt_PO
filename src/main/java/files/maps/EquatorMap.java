@@ -1,66 +1,114 @@
 package files.maps;
 
-import files.map_elements.Plant;
+import files.map_elements.PreferredField;
 import files.util.Boundary;
 import files.util.Vector2d;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 public class EquatorMap extends AbstractEarthMap {
 
-    private static final double PREFERRED_ZONE_RATIO = 0.2; // 20% mapy to preferowany obszar
-    private static final double PREFERRED_ZONE_PROBABILITY = 0.8; // 80% szansy na preferowane pole
-    private static final double NON_PREFERRED_ZONE_PROBABILITY = 0.2; // 20% szansy na niepreferowane pole
+    private static final double PREFERRED_ZONE_RATIO = 0.2;
 
     public EquatorMap(int mapWidth, int mapHeight) {
         super(mapWidth, mapHeight);
-        placePlants();
+        generatePreferredFields();
+        super.growPlantsOnWholeMap();
     }
 
-    public void placePreferredFields() {
-
-    }
-    public void placePlants() {
-        Random random = new Random();
-
-        // Określamy rozmiar mapy (zakładając, że mamy metodę, która zwraca rozmiar mapy)
+    private void generatePreferredFields() {
+        // Określamy rozmiar mapy
         Boundary bounds = getCurrentBounds();
         Vector2d lowerLeft = bounds.lowerLeft();
         Vector2d upperRight = bounds.upperRight();
 
         int mapWidth = upperRight.getX() - lowerLeft.getX() + 1;
         int mapHeight = upperRight.getY() - lowerLeft.getY() + 1;
+        int fieldsNumber = mapWidth * mapHeight;
 
-        // Określenie zakresu preferowanego pasa (równika)
-        int equatorHeight = mapHeight / 2;
-        int equatorRange = (int) (mapHeight * PREFERRED_ZONE_RATIO); // 20% wysokości mapy
+        int expectedNumberOfPreferredFields = (int) (fieldsNumber * PREFERRED_ZONE_RATIO);
 
-        // Wybieramy, czy roślina ma wyrosnąć na preferowanym czy mniej preferowanym polu
-        boolean isPreferred = random.nextDouble() < PREFERRED_ZONE_PROBABILITY;
+        // Obliczanie preferowanych rzędów
+        if (mapHeight % 2 == 0) {
+            // MapHeight parzysta
+            int fullPairOfRows = expectedNumberOfPreferredFields / (mapWidth * 2);
+            int fieldsLeft = expectedNumberOfPreferredFields - (fullPairOfRows * mapWidth * 2);
 
-        // Losowanie pozycji
-        Vector2d plantPosition;
-        if (isPreferred) {
-            // Jeśli preferowane pole, losujemy w okolicach równika
-            int y = random.nextInt(equatorRange) + (equatorHeight - equatorRange / 2);
-            int x = random.nextInt(mapWidth);
-            plantPosition = new Vector2d(x, y);
+            int lowerEquator = (mapHeight / 2) - fullPairOfRows;
+            int upperEquator = (mapHeight / 2) + fullPairOfRows - 1;
+
+            // Dodajemy preferowane pola w pełnych parach rzędów
+            for (int y = lowerEquator; y <= upperEquator; y++) {
+                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                    preferredFields.put(new Vector2d(x, y), new PreferredField(new Vector2d(x, y)));
+                }
+            }
+
+            // Rozdzielanie pozostałych pól losowo na sąsiednich rzędach
+            Random random = new Random();
+            List<Vector2d> remainingPositions = new ArrayList<>();
+            for (int y = lowerEquator - 1; y >= lowerLeft.getY(); y--) {
+                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                    remainingPositions.add(new Vector2d(x, y));
+                }
+            }
+            for (int y = upperEquator + 1; y <= upperRight.getY(); y++) {
+                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                    remainingPositions.add(new Vector2d(x, y));
+                }
+            }
+            Collections.shuffle(remainingPositions);
+            for (int i = 0; i < fieldsLeft; i++) {
+                Vector2d position = remainingPositions.get(i);
+                preferredFields.put(position, new PreferredField(position));
+            }
+
         } else {
-            // Jeśli mniej preferowane pole, losujemy w pozostałej części mapy
-            int y = random.nextInt(mapHeight - equatorRange);
-            int x = random.nextInt(mapWidth);
-            plantPosition = new Vector2d(x, y);
-        }
+            // MapHeight nieparzysta
+            int equatorRow = mapHeight / 2; // Centralny rząd
+            int fullPairOfRows = (expectedNumberOfPreferredFields - mapWidth) / (mapWidth * 2);
+            int fieldsLeft = expectedNumberOfPreferredFields - (mapWidth + fullPairOfRows * mapWidth * 2);
 
-        // Dodajemy roślinę na wybranej pozycji
-        if (!isPositionValid(plantPosition)) {
-            throw new IllegalArgumentException("Niepoprawna pozycja rośliny: " + plantPosition);
-        }
+            int lowerEquator = equatorRow - fullPairOfRows;
+            int upperEquator = equatorRow + fullPairOfRows;
 
-        plants.put(plantPosition, plant);
-        notifyObservers("Plant placed at " + plantPosition);
+            // Dodajemy preferowane pola w centralnym rzędzie
+            for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                preferredFields.put(new Vector2d(x, equatorRow), new PreferredField(new Vector2d(x, equatorRow)));
+            }
+
+            // Dodajemy preferowane pola w pozostałych pełnych parach rzędów
+            for (int y = lowerEquator; y <= upperEquator; y++) {
+                if (y == equatorRow) continue; // Pomijamy już dodany centralny rząd
+                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                    preferredFields.put(new Vector2d(x, y), new PreferredField(new Vector2d(x, y)));
+                }
+            }
+
+            // Rozdzielanie pozostałych pól losowo na sąsiednich rzędach
+            Random random = new Random();
+            List<Vector2d> remainingPositions = new ArrayList<>();
+            for (int y = lowerEquator - 1; y >= lowerLeft.getY(); y--) {
+                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                    remainingPositions.add(new Vector2d(x, y));
+                }
+            }
+            for (int y = upperEquator + 1; y <= upperRight.getY(); y++) {
+                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                    remainingPositions.add(new Vector2d(x, y));
+                }
+            }
+            Collections.shuffle(remainingPositions);
+            for (int i = 0; i < fieldsLeft; i++) {
+                Vector2d position = remainingPositions.get(i);
+                preferredFields.put(position, new PreferredField(position));
+            }
+        }
     }
 
 }
+
+
