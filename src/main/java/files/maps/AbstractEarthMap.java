@@ -34,53 +34,58 @@ public abstract class AbstractEarthMap implements WorldMap {
         }
     }
 
-    public void move(Animal animal, int index) {
+    public void move(Animal animal) {
         // Pobierz listę zwierzaków na poprzedniej pozycji
         List<Animal> animalsOnPosition = animals.get(animal.getPosition());
-        // Sprawdzenie, czy lista zwierzaków w tej pozycji jest różna od null (tzn. istnieje) i czy indeks jest poprawny
-        if (animalsOnPosition != null && index >= 0 && index < animalsOnPosition.size()) {
-            // Zapisz starą pozycję i orientację
-            Vector2d oldPos = animal.getPosition();
-            MapDirection oldOrientation = animalsOnPosition.get(index).getOrientation();
 
-            // Jeśli zwierzak się poruszył
-            if (animal.move(this)) {
-                // Usuń zwierzaka z poprzedniej pozycji (ze starej listy)
-                animalsOnPosition.remove(animal);
+        // Sprawdzenie, czy lista zwierzaków w tej pozycji istnieje
+        if (animalsOnPosition != null) {
+            // Sprawdzamy, czy zwierzak znajduje się w tej liście
+            if (animalsOnPosition.contains(animal)) {
+                // Zapisz starą pozycję i orientację
+                Vector2d oldPos = animal.getPosition();
+                MapDirection oldOrientation = animal.getOrientation();
 
-                // Jeśli lista na danej pozycji jest teraz pusta, usuń ją z HashMap
-                if (animalsOnPosition.isEmpty()) {
-                    animals.remove(oldPos);
+                // Jeśli zwierzak się poruszył
+                if (animal.move(this)) {
+                    // Usuń zwierzaka z poprzedniej pozycji (ze starej listy)
+                    animalsOnPosition.remove(animal);
+
+                    // Jeśli lista na danej pozycji jest teraz pusta, usuń ją z HashMap
+                    if (animalsOnPosition.isEmpty()) {
+                        animals.remove(oldPos);
+                    }
+
+                    // Zaktualizuj listę zwierzaków na nowej pozycji
+                    List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
+                    if (newAnimalsOnPosition == null) {
+                        newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
+                    }
+
+                    newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
+                    animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
+
+                    // Powiadom obserwatorów
+                    notifyObservers("Animal moved from " + oldPos + " to " + animal.getPosition());
+                } else {
+                    // Sprawdzenie, czy orientacja zmieniła się
+                    MapDirection newOrientation = animal.getOrientation();
+                    if (oldOrientation != newOrientation) {
+                        notifyObservers("Animal changed orientation from " + oldOrientation + " to " + newOrientation);
+                    } else {
+                        notifyObservers("Animal did not move and did not change orientation");
+                    }
                 }
-
-                // Zaktualizuj listę zwierzaków na nowej pozycji
-                List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
-                if (newAnimalsOnPosition == null) {
-                    newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
-                }
-
-                newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
-                animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
-
-                // Powiadom obserwatorów
-                notifyObservers("Animal moved from " + oldPos + " to " + animal.getPosition());
-            }
-            else {
-                // Sprawdzenie, czy orientacja zmieniła się
-                MapDirection newOrientation = animal.getOrientation();
-                if (oldOrientation != newOrientation) {
-                    notifyObservers("Animal changed orientation from " + oldOrientation + " to " + newOrientation);
-                }
-                else {
-                    notifyObservers("Animal did not move because new position will be beyond borders.");
-                }
+            } else {
+                // Jeśli zwierzak nie jest na tej pozycji (index byłby nieprawidłowy)
+                System.out.println("Błąd: nie ma zwierzaka na tej pozycji.");
             }
         } else {
-            // Jeśli lista jest null lub index jest poza zakresem
-            System.out.println("Błąd: nie ma zwierzaka na tej pozycji lub niepoprawny index.");
+            // Jeśli lista zwierzaków jest null (czyli brak zwierzaków na tej pozycji)
+            System.out.println("Błąd: brak zwierzaków na tej pozycji.");
         }
-
     }
+
 
     public boolean isOccupied(Vector2d position) {
         return animals.get(position) != null;

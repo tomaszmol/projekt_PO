@@ -15,6 +15,8 @@ public class Animal implements WorldElement {
     Genetics genes;
     StatisticsTracker stats;
 
+
+
     Image animalImg = null;
 
     public Animal(Vector2d position) {
