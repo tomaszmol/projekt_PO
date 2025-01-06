@@ -10,7 +10,8 @@ import java.util.*;
 public class AbstractEarthMap implements WorldMap {
 
     protected HashMap<Vector2d, List<Animal>> animals; //przechowywanie zwierzakow jako listy zwierzakow na danej pozycji, poniewaz moze byc kilka zwierzakow na jedynm polu
-    protected HashMap<Vector2d, Plant> plants; // roslina jest tylko jedna na danej pozycji
+    protected HashMap<Vector2d, Plant> plants;
+    protected HashMap<Vector2d, Plant> preferredFields;// roslina jest tylko jedna na danej pozycji
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id;
     private final Vector2d mapDimensions;
