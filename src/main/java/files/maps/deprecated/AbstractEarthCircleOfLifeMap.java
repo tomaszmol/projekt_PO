@@ -6,13 +6,13 @@ import files.util.*;
 
 import java.util.List;
 
-public class EarthEquatorMap extends EquatorMap {
+public class AbstractEarthCircleOfLifeMap extends CircleOfLifeMapAbstract {
 
     private final int mapWidth;
     private final int mapHeight;
 
-    public EarthEquatorMap(int width, int height, int equatorHeight) {
-        super(width, height, equatorHeight);
+    public AbstractEarthCircleOfLifeMap(int width, int height) {
+        super(width, height);
         this.mapWidth = width;
         this.mapHeight = height;
     }
@@ -62,5 +62,4 @@ public class EarthEquatorMap extends EquatorMap {
     public void place(Animal animal) throws Exception {
         super.place(animal);
     }
-
 }

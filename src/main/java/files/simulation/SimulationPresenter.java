@@ -2,10 +2,10 @@ package files.simulation;
 import files.map_elements.Animal;
 import files.map_elements.WorldElement;
 import files.maps.*;
-import files.maps.deprecated.EarthCircleOfLifeMap;
-import files.maps.deprecated.EarthEquatorMap;
-import files.maps.deprecated.RectCircleOfLifeMap;
-import files.maps.deprecated.RectEquatorMap;
+import files.maps.deprecated.AbstractEarthCircleOfLifeMap;
+import files.maps.deprecated.AbstractEarthEquatorMap;
+import files.maps.deprecated.RectCircleOfLifeMapAbstract;
+import files.maps.deprecated.RectEquatorMapAbstract;
 import files.util.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -145,10 +145,10 @@ public class SimulationPresenter implements MapChangeListener {
                 SimulationParams initParams = getSimulationParams();
 
                 WorldMap map = null;
-                if (!initParams.circleOfLifeFlag() &&  initParams.earthMapFlag()) map = new EarthEquatorMap(initParams.mapWidth(),initParams.mapHeight(),(int)(initParams.mapHeight()*0.2));
-                if (!initParams.circleOfLifeFlag() && !initParams.earthMapFlag()) map = new RectEquatorMap(initParams.mapWidth(),initParams.mapHeight(),(int)(initParams.mapHeight()*0.2));
-                if ( initParams.circleOfLifeFlag() &&  initParams.earthMapFlag()) map = new EarthCircleOfLifeMap(initParams.mapWidth(),initParams.mapHeight());
-                if ( initParams.circleOfLifeFlag() && !initParams.earthMapFlag()) map = new RectCircleOfLifeMap(initParams.mapWidth(),initParams.mapHeight());
+                if (!initParams.circleOfLifeFlag() &&  initParams.earthMapFlag()) map = new AbstractEarthEquatorMap(initParams.mapWidth(),initParams.mapHeight(),(int)(initParams.mapHeight()*0.2));
+                if (!initParams.circleOfLifeFlag() && !initParams.earthMapFlag()) map = new RectEquatorMapAbstract(initParams.mapWidth(),initParams.mapHeight(),(int)(initParams.mapHeight()*0.2));
+                if ( initParams.circleOfLifeFlag() &&  initParams.earthMapFlag()) map = new AbstractEarthCircleOfLifeMap(initParams.mapWidth(),initParams.mapHeight());
+                if ( initParams.circleOfLifeFlag() && !initParams.earthMapFlag()) map = new RectCircleOfLifeMapAbstract(initParams.mapWidth(),initParams.mapHeight());
 
                 newPresenter.setWorldMap(map);
                 map.addObserver(newPresenter);

@@ -1,20 +1,20 @@
 package files.maps.deprecated;
 
 import files.map_elements.Plant;
-import files.maps.EarthMap;
+import files.maps.AbstractEarthMap;
 import files.util.Vector2d;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class EquatorMap extends EarthMap {
+public abstract class EquatorMapAbstract extends AbstractEarthMap {
 
     double equatorInitPlantChance = 0.8;
     double steppeInitPlantChange = 0.2;
 
     private final Map<Vector2d, Plant> plants;
 
-    public EquatorMap(int width, int height, int equatorHeight) {
+    public EquatorMapAbstract(int width, int height, int equatorHeight) {
         super();
 
         plants = new HashMap<>();

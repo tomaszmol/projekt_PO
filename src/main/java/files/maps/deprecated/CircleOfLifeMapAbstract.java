@@ -1,19 +1,19 @@
 package files.maps.deprecated;
 
 import files.map_elements.Plant;
-import files.maps.EarthMap;
+import files.maps.AbstractEarthMap;
 import files.util.Vector2d;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class CircleOfLifeMap extends EarthMap {
+public abstract class CircleOfLifeMapAbstract extends AbstractEarthMap {
 
     double steppeInitPlantChange = 0.2;
 
     private final Map<Vector2d, Plant> plants;
 
-    public CircleOfLifeMap(int width, int height) {
+    public CircleOfLifeMapAbstract(int width, int height) {
         super();
 
         plants = new HashMap<>();

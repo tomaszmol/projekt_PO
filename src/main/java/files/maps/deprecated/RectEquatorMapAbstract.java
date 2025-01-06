@@ -7,12 +7,12 @@ import files.util.Vector2d;
 
 import java.util.List;
 
-public class RectEquatorMap extends EquatorMap {
+public class RectEquatorMapAbstract extends EquatorMapAbstract {
 
     private final int mapWidth;
     private final int mapHeight;
 
-    public RectEquatorMap(int width, int height, int equatorHeight) {
+    public RectEquatorMapAbstract(int width, int height, int equatorHeight) {
         super(width, height, equatorHeight);
         this.mapWidth = width;
         this.mapHeight = height;

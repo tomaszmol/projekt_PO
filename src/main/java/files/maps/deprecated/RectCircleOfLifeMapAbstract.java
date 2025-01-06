@@ -7,12 +7,12 @@ import files.util.Vector2d;
 
 import java.util.List;
 
-public class RectCircleOfLifeMap extends CircleOfLifeMap {
+public class RectCircleOfLifeMapAbstract extends CircleOfLifeMapAbstract {
 
     private final int mapWidth;
     private final int mapHeight;
 
-    public RectCircleOfLifeMap(int width, int height) {
+    public RectCircleOfLifeMapAbstract(int width, int height) {
         super(width, height);
         this.mapWidth = width;
         this.mapHeight = height;
