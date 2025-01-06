@@ -101,8 +101,14 @@ public abstract class AbstractEarthMap implements WorldMap {
     }
 
     public List<WorldElement> getElements() {
-        return new ArrayList<>(animals.values());
+        List<WorldElement> elements = new ArrayList<>();
+        // Iteruj po każdej liście zwierzaków w mapie
+        for (List<Animal> animalList : animals.values()) {
+            elements.addAll(animalList);  // Dodaj wszystkie zwierzaki do głównej listy
+        }
+        return elements;
     }
+
 
     protected boolean isPositionValid(Vector2d position) {
         return true; // Default behavior
