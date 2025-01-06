@@ -106,6 +106,9 @@ public abstract class AbstractEarthMap implements WorldMap {
         for (List<Animal> animalList : animals.values()) {
             elements.addAll(animalList);  // Dodaj wszystkie zwierzaki do głównej listy
         }
+        if (plants != null) {
+            elements.addAll(plants.values());
+        }
         return elements;
     }
 
