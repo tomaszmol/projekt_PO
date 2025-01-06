@@ -1,6 +1,7 @@
-package files.maps;
+package files.maps.deprecated;
 
 import files.map_elements.Plant;
+import files.maps.AbstractWorldMap;
 import files.util.Vector2d;
 
 import java.util.HashMap;

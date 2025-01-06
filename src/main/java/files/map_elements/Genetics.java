@@ -8,6 +8,6 @@ public class Genetics {
     }
 
     public MoveDirection getNextMoveInSequence() {
-        return MoveDirection.FORWARD;
+        return MoveDirection.BACKWARD;
     }
 }

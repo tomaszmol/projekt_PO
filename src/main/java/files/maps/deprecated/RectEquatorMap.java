@@ -1,9 +1,8 @@
-package files.maps;
+package files.maps.deprecated;
 
 import files.map_elements.Animal;
 import files.map_elements.WorldElement;
 import files.util.Boundary;
-import files.util.MoveDirection;
 import files.util.Vector2d;
 
 import java.util.List;

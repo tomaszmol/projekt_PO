@@ -1,22 +1,22 @@
 package files.maps;
 
 import files.map_elements.Animal;
+import files.map_elements.Plant;
 import files.map_elements.WorldElement;
 import files.util.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class AbstractWorldMap implements WorldMap {
 
-    protected HashMap<Vector2d, Animal> animals;
+    protected HashMap<Vector2d, List<Animal>> animals; //przechowywanie zwierzakow jako listy zwierzakow na danej pozycji, poniewaz moze byc kilka zwierzakow na jedynm polu
+    protected HashMap<Vector2d, Plant> plants;
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id;
 
     public AbstractWorldMap() {
         this.animals = new HashMap<>();
+        this.plants = new HashMap<>();
         this.id = UUID.randomUUID();
     }
 

@@ -1,4 +1,4 @@
-package files.maps;
+package files.maps.deprecated;
 
 import files.map_elements.Animal;
 import files.map_elements.WorldElement;
