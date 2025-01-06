@@ -5,7 +5,7 @@ import files.util.*;
 
 import java.util.*;
 
-public class AbstractEarthMap implements WorldMap {
+public abstract class AbstractEarthMap implements WorldMap {
     protected static final double PREFERRED_ZONE_RATIO = 0.2;
     protected HashMap<Vector2d, List<Animal>> animals; //przechowywanie zwierzakow jako listy zwierzakow na danej pozycji, poniewaz moze byc kilka zwierzakow na jedynm polu
     protected HashMap<Vector2d, Plant> plants;

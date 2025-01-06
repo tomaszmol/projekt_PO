@@ -25,12 +25,13 @@ public class Simulation implements Runnable {
         // spawn initial animals:
         int animalNum = params.initialAnimalsOnMap();
         Boundary mapBoundaries = map.getCurrentBounds();
+        System.out.println(mapBoundaries);
         for (int i=0; i<animalNum; i++) {
             Vector2d randPos;
             do { randPos = Vector2d.randomInBounds(mapBoundaries);
             } while (map.isOccupied(randPos));
             Animal animal = new Animal(randPos);
-            animals.add(animal);
+            map.placeAnimal(animal);
         }
     }
 

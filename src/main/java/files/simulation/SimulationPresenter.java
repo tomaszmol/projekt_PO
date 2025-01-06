@@ -1,12 +1,15 @@
 package files.simulation;
+
 import files.map_elements.Animal;
 import files.map_elements.WorldElement;
-import files.maps.*;
-import files.maps.deprecated.AbstractEarthCircleOfLifeMap;
-import files.maps.deprecated.AbstractEarthEquatorMap;
-import files.maps.deprecated.RectCircleOfLifeMapAbstract;
-import files.maps.deprecated.RectEquatorMapAbstract;
-import files.util.*;
+import files.maps.MapChangeListener;
+import files.maps.WorldMap;
+import files.maps.variants.FullPredestinationEquatorMap;
+import files.maps.variants.FullPredestinationLiveGivingCorpseMap;
+import files.maps.variants.OldnessSadnessEquatorMap;
+import files.maps.variants.OldnessSadnessLiveGivingCorpseMap;
+import files.util.Boundary;
+import files.util.Vector2d;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,9 +23,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
 public class SimulationPresenter implements MapChangeListener {
+
     private WorldMap worldMap;
     private int updateCount = 0;
     private int simulationCount = 1;
@@ -58,11 +63,49 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private TextField dailyPlantSpawnsField;
     @FXML
-    private CheckBox ageFlag;
+    private CheckBox oldnessSadnessFlag;
     @FXML
-    private CheckBox corpseFlag;
+    private CheckBox liveGivingCorpseFlag;
     @FXML
-    private CheckBox globeFlag;
+    public CheckBox equatorFlag;
+    @FXML
+    public CheckBox fullPredestinationFlag;
+
+//    @FXML
+//    public void initialize() {
+//        equatorFlag.selectedProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue) { // Jeśli equatorFlag jest zaznaczony
+//                liveGivingCorpseFlag.setSelected(false); // Odznacz liveGivingCorpseFlag
+//            } else { // Jeśli equatorFlag jest odznaczony
+//                liveGivingCorpseFlag.setSelected(true); // Zaznacz liveGivingCorpseFlag
+//            }
+//        });
+//
+//        liveGivingCorpseFlag.selectedProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue) { // Jeśli liveGivingCorpseFlag jest zaznaczony
+//                equatorFlag.setSelected(false); // Odznacz equatorFlag
+//            } else { // Jeśli liveGivingCorpseFlag jest odznaczony
+//                equatorFlag.setSelected(true); // Zaznacz equatorFlag
+//            }
+//        });
+//
+//        oldnessSadnessFlag.selectedProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue) { // Jeśli oldnessSadnessFlag jest zaznaczony
+//                fullPredestinationFlag.setSelected(false); // Odznacz fullPredestinationFlag
+//            } else { // Jeśli oldnessSadnessFlag jest odznaczony
+//                fullPredestinationFlag.setSelected(true); // Zaznacz fullPredestinationFlag
+//            }
+//        });
+//
+//        fullPredestinationFlag.selectedProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue) { // Jeśli fullPredestinationFlag jest zaznaczony
+//                oldnessSadnessFlag.setSelected(false); // Odznacz oldnessSadnessFlag
+//            } else { // Jeśli fullPredestinationFlag jest odznaczony
+//                oldnessSadnessFlag.setSelected(true); // Zaznacz oldnessSadnessFlag
+//            }
+//        });
+//
+//    }
 
     public void setWorldMap(WorldMap map) {
         this.worldMap = map;
@@ -145,12 +188,17 @@ public class SimulationPresenter implements MapChangeListener {
                 SimulationParams initParams = getSimulationParams();
 
                 WorldMap map = null;
-                if (!initParams.circleOfLifeFlag() &&  initParams.earthMapFlag()) map = new AbstractEarthEquatorMap(initParams.mapWidth(),initParams.mapHeight(),(int)(initParams.mapHeight()*0.2));
-                if (!initParams.circleOfLifeFlag() && !initParams.earthMapFlag()) map = new RectEquatorMapAbstract(initParams.mapWidth(),initParams.mapHeight(),(int)(initParams.mapHeight()*0.2));
-                if ( initParams.circleOfLifeFlag() &&  initParams.earthMapFlag()) map = new AbstractEarthCircleOfLifeMap(initParams.mapWidth(),initParams.mapHeight());
-                if ( initParams.circleOfLifeFlag() && !initParams.earthMapFlag()) map = new RectCircleOfLifeMapAbstract(initParams.mapWidth(),initParams.mapHeight());
+                if (initParams.fullPredestinationFlag() &&  initParams.equatorFlag())
+                    map = new FullPredestinationEquatorMap(initParams.mapWidth(),initParams.mapHeight());
+                if (initParams.fullPredestinationFlag() && initParams.liveGivingCorpseFlag())
+                    map = new FullPredestinationLiveGivingCorpseMap(initParams.mapWidth(),initParams.mapHeight());
+                if ( initParams.oldnessSadnessFlag() &&  initParams.equatorFlag())
+                    map = new OldnessSadnessEquatorMap(initParams.mapWidth(),initParams.mapHeight());
+                if ( initParams.oldnessSadnessFlag() && initParams.liveGivingCorpseFlag())
+                    map = new OldnessSadnessLiveGivingCorpseMap(initParams.mapWidth(),initParams.mapHeight());
 
                 newPresenter.setWorldMap(map);
+                assert map != null;
                 map.addObserver(newPresenter);
 
                 WorldMap finalMap = map;
@@ -189,18 +237,17 @@ public class SimulationPresenter implements MapChangeListener {
         initialAnimalsField.setText("3");
         dailyPlantSpawnsField.setText("5");
         simulationSteps.setText("100");
-
-        ageFlag.setSelected(true);
-        corpseFlag.setSelected(true);
-        globeFlag.setSelected(true);
+        oldnessSadnessFlag.setSelected(false);
+        liveGivingCorpseFlag.setSelected(false);
+        fullPredestinationFlag.setSelected(true);
+        equatorFlag.setSelected(true);
     }
+
     SimulationParams getSimulationParams(){
         try {
             // Pobieranie danych liczbowych z pól tekstowych
             int mapHeight = Integer.parseInt(mapHeightField.getText().trim());
             int mapWidth = Integer.parseInt(mapWidthField.getText().trim());
-//            int jungleHeight = (int)(mapHeight * jungleHeightSlider.getValue());
-//            int jungleWidth = (int)(mapWidth * jungleWidthSlider.getValue());
             int plantEnergyProfit = Integer.parseInt(plantEnergyField.getText().trim());
             int minCopulationEnergy = Integer.parseInt(copulationEnergyField.getText().trim());
             int initialAnimalEnergy = Integer.parseInt(initialAnimalEnergyField.getText().trim());
@@ -210,16 +257,17 @@ public class SimulationPresenter implements MapChangeListener {
             int simSteps = Integer.parseInt(simulationSteps.getText().trim());
 
             // Pobieranie wartości boolean z checkboxów
-            boolean ageFlagValue = ageFlag.isSelected();
-            boolean corpseFlagValue = corpseFlag.isSelected();
-            boolean globeFlagValue = globeFlag.isSelected();
+            boolean fullPredestinationFlagValue = fullPredestinationFlag.isSelected();
+            boolean oldnessSadnessFlagValue = oldnessSadnessFlag.isSelected();
+            boolean equatorFlagValue = equatorFlag.isSelected();
+            boolean liveGivingCorpseFlagValue = liveGivingCorpseFlag.isSelected();
 
             // Tworzenie obiektu SimulationParams
             return new SimulationParams(
                     mapHeight, mapWidth,
                     plantEnergyProfit, minCopulationEnergy, initialAnimalEnergy,
-                    dailyAnimalEnergy, initialAnimalsOnMap, dailyPlantSpawns,
-                    ageFlagValue, corpseFlagValue, globeFlagValue, simSteps
+                    dailyAnimalEnergy, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
+                    oldnessSadnessFlagValue, equatorFlagValue, liveGivingCorpseFlagValue,simSteps
             );
         } catch (NumberFormatException e) {
             System.err.println("Invalid parameters! Please provide valid numeric values.");
