@@ -128,17 +128,19 @@ public abstract class AbstractEarthMap implements WorldMap {
         return new PositionAndOrientation(origin.add(shift),currentOrientation);
     }
 
-    @Override
     public void place(Animal animal) throws Exception {
         if (!isPositionValid(animal.getPosition())) {
             throw new IncorrectPositionException(animal.getPosition());
         }
 
-        if (isOccupied(animal.getPosition())) {
-            throw new IncorrectPositionException(animal.getPosition());
+        // Zaktualizuj listę zwierzaków na nowej pozycji
+        List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
+        if (newAnimalsOnPosition == null) {
+            newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
         }
 
-        animals.put(animal.getPosition(), animal);
+        newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
+        animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
         notifyObservers("Animal placed at " + animal.getPosition());
     }
 
