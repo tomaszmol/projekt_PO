@@ -1,13 +1,13 @@
 package files.maps.deprecated;
 
 import files.map_elements.Plant;
-import files.maps.AbstractWorldMap;
+import files.maps.EarthMap;
 import files.util.Vector2d;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class EquatorMap extends AbstractWorldMap {
+public abstract class EquatorMap extends EarthMap {
 
     double equatorInitPlantChance = 0.8;
     double steppeInitPlantChange = 0.2;
