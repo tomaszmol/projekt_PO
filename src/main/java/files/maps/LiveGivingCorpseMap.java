@@ -1,4 +1,8 @@
 package files.maps;
 
-public class LiveGivingCorpseMap {
+public abstract class LiveGivingCorpseMap extends AbstractEarthMap{
+
+    public LiveGivingCorpseMap() {
+        super(0, );
+    }
 }

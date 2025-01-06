@@ -15,7 +15,7 @@ public abstract class EquatorMapAbstract extends AbstractEarthMap {
     private final Map<Vector2d, Plant> plants;
 
     public EquatorMapAbstract(int width, int height, int equatorHeight) {
-        super();
+        super(0, );
 
         plants = new HashMap<>();
 

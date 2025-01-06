@@ -14,7 +14,7 @@ public abstract class CircleOfLifeMapAbstract extends AbstractEarthMap {
     private final Map<Vector2d, Plant> plants;
 
     public CircleOfLifeMapAbstract(int width, int height) {
-        super();
+        super(0, );
 
         plants = new HashMap<>();
 

@@ -7,14 +7,16 @@ import files.util.*;
 
 import java.util.*;
 
-public abstract class AbstractEarthMap implements WorldMap {
+public class AbstractEarthMap implements WorldMap {
 
     protected HashMap<Vector2d, List<Animal>> animals; //przechowywanie zwierzakow jako listy zwierzakow na danej pozycji, poniewaz moze byc kilka zwierzakow na jedynm polu
     protected HashMap<Vector2d, Plant> plants; // roslina jest tylko jedna na danej pozycji
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id;
+    private final Vector2d mapDimensions;
 
-    public AbstractEarthMap() {
+    public AbstractEarthMap(int mapWidth, int mapHeight) {
+        this.mapDimensions = new Vector2d(mapWidth - 1, mapHeight - 1);
         this.animals = new HashMap<>();
         this.plants = new HashMap<>();
         this.id = UUID.randomUUID();
@@ -87,6 +89,20 @@ public abstract class AbstractEarthMap implements WorldMap {
     }
 
 
+    public void place(Animal animal) throws Exception {
+
+
+        // Zaktualizuj listę zwierzaków na nowej pozycji
+        List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
+        if (newAnimalsOnPosition == null) {
+            newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
+        }
+
+        newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
+        animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
+        notifyObservers("Animal placed at " + animal.getPosition());
+    }
+
     public boolean isOccupied(Vector2d position) {
         return animals.get(position) != null;
     }
@@ -117,31 +133,19 @@ public abstract class AbstractEarthMap implements WorldMap {
         return elements;
     }
 
-
-    protected boolean isPositionValid(Vector2d position) {
-        return true; // Default behavior
+    public Boundary getCurrentBounds() {
+        return new Boundary(new Vector2d(0, 0), mapDimensions);
     }
+
+    public boolean canMoveTo(Vector2d position) {
+        return true;
+    }
+
 
     public PositionAndOrientation positionAndOrientationAfterMovement(Vector2d origin, MapDirection currentOrientation, MoveDirection direction){
         Vector2d shift = currentOrientation.toUnitVector();
         if (direction == MoveDirection.BACKWARD) shift = shift.multiplyByScalar(-1);
         return new PositionAndOrientation(origin.add(shift),currentOrientation);
-    }
-
-    public void place(Animal animal) throws Exception {
-        if (!isPositionValid(animal.getPosition())) {
-            throw new IncorrectPositionException(animal.getPosition());
-        }
-
-        // Zaktualizuj listę zwierzaków na nowej pozycji
-        List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
-        if (newAnimalsOnPosition == null) {
-            newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
-        }
-
-        newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
-        animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
-        notifyObservers("Animal placed at " + animal.getPosition());
     }
 
     public String toString() {
@@ -151,7 +155,6 @@ public abstract class AbstractEarthMap implements WorldMap {
         return new MapVisualizer(this).draw(lowerLeft, upperRight);
     }
 
-    @Override
     public UUID getId() {
         return this.id;
     }
