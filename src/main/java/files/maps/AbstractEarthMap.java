@@ -1,9 +1,6 @@
 package files.maps;
 
-import files.map_elements.Animal;
-import files.map_elements.Plant;
-import files.map_elements.PreferredField;
-import files.map_elements.WorldElement;
+import files.map_elements.*;
 import files.util.*;
 
 import java.util.*;
@@ -21,6 +18,7 @@ public class AbstractEarthMap implements WorldMap {
         this.mapDimensions = new Vector2d(mapWidth - 1, mapHeight - 1);
         this.animals = new HashMap<>();
         this.plants = new HashMap<>();
+        this.preferredFields = new HashMap<>();
         this.id = UUID.randomUUID();
     }
 
@@ -144,28 +142,6 @@ public class AbstractEarthMap implements WorldMap {
 
 
 
-    public void removePlant(Plant plant) {
-        if (plant == null || plant.getPosition() == null) {
-            throw new IllegalArgumentException("Plant or its position cannot be null.");
-        }
-
-        plants.remove(plant.getPosition());
-
-        PreferredField preferredField = preferredFields.get(plant.getPosition());
-        if (preferredField != null) {
-            preferredField.setPlantGrown(false);
-        }
-    }
-
-    public void removePreferredField(PreferredField preferredField) {
-        if (preferredField == null || preferredField.getPosition() == null) {
-            throw new IllegalArgumentException("PreferredField or its position cannot be null.");
-        }
-
-        preferredFields.remove(preferredField.getPosition());
-    }
-
-
     public boolean isOccupied(Vector2d position) {
         return animals.get(position) != null;
     }
@@ -195,6 +171,9 @@ public class AbstractEarthMap implements WorldMap {
         }
         if (plants != null) {
             elements.addAll(plants.values());
+        }
+        if (preferredFields != null) {
+            elements.addAll(preferredFields.values());
         }
         return elements;
     }
@@ -232,6 +211,7 @@ public class AbstractEarthMap implements WorldMap {
         Boundary bounds = getCurrentBounds();
         Vector2d lowerLeft = bounds.lowerLeft();
         Vector2d upperRight = bounds.upperRight();
+
 
         for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
             for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
