@@ -19,6 +19,9 @@ public class EquatorMap extends AbstractEarthMap {
         placePlants();
     }
 
+    public void placePreferredFields() {
+
+    }
     public void placePlants() {
         Random random = new Random();
 

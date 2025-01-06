@@ -8,6 +8,7 @@ public class PreferredField implements WorldElement{
 
     private final Vector2d position;
     Image preferredFieldImg = null;
+    private boolean isPlantGrown = false;
 
     public PreferredField(Vector2d position) {
         this.position = position;
@@ -39,4 +40,11 @@ public class PreferredField implements WorldElement{
         return 0.9;
     }
 
+    public boolean isPlantGrown() {
+        return isPlantGrown;
+    }
+
+    public void setPlantGrown(boolean plantGrown) {
+        isPlantGrown = plantGrown;
+    }
 }

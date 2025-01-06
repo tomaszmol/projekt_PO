@@ -59,8 +59,8 @@ public class AbstractEarthEquatorMap extends EquatorMapAbstract {
     }
 
     @Override
-    public void place(Animal animal) throws Exception {
-        super.place(animal);
+    public void placeAnimal(Animal animal) throws Exception {
+        super.placeAnimal(animal);
     }
 
 }

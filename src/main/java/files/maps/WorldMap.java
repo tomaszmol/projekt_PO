@@ -1,6 +1,8 @@
 package files.maps;
 
 import files.map_elements.Animal;
+import files.map_elements.Plant;
+import files.map_elements.PreferredField;
 import files.map_elements.WorldElement;
 import files.util.*;
 
@@ -20,12 +22,18 @@ public interface WorldMap extends MoveValidator {
      *
      * @param animal The animal to place on the map.
      */
-    void place(Animal animal) throws Exception;
+    void placeAnimal(Animal animal) throws Exception;
+
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect.
      */
+
+    void placePlant(Plant plant);
+
+    void placePreferredField(PreferredField preferredField);
+
     void move(Animal animal);
 
     /**

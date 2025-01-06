@@ -2,6 +2,7 @@ package files.maps;
 
 import files.map_elements.Animal;
 import files.map_elements.Plant;
+import files.map_elements.PreferredField;
 import files.map_elements.WorldElement;
 import files.util.*;
 
@@ -11,7 +12,7 @@ public class AbstractEarthMap implements WorldMap {
 
     protected HashMap<Vector2d, List<Animal>> animals; //przechowywanie zwierzakow jako listy zwierzakow na danej pozycji, poniewaz moze byc kilka zwierzakow na jedynm polu
     protected HashMap<Vector2d, Plant> plants;
-    protected HashMap<Vector2d, Plant> preferredFields;// roslina jest tylko jedna na danej pozycji
+    protected HashMap<Vector2d, PreferredField> preferredFields;// roslina jest tylko jedna na danej pozycji
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id;
     private final Vector2d mapDimensions;
@@ -90,8 +91,7 @@ public class AbstractEarthMap implements WorldMap {
     }
 
 
-    public void place(Animal animal) throws Exception {
-
+    public void placeAnimal(Animal animal) throws Exception {
 
         // Zaktualizuj listę zwierzaków na nowej pozycji
         List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
@@ -104,12 +104,39 @@ public class AbstractEarthMap implements WorldMap {
         notifyObservers("Animal placed at " + animal.getPosition());
     }
 
+    @Override
+    public void placePlant(Plant plant){
+        plants.put(plant.getPosition(), plant);
+        if (preferredFields.containsKey(plant.getPosition())) {
+            preferredFields.get(plant.getPosition()).setPlantGrown(true);
+        }
+    }
+
+    @Override
+    public void placePreferredField(PreferredField preferredField) {
+        preferredFields.put(preferredField.getPosition(), preferredField);
+    }
+
+    public void removePlant(Plant plant) {
+        plants.remove(plant.getPosition());
+        if (preferredFields.containsKey(plant.getPosition())) {
+            preferredFields.get(plant.getPosition()).setPlantGrown(false);
+        }
+    }
+
+    public void removePreferredField(PreferredField preferredField) {
+        preferredFields.remove(preferredField.getPosition());
+    }
+
     public boolean isOccupied(Vector2d position) {
         return animals.get(position) != null;
     }
 
     public WorldElement objectAt(Vector2d position) {
         WorldElement element = null;
+        if (preferredFields.containsKey(position)) {
+            element = preferredFields.get(position);
+        }
         if (plants.containsKey(position)) {
             element = plants.get(position);
         }
