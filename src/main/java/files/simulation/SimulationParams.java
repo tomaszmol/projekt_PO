@@ -11,8 +11,9 @@ public record SimulationParams(
         int dailyAnimalEnergyCost,
         int initialAnimalsOnMap,
         int dailyPlantSpawnNum,
-        boolean ageFlag,
-        boolean circleOfLifeFlag,
-        boolean earthMapFlag,
+        boolean fullPredestinationFlag,
+        boolean oldnessSadnessFlag,
+        boolean equatorFlag,
+        boolean liveGivingCorpseFlag,
         int simulationSteps
 ) {}

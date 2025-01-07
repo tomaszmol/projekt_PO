@@ -2,7 +2,9 @@ package files.maps;
 
 import files.map_elements.Animal;
 import files.map_elements.WorldElement;
-import files.util.*;
+import files.util.Boundary;
+import files.util.MoveValidator;
+import files.util.Vector2d;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,12 +22,14 @@ public interface WorldMap extends MoveValidator {
      *
      * @param animal The animal to place on the map.
      */
-    void place(Animal animal) throws Exception;
+    void placeAnimal(Animal animal) throws Exception;
+
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect.
      */
+
     void move(Animal animal);
 
     /**

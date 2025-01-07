@@ -60,10 +60,12 @@
                 <Label fx:id="infoLabel3" text="Check Simulation Flags:" />
             </HBox>
             <GridPane hgap="10" vgap="10" alignment="CENTER">
-                <CheckBox fx:id="ageFlag" text="Starosc nie radosc" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                <CheckBox fx:id="corpseFlag" text="Zyciodajne truchla" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                <CheckBox fx:id="globeFlag" text="Kula ziemska" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                <CheckBox fx:id="fullPredestinationFlag" text="Pelna predescynacja" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <CheckBox fx:id="oldnessSadnessFlag" text="Starosc nie radosc" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                <CheckBox fx:id="equatorFlag" text="Rownik" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                <CheckBox fx:id="liveGivingCorpseFlag" text="Zyciodajne truchla" GridPane.rowIndex="1" GridPane.columnIndex="1" />
             </GridPane>
+
 
             <Region prefHeight="50"/>
 
