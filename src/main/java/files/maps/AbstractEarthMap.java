@@ -1,6 +1,7 @@
 package files.maps;
 
 import files.map_elements.*;
+import files.simulation.SimulationParams;
 import files.util.*;
 
 import java.util.*;
@@ -13,9 +14,10 @@ public abstract class AbstractEarthMap implements WorldMap {
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id;
     private final Vector2d mapDimensions;
+    SimulationParams params;
 
-    public AbstractEarthMap(int mapWidth, int mapHeight) {
-        this.mapDimensions = new Vector2d(mapWidth - 1, mapHeight - 1);
+    public AbstractEarthMap(SimulationParams params) {
+        this.mapDimensions = new Vector2d(params.mapWidth() - 1, params.mapHeight() - 1);
         this.animals = new HashMap<>();
         this.plants = new HashMap<>();
         this.preferredFields = new HashMap<>();
@@ -36,60 +38,7 @@ public abstract class AbstractEarthMap implements WorldMap {
         }
     }
 
-    public void move(Animal animal) {
-        // Pobierz listę zwierzaków na poprzedniej pozycji
-        List<Animal> animalsOnPosition = animals.get(animal.getPosition());
-
-        // Sprawdzenie, czy lista zwierzaków w tej pozycji istnieje
-        if (animalsOnPosition != null) {
-            // Sprawdzamy, czy zwierzak znajduje się w tej liście
-            if (animalsOnPosition.contains(animal)) {
-                // Zapisz starą pozycję i orientację
-                Vector2d oldPos = animal.getPosition();
-                MapDirection oldOrientation = animal.getOrientation();
-
-                // Jeśli zwierzak się poruszył
-                if (animal.move(this)) {
-                    // Usuń zwierzaka z poprzedniej pozycji (ze starej listy)
-                    animalsOnPosition.remove(animal);
-
-                    // Jeśli lista na danej pozycji jest teraz pusta, usuń ją z HashMap
-                    if (animalsOnPosition.isEmpty()) {
-                        animals.remove(oldPos);
-                    }
-
-                    // Zaktualizuj listę zwierzaków na nowej pozycji
-                    List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
-                    if (newAnimalsOnPosition == null) {
-                        newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
-                    }
-
-                    newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
-                    animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
-
-                    // Powiadom obserwatorów
-                    notifyObservers("Animal moved from " + oldPos + " to " + animal.getPosition());
-                } else {
-                    // Sprawdzenie, czy orientacja zmieniła się
-                    MapDirection newOrientation = animal.getOrientation();
-                    if (oldOrientation != newOrientation) {
-                        notifyObservers("Animal changed orientation from " + oldOrientation + " to " + newOrientation);
-                    } else {
-                        notifyObservers("Animal did not move and did not change orientation");
-                    }
-                }
-            } else {
-                // Jeśli zwierzak nie jest na tej pozycji (index byłby nieprawidłowy)
-                System.out.println("Błąd: nie ma zwierzaka na tej pozycji.");
-            }
-        } else {
-            // Jeśli lista zwierzaków jest null (czyli brak zwierzaków na tej pozycji)
-            System.out.println("Błąd: brak zwierzaków na tej pozycji.");
-        }
-    }
-
-
-    public void placeAnimal(Animal animal) throws Exception {
+    public void placeAnimal(Animal animal) {
 
         // Zaktualizuj listę zwierzaków na nowej pozycji
         List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
@@ -130,9 +79,6 @@ public abstract class AbstractEarthMap implements WorldMap {
             }
         }
     }
-
-
-
 
     public boolean isOccupied(Vector2d position) {
         return animals.get(position) != null;
@@ -177,7 +123,6 @@ public abstract class AbstractEarthMap implements WorldMap {
     public boolean canMoveTo(Vector2d position) {
         return true;
     }
-
 
     public PositionAndOrientation positionAndOrientationAfterMovement(Vector2d origin, MapDirection currentOrientation, MoveDirection direction){
         Vector2d shift = currentOrientation.toUnitVector();

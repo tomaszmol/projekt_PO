@@ -1,6 +1,7 @@
 package files.maps;
 
 import files.map_elements.PreferredField;
+import files.simulation.SimulationParams;
 import files.util.Boundary;
 import files.util.Vector2d;
 
@@ -9,10 +10,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public abstract class LiveGivingCorpseMap extends AbstractEarthMap{
+public abstract class LiveGivingCorpseMap extends AnimalManager {
 
-    public LiveGivingCorpseMap(int mapWidth, int mapHeight) {
-        super(mapWidth, mapHeight);
+    public LiveGivingCorpseMap(SimulationParams params) {
+        super(params);
         generatePreferredFields();
         super.growPlantsOnWholeMap();
     }

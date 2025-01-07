@@ -1,9 +1,10 @@
 package files.maps.variants;
 
 import files.maps.EquatorMap;
+import files.simulation.SimulationParams;
 
 public class FullPredestinationEquatorMap extends EquatorMap {
-    public FullPredestinationEquatorMap(int mapWidth, int mapHeight) {
-        super(mapWidth, mapHeight);
+    public FullPredestinationEquatorMap(SimulationParams params) {
+        super(params);
     }
 }

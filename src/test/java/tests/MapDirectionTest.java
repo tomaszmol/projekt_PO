@@ -1,4 +1,4 @@
-package files.model;
+package tests;
 
 
 import files.util.MapDirection;

@@ -33,6 +33,10 @@ public class SimulationPresenter implements MapChangeListener {
     private int simulationCount = 1;
 
     @FXML
+    public TextField geneNumber;
+    @FXML
+    public TextField geneMutationChance;
+    @FXML
     public VBox animalInfoBoxRight;
     @FXML
     public Label animalInfoLabel;
@@ -189,13 +193,13 @@ public class SimulationPresenter implements MapChangeListener {
 
                 WorldMap map = null;
                 if (initParams.fullPredestinationFlag() &&  initParams.equatorFlag())
-                    map = new FullPredestinationEquatorMap(initParams.mapWidth(),initParams.mapHeight());
+                    map = new FullPredestinationEquatorMap(initParams);
                 if (initParams.fullPredestinationFlag() && initParams.liveGivingCorpseFlag())
-                    map = new FullPredestinationLiveGivingCorpseMap(initParams.mapWidth(),initParams.mapHeight());
+                    map = new FullPredestinationLiveGivingCorpseMap(initParams);
                 if ( initParams.oldnessSadnessFlag() &&  initParams.equatorFlag())
-                    map = new OldnessSadnessEquatorMap(initParams.mapWidth(),initParams.mapHeight());
+                    map = new OldnessSadnessEquatorMap(initParams);
                 if ( initParams.oldnessSadnessFlag() && initParams.liveGivingCorpseFlag())
-                    map = new OldnessSadnessLiveGivingCorpseMap(initParams.mapWidth(),initParams.mapHeight());
+                    map = new OldnessSadnessLiveGivingCorpseMap(initParams);
 
                 newPresenter.setWorldMap(map);
                 assert map != null;
@@ -237,6 +241,8 @@ public class SimulationPresenter implements MapChangeListener {
         initialAnimalsField.setText("3");
         dailyPlantSpawnsField.setText("5");
         simulationSteps.setText("100");
+        geneMutationChance.setText("0.02");
+        geneNumber.setText("6");
         oldnessSadnessFlag.setSelected(false);
         liveGivingCorpseFlag.setSelected(false);
         fullPredestinationFlag.setSelected(true);
@@ -255,6 +261,8 @@ public class SimulationPresenter implements MapChangeListener {
             int initialAnimalsOnMap = Integer.parseInt(initialAnimalsField.getText().trim());
             int dailyPlantSpawns = Integer.parseInt(dailyPlantSpawnsField.getText().trim());
             int simSteps = Integer.parseInt(simulationSteps.getText().trim());
+            int geneNum = Integer.parseInt(geneNumber.getText().trim());
+            double mutationChance = Double.parseDouble(geneMutationChance.getText().trim());
 
             // Pobieranie wartości boolean z checkboxów
             boolean fullPredestinationFlagValue = fullPredestinationFlag.isSelected();
@@ -267,7 +275,8 @@ public class SimulationPresenter implements MapChangeListener {
                     mapHeight, mapWidth,
                     plantEnergyProfit, minCopulationEnergy, initialAnimalEnergy,
                     dailyAnimalEnergy, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
-                    oldnessSadnessFlagValue, equatorFlagValue, liveGivingCorpseFlagValue,simSteps
+                    oldnessSadnessFlagValue, equatorFlagValue, liveGivingCorpseFlagValue,simSteps,
+                    mutationChance, geneNum
             );
         } catch (NumberFormatException e) {
             System.err.println("Invalid parameters! Please provide valid numeric values.");

@@ -43,6 +43,10 @@
                 <TextField fx:id="plantEnergyField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
                 <Label text="Min copulation energy:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
                 <TextField fx:id="copulationEnergyField" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+                <Label text="Mutation chance per gene on copulation:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                <TextField fx:id="geneMutationChance" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+                <Label text="Gene Number:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                <TextField fx:id="geneNumber" GridPane.rowIndex="5" GridPane.columnIndex="1" />
                 <Label text="Initial animal energy:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
                 <TextField fx:id="initialAnimalEnergyField" GridPane.rowIndex="6" GridPane.columnIndex="1" />
                 <Label text="Daily animal energy cost:" GridPane.rowIndex="7" GridPane.columnIndex="0" />

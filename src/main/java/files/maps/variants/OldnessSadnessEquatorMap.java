@@ -1,9 +1,10 @@
 package files.maps.variants;
 
 import files.maps.EquatorMap;
+import files.simulation.SimulationParams;
 
 public class OldnessSadnessEquatorMap extends EquatorMap {
-    public OldnessSadnessEquatorMap(int mapWidth, int mapHeight) {
-        super(mapWidth, mapHeight);
+    public OldnessSadnessEquatorMap(SimulationParams params) {
+        super(params);
     }
 }

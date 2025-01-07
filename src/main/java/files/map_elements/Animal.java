@@ -15,15 +15,13 @@ public class Animal implements WorldElement {
     Genetics genes;
     StatisticsTracker stats;
 
-
-
     Image animalImg = null;
 
-    public Animal(Vector2d position) {
+    public Animal(Vector2d position, int geneNumber) {
         this.position = position;
         age = 0;
 
-        genes = new Genetics();
+        genes = new Genetics(geneNumber);
         stats = new StatisticsTracker();
 
         var res = getClass().getResource("/animal.png");
@@ -50,6 +48,16 @@ public class Animal implements WorldElement {
     @Override
     public Image getImage() {
         return animalImg;
+    }
+
+    public Genetics getGenetics() {
+        return genes;
+    }
+    public int getEnergy() {
+        return energy;
+    }
+    public void useEnergy(int amount) {
+        energy = Math.max(0,energy-amount);
     }
 
     @Override

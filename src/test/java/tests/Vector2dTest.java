@@ -1,4 +1,4 @@
-package files.model;
+package tests;
 
 import files.util.Vector2d;
 import org.junit.jupiter.api.Assertions;
