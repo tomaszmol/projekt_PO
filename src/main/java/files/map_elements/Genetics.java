@@ -1,5 +1,6 @@
 package files.map_elements;
 
+import files.util.MapDirection;
 import files.util.MoveDirection;
 
 import java.util.Arrays;
@@ -7,14 +8,21 @@ import java.util.Arrays;
 public class Genetics {
 
     int[] genotype;
+    int currentGenePosition;
 
     public Genetics(int geneNumber) {
         genotype = new int[geneNumber];
         Arrays.fill(genotype, 0);
+        currentGenePosition = -1;
     }
 
     public MoveDirection getNextMoveInSequence() {
-        return MoveDirection.FORWARD;
+        currentGenePosition = (currentGenePosition + 1) % genotype.length;
+        return MoveDirection.getMoveDirection( genotype[currentGenePosition] );
+    }
+    public MapDirection getNextTurnInSequence() {
+        currentGenePosition = (currentGenePosition + 1) % genotype.length;
+        return MapDirection.getMapDirection( genotype[currentGenePosition] );
     }
 
     public int[] getGenotype() {
@@ -32,16 +40,17 @@ public class Genetics {
 
         // generate father mother side 50/50
         if (Math.random() > 0.5) { // parent1 left side
-            for (int i = 0; i <= genotype.length; i++) {
-                if (geneProportionParent1 < (double) i / genotype.length) {
+            System.out.println("left side");
+            for (int i = 0; i < genotype.length; i++) {
+                if (geneProportionParent1 > (double) i / genotype.length) {
                     genotype[i] = genesParent1[i];
                 } else {
                     genotype[i] = genesParent2[i];
                 }
             }
         } else { // parent2 left side
-            for (int i = 0; i <= genotype.length; i++) {
-                if (geneProportionParent2 < (double) i / genotype.length) {
+            for (int i = 0; i < genotype.length; i++) {
+                if (geneProportionParent2 > (double) i / genotype.length) {
                     genotype[i] = genesParent2[i];
                 } else {
                     genotype[i] = genesParent1[i];
