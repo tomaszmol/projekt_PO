@@ -1,6 +1,8 @@
 package files.simulation;
 
 import files.map_elements.Animal;
+import files.map_elements.StatisticsTracker;
+import files.maps.AbstractEarthMap;
 import files.maps.WorldMap;
 import files.util.*;
 
@@ -15,12 +17,13 @@ public class Simulation implements Runnable {
     private final List<Animal> animals;
     private final WorldMap map;
     final SimulationParams params;
+    StatisticsTracker stats;
 
-    public Simulation(SimulationParams params, WorldMap map) throws Exception{
-
+    public Simulation(SimulationParams params, WorldMap map, StatisticsTracker stats) throws Exception{
         this.map = map;
         animals = new ArrayList<Animal>();
         this.params = params;
+        this.stats = stats;
 
         // spawn initial animals:
         int animalNum = params.initialAnimalsOnMap();
@@ -32,12 +35,14 @@ public class Simulation implements Runnable {
             } while (map.isOccupied(randPos));
             Animal animal = new Animal(randPos, params.geneNumber());
             map.placeAnimal(animal);
+            addAnimalToSimulation(animal);
         }
     }
 
     public List<Animal> getAnimals() {
         return animals;
     }
+    public void addAnimalToSimulation(Animal animal) { animals.add(animal); }
 
     private void wait(int ms){
         try {
@@ -53,13 +58,20 @@ public class Simulation implements Runnable {
         wait(1000);
 
         for (int day=0; day<params.simulationSteps(); day++) {
+            int energySum = 0;
+
             for (Animal a : animals) {
                 map.move(a);
                 wait(100);
                 day += 1;
+                energySum += a.getEnergy();
             }
             day -= 1;
             wait(500);
+
+            stats.recordValue("animals", animals.size());
+            stats.recordValue("plants", map.getPlants().size());
+            stats.recordValue("energy", energySum/animals.size());
         }
 
     }

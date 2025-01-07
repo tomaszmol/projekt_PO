@@ -1,12 +1,14 @@
 package files.maps;
 
 import files.map_elements.Animal;
+import files.map_elements.Plant;
 import files.map_elements.WorldElement;
 import files.util.Boundary;
 import files.util.MoveValidator;
 import files.util.Vector2d;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -71,4 +73,6 @@ public interface WorldMap extends MoveValidator {
     void removeObserver(MapChangeListener observer);
 
     void notifyObservers(String message);
+
+    Map<Vector2d, Plant> getPlants();
 }

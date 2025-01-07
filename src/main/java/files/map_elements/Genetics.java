@@ -4,6 +4,7 @@ import files.util.MapDirection;
 import files.util.MoveDirection;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Genetics {
 
@@ -69,6 +70,8 @@ public class Genetics {
 
     @Override
     public String toString() {
-        return Arrays.toString(genotype);
+        return Arrays.stream(genotype)
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining());
     }
 }

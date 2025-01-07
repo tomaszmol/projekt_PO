@@ -115,6 +115,9 @@ public abstract class AbstractEarthMap implements WorldMap {
         }
         return elements;
     }
+    public HashMap<Vector2d, Plant> getPlants() {
+        return plants;
+    }
 
     public Boundary getCurrentBounds() {
         return new Boundary(new Vector2d(0, 0), mapDimensions);

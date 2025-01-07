@@ -1,6 +1,7 @@
 package files.simulation;
 
 import files.map_elements.Animal;
+import files.map_elements.StatisticsTracker;
 import files.map_elements.WorldElement;
 import files.maps.MapChangeListener;
 import files.maps.WorldMap;
@@ -10,11 +11,14 @@ import files.maps.variants.OldnessSadnessEquatorMap;
 import files.maps.variants.OldnessSadnessLiveGivingCorpseMap;
 import files.util.Boundary;
 import files.util.Vector2d;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -25,12 +29,18 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SimulationPresenter implements MapChangeListener {
 
     private WorldMap worldMap;
     private int updateCount = 0;
     private int simulationCount = 1;
+    SimulationParams params;
+    StatisticsTracker statsTracker;
 
     @FXML
     public TextField geneNumber;
@@ -75,63 +85,53 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     public CheckBox fullPredestinationFlag;
 
-//    @FXML
-//    public void initialize() {
-//        equatorFlag.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue) { // Jeśli equatorFlag jest zaznaczony
-//                liveGivingCorpseFlag.setSelected(false); // Odznacz liveGivingCorpseFlag
-//            } else { // Jeśli equatorFlag jest odznaczony
-//                liveGivingCorpseFlag.setSelected(true); // Zaznacz liveGivingCorpseFlag
-//            }
-//        });
-//
-//        liveGivingCorpseFlag.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue) { // Jeśli liveGivingCorpseFlag jest zaznaczony
-//                equatorFlag.setSelected(false); // Odznacz equatorFlag
-//            } else { // Jeśli liveGivingCorpseFlag jest odznaczony
-//                equatorFlag.setSelected(true); // Zaznacz equatorFlag
-//            }
-//        });
-//
-//        oldnessSadnessFlag.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue) { // Jeśli oldnessSadnessFlag jest zaznaczony
-//                fullPredestinationFlag.setSelected(false); // Odznacz fullPredestinationFlag
-//            } else { // Jeśli oldnessSadnessFlag jest odznaczony
-//                fullPredestinationFlag.setSelected(true); // Zaznacz fullPredestinationFlag
-//            }
-//        });
-//
-//        fullPredestinationFlag.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue) { // Jeśli fullPredestinationFlag jest zaznaczony
-//                oldnessSadnessFlag.setSelected(false); // Odznacz oldnessSadnessFlag
-//            } else { // Jeśli fullPredestinationFlag jest odznaczony
-//                oldnessSadnessFlag.setSelected(true); // Zaznacz oldnessSadnessFlag
-//            }
-//        });
-//
-//    }
+    @FXML
+    public LineChart<Number, Number> populationChart;
+    String[] graph1Series = { "animals", "plants"};
+
+    @FXML
+    public LineChart<Number, Number> animalDataChart;
+    String[] graph2Series = { "energy" };
+
+    @FXML
+    public LineChart<Number, Number> geneticsChart;
+    String[] graph3Series = {  };
+
+
 
     public void setWorldMap(WorldMap map) {
         this.worldMap = map;
     }
     public void drawMap() {
         // Czyszczenie siatki
-        int CELL_WIDTH = 30;
-        int CELL_HEIGHT = 30;
+        clearGrid();
+
+        // nowa siatka
+        int cellSize = 50;
+
+        // nie dziala za bardzo
+        if (params != null) {
+            cellSize = (int) Math.min(
+                    mapGrid.getScene().getX() / params.mapWidth(),
+                    mapGrid.getScene().getY() / params.mapHeight()
+            );
+            System.out.println(mapGrid.getScene().getX() / params.mapWidth());
+            System.out.println(mapGrid.getScene().getY() / params.mapHeight());
+        }
+
         double cellContentSizeMultiplier = 0.8;
 
-        clearGrid();
+        // dane
         Boundary bounds = worldMap.getCurrentBounds();
         Vector2d lowerLeft = bounds.lowerLeft();
         Vector2d upperRight = bounds.upperRight();
         int rows = upperRight.getY() - lowerLeft.getY() + 1;
         int columns = upperRight.getX() - lowerLeft.getX() + 1;
-
         for (int i = 0; i < columns; i++) {
-            mapGrid.getColumnConstraints().add(new ColumnConstraints(CELL_WIDTH));
+            mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
         }
         for (int i = 0; i < rows; i++) {
-            mapGrid.getRowConstraints().add(new RowConstraints(CELL_HEIGHT));
+            mapGrid.getRowConstraints().add(new RowConstraints(cellSize));
         }
 
         // Rysowanie obiektów na siatce
@@ -145,8 +145,8 @@ public class SimulationPresenter implements MapChangeListener {
                     Image img = element.getImage();
                     if (img != null) {
                         ImageView imageView = new ImageView(img);
-                        imageView.setFitWidth(CELL_WIDTH*cellContentSizeMultiplier); // Szerokość komórki
-                        imageView.setFitHeight(CELL_HEIGHT*cellContentSizeMultiplier); // Wysokość komórki
+                        imageView.setFitWidth(cellSize*cellContentSizeMultiplier); // Szerokość komórki
+                        imageView.setFitHeight(cellSize*cellContentSizeMultiplier); // Wysokość komórki
                         GridPane.setHalignment(imageView, HPos.CENTER);
 
                         if (element instanceof Animal) {
@@ -156,7 +156,7 @@ public class SimulationPresenter implements MapChangeListener {
                         mapGrid.add(imageView, x - lowerLeft.getX(), upperRight.getY() - y);
 
                     } else {
-                        Rectangle emptyCell = new Rectangle(CELL_WIDTH*element.getElementSizeMultiplier(), CELL_HEIGHT*element.getElementSizeMultiplier());
+                        Rectangle emptyCell = new Rectangle(cellSize*element.getElementSizeMultiplier(), cellSize*element.getElementSizeMultiplier());
                         emptyCell.setFill(element.getElementColour());
                         GridPane.setHalignment(emptyCell, HPos.CENTER);
                         mapGrid.add(emptyCell, x - lowerLeft.getX(), upperRight.getY() - y);
@@ -177,6 +177,7 @@ public class SimulationPresenter implements MapChangeListener {
         // Aktualizacja UI w wątku graficznym
         Platform.runLater(() -> {
             drawMap();
+            printGraphs();
             moveDescriptionLabel.setText((message != null) ? message : "No message");
             updateCountLabel.setText("Update count: #" + updateCount);
         });
@@ -189,26 +190,28 @@ public class SimulationPresenter implements MapChangeListener {
                 FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("simulationWindow.fxml"));
                 BorderPane newSimulationRoot = loader.load();
                 SimulationPresenter newPresenter = loader.getController();
-                SimulationParams initParams = getSimulationParams();
+                params = getSimulationParams();
 
                 WorldMap map = null;
-                if (initParams.fullPredestinationFlag() &&  initParams.equatorFlag())
-                    map = new FullPredestinationEquatorMap(initParams);
-                if (initParams.fullPredestinationFlag() && initParams.liveGivingCorpseFlag())
-                    map = new FullPredestinationLiveGivingCorpseMap(initParams);
-                if ( initParams.oldnessSadnessFlag() &&  initParams.equatorFlag())
-                    map = new OldnessSadnessEquatorMap(initParams);
-                if ( initParams.oldnessSadnessFlag() && initParams.liveGivingCorpseFlag())
-                    map = new OldnessSadnessLiveGivingCorpseMap(initParams);
+                if (params.fullPredestinationFlag() &&  params.equatorFlag())
+                    map = new FullPredestinationEquatorMap(params);
+                if (params.fullPredestinationFlag() && params.liveGivingCorpseFlag())
+                    map = new FullPredestinationLiveGivingCorpseMap(params);
+                if ( params.oldnessSadnessFlag() &&  params.equatorFlag())
+                    map = new OldnessSadnessEquatorMap(params);
+                if ( params.oldnessSadnessFlag() && params.liveGivingCorpseFlag())
+                    map = new OldnessSadnessLiveGivingCorpseMap(params);
 
                 newPresenter.setWorldMap(map);
                 assert map != null;
                 map.addObserver(newPresenter);
 
+                setupCharts();
+
                 WorldMap finalMap = map;
                 Thread simulationThread = new Thread(() -> {
                     try {
-                        Simulation newSimulation = new Simulation(initParams, finalMap);
+                        Simulation newSimulation = new Simulation(params, finalMap, statsTracker);
                         newSimulation.run();
                     } catch (Exception e) {
                         System.err.println("Simulation thread error! + " + e.getMessage());
@@ -287,6 +290,39 @@ public class SimulationPresenter implements MapChangeListener {
     private void showAnimalInfo(Animal animal) {
         animalInfoLabel.setText(animal.getAnimalInfo());
         if (animalInfoBoxRight != null) animalInfoBoxRight.setVisible(true);
+    }
+
+    private void setupCharts() {
+        statsTracker = new StatisticsTracker();
+        System.out.println("Setup series!");
+        for (String s : graph1Series) statsTracker.addSeries(s);
+        for (String s : graph2Series) statsTracker.addSeries(s);
+        for (String s : graph3Series) statsTracker.addSeries(s);
+    }
+
+    void printGraphs(){
+        if(statsTracker == null) setupCharts();
+        for (int i=0; i<graph1Series.length; i++) printGraph(populationChart,graph1Series[i],i);
+        for (int i=0; i<graph2Series.length; i++) printGraph(animalDataChart,graph2Series[i],i);
+        for (int i=0; i<graph3Series.length; i++) printGraph(geneticsChart,graph3Series[i],i);
+    }
+    void printGraph(LineChart<Number,Number> chart, String seriesName, int seriesNum){
+        System.out.println("Printing graph " + seriesName);
+
+        // rozwiaz problem
+        List<Number> data = statsTracker.getData(seriesName);
+
+        System.out.println("     " + data);
+
+        // wprowadz nowe dane
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        for (int i = 0; i < data.size(); i++) {
+            series.getData().add(new XYChart.Data<>(i, data.get(i)));
+        }
+
+        // usun stare dane i dodaj nowe
+        if (!chart.getData().isEmpty()) chart.getData().remove(seriesNum);
+        chart.getData().add(seriesNum,series);
     }
 }
 
