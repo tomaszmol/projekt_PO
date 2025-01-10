@@ -1,6 +1,6 @@
 package files.map_elements;
 
-import javafx.scene.chart.XYChart;
+import files.util.DataAddedListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.Map;
 public class StatisticsTracker {
 
     private final Map<String, List<Number>> data;
+    private final List<DataAddedListener> observers = new ArrayList<>();
 
     public StatisticsTracker() { this.data = new HashMap<>(); }
 
@@ -25,6 +26,7 @@ public class StatisticsTracker {
         data.get(seriesName).add(value);
         System.out.println("after " + data.get(seriesName));
 
+        notifyObservers(seriesName);
     }
 
     public List<Number> getData(String seriesName) {
@@ -34,5 +36,20 @@ public class StatisticsTracker {
 
     public void clearData() {
         data.clear();
+    }
+
+
+    public void addObserver(DataAddedListener observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(DataAddedListener observer) {
+        observers.remove(observer);
+    }
+
+    public void notifyObservers(String seriesName) {
+        for (DataAddedListener observer : observers) {
+            observer.onDataAdded(this, seriesName);
+        }
     }
 }

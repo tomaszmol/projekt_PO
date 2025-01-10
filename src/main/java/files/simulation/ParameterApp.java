@@ -6,18 +6,17 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class SimulationApp extends Application {
+public class ParameterApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Załadowanie widoku FXML
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
+        loader.setLocation(getClass().getClassLoader().getResource("parameterInput.fxml"));
         BorderPane viewRoot = loader.load();
 
         // Pobranie kontrolera z FXML
-        SimulationPresenter presenter = loader.getController();
-        presenter.initializeSimulationParams();
+        //SimulationPresenter presenter = loader.getController();
 
         // Konfiguracja okna aplikacji
         configureStage(primaryStage, viewRoot);
@@ -28,7 +27,7 @@ public class SimulationApp extends Application {
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
         var scene = new Scene(viewRoot);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Simulation app");
+        primaryStage.setTitle("Parameter Input");
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
