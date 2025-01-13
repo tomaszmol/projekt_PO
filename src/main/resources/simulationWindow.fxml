@@ -43,6 +43,9 @@
                     <NumberAxis label="Dominacja Genu" />
                 </yAxis>
             </LineChart>
+            <HBox alignment="CENTER" >
+                <Button fx:id="exportCSVButton" text="Export Data" onAction="#onExportData" />
+            </HBox>
         </VBox>
     </left>
 

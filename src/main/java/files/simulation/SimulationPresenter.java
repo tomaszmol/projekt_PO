@@ -9,6 +9,7 @@ import files.util.Boundary;
 import files.util.DataAddedListener;
 import files.util.Vector2d;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.chart.LineChart;
@@ -29,6 +30,8 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     SimulationParams params;
     boolean simulationPaused;
 
+    @FXML
+    public Button exportCSVButton;
     @FXML
     public VBox animalInfoBoxRight;
     @FXML
@@ -216,6 +219,14 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         simulationPaused = !simulationPaused;
         pauseButton.setText(simulationPaused ? "Resume" : "Pause");
         simulation.pause(simulationPaused);
+
+        exportCSVButton.setText("Export Data");
+    }
+
+    public void onExportData(ActionEvent actionEvent) {
+        if (!simulationPaused) onSimulationPaused();
+        statsTracker.exportAllDataToCsv("simulationStatistics.csv");
+        exportCSVButton.setText("Exported!");
     }
 }
 
