@@ -25,20 +25,16 @@ public class PreferredField implements WorldElement{
         return "&";
     }
 
-    @Override
     public Image getImage() {
         return preferredFieldImg;
     }
-
-    @Override
     public Color getElementColour() {
         return Color.LIGHTGREEN;
     }
-
-    @Override
     public double getElementSizeMultiplier() {
-        return 0.9;
+        return 0.98;
     }
+    public boolean hasImage() { return preferredFieldImg != null; }
 
     public boolean isPlantGrown() {
         return isPlantGrown;

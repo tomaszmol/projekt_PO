@@ -85,35 +85,37 @@ public abstract class AbstractEarthMap implements WorldMap {
         return animals.get(position) != null;
     }
 
+    public List<Animal> getAnimals (Vector2d position) {
+        if (animals.containsKey(position)) {
+            return animals.get(position);
+        }
+        return null;
+    }
     public WorldElement objectAt(Vector2d position) {
         WorldElement element = null;
+
         if (preferredFields.containsKey(position)) {
             element = preferredFields.get(position);
         }
         if (plants.containsKey(position)) {
             element = plants.get(position);
         }
-        if (animals.containsKey(position)) {
-            List<Animal> animalsOnPosition = animals.get(position);
-            if (animalsOnPosition != null) {
-                element = animalsOnPosition.getLast();
-            }
-        }
         return element;
     }
 
     public List<WorldElement> getElements() {
         List<WorldElement> elements = new ArrayList<>();
-        // Iteruj po każdej liście zwierzaków w mapie
-        for (List<Animal> animalList : animals.values()) {
-            elements.addAll(animalList);  // Dodaj wszystkie zwierzaki do głównej listy
+
+        if (preferredFields != null) {
+            elements.addAll(preferredFields.values());
         }
         if (plants != null) {
             elements.addAll(plants.values());
         }
-        if (preferredFields != null) {
-            elements.addAll(preferredFields.values());
+        for (List<Animal> animalList : animals.values()) {
+            elements.addAll(animalList);  // Dodaj wszystkie zwierzaki do głównej listy
         }
+
         return elements;
     }
     public HashMap<Vector2d, Plant> getPlants() {

@@ -75,7 +75,12 @@ public class Animal implements WorldElement {
 
     @Override
     public double getElementSizeMultiplier() {
-        return 0.5;
+        return 0.7;
+    }
+
+    @Override
+    public boolean hasImage() {
+        return animalImg != null;
     }
 
     public boolean isAt(Vector2d position) {

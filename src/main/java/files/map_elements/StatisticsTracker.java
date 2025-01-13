@@ -21,16 +21,11 @@ public class StatisticsTracker {
         if (data.get(seriesName) == null) {
             throw new IllegalArgumentException("Series " + seriesName + " does not exist. Add it first using addSeries().");
         }
-        System.out.println("adding to " + seriesName + ": " + value);
-        System.out.println("b4 " + data.get(seriesName));
         data.get(seriesName).add(value);
-        System.out.println("after " + data.get(seriesName));
-
         notifyObservers(seriesName);
     }
 
     public List<Number> getData(String seriesName) {
-        System.out.println("getting data from " + seriesName + ": " + data.get(seriesName));
         return data.get(seriesName);
     }
 

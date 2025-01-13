@@ -64,7 +64,7 @@ public class Simulation implements Runnable {
             for (Animal a : animals) {
                 map.move(a);
                 energySum += a.getEnergy();
-                wait(25);
+                wait(100);
             }
 
             map.resolveConflicts();
@@ -74,7 +74,7 @@ public class Simulation implements Runnable {
             stats.recordValue("plants", map.getPlants().size());
             stats.recordValue("energy", energySum/animals.size());
 
-            wait(150);
+            wait(300);
         }
 
     }
