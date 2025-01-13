@@ -75,4 +75,8 @@ public interface WorldMap extends MoveValidator {
     void notifyObservers(String message);
 
     Map<Vector2d, Plant> getPlants();
+
+    void resolveConflicts();
+
+    void removeDeadAnimals();
 }

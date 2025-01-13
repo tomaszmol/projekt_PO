@@ -3,6 +3,7 @@ package files.simulation;
 import files.map_elements.Animal;
 import files.map_elements.StatisticsTracker;
 import files.maps.AbstractEarthMap;
+import files.maps.AnimalManager;
 import files.maps.WorldMap;
 import files.util.*;
 
@@ -61,13 +62,15 @@ public class Simulation implements Runnable {
             int energySum = 0;
 
             for (Animal a : animals) {
-
-                //
                 map.move(a);
-                wait(100);
+                wait(25);
                 energySum += a.getEnergy();
             }
-            wait(200);
+
+            map.resolveConflicts();
+            map.removeDeadAnimals();
+
+            wait(150);
 
             stats.recordValue("animals", animals.size());
             stats.recordValue("plants", map.getPlants().size());

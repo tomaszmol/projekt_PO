@@ -66,8 +66,16 @@ public class AnimalManager extends AbstractEarthMap{
         }
     }
 
-    public void animalFight () {
+    public void resolveConflicts(){
+        // SMTH
+    }
 
+    public void removeDeadAnimals(){
+        // SMTH
+    }
+
+    public void animalFight () {
+        // walka
     }
 
     // funckje nie testowana w ogole :[

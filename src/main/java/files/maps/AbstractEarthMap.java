@@ -128,7 +128,6 @@ public abstract class AbstractEarthMap implements WorldMap {
         return position.follows(new Vector2d(0, 0)) && position.precedes(mapDimensions);
     }
 
-
     @Override
     public PositionAndOrientation positionAndOrientationAfterMovement(Vector2d origin, MapDirection currentOrientation, MoveDirection direction){
         Vector2d shift = currentOrientation.toUnitVector();
