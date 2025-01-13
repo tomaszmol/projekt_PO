@@ -13,18 +13,20 @@ public class Animal implements WorldElement {
     private int numberOfDescendants;
     private int energy;
     Genetics genes;
-    StatisticsTracker stats;
 
-
+    Animal mother = null;
+    Animal father = null;
 
     Image animalImg = null;
 
-    public Animal(Vector2d position) {
+    public Animal(Vector2d position, int geneNumber) {
         this.position = position;
         age = 0;
+        numberOfChildren = 0;
+        numberOfDescendants = 0;
+        energy = 0;
 
-        genes = new Genetics();
-        stats = new StatisticsTracker();
+        genes = new Genetics(geneNumber);
 
         var res = getClass().getResource("/animal.png");
         if (res != null) this.animalImg = new Image(res.toExternalForm());
@@ -40,16 +42,30 @@ public class Animal implements WorldElement {
 
     public String toString() {
         return switch (orientation) {
+            case NORTH_EAST -> "NE";
             case EAST -> ">";
             case NORTH -> "^";
+            case SOUTH_EAST -> "SE";
             case SOUTH -> "v";
+            case SOUTH_WEST -> "SW";
             case WEST -> "<";
+            case NORTH_WEST -> "NW";
         };
     }
 
     @Override
     public Image getImage() {
         return animalImg;
+    }
+
+    public Genetics getGenetics() {
+        return genes;
+    }
+    public int getEnergy() {
+        return energy;
+    }
+    public void useEnergy(int amount) {
+        energy = Math.max(0,energy-amount);
     }
 
     @Override
@@ -91,10 +107,25 @@ public class Animal implements WorldElement {
         else return false;
     }
 
+    public void addDescendant () { // bedzie kaskadowac az do samej gory
+        numberOfDescendants++;
+        if (mother != null) mother.addDescendant();
+        if (father != null) father.addDescendant();
+    }
+    public void addChild () {
+        numberOfChildren++; numberOfDescendants++; // czy dziecko to od razu potomek ??
+        if (mother != null) mother.addDescendant();
+        if (father != null) father.addDescendant();
+    }
+    public void setParents(Animal mother, Animal father) {
+        this.mother = mother;
+        this.father = father;
+    }
+
     public String getAnimalInfo() {
         return String.format(
-                "Energy: %d\nAge: %d\nPosition: %s\nGenes: %s",
-                energy, age, position, genes.toString()
+                "Energy: %d\nAge: %d\nPosition: %s\nGenetic code: %s\nNumber of Children: %d\nNumber of Descendands: %d",
+                energy, age, position, genes.toString(), numberOfChildren, numberOfDescendants
         );
     }
 }

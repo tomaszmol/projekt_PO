@@ -7,12 +7,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.Region?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
-            fx:controller="files.simulation.SimulationPresenter">
+            fx:controller="files.simulation.ParameterPresenter">
     <center>
         <VBox alignment="CENTER">
             <!-- Nagłówek -->
@@ -51,6 +50,10 @@
                 <TextField fx:id="initialAnimalsField" GridPane.rowIndex="8" GridPane.columnIndex="1" />
                 <Label text="Daily plant spawns:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
                 <TextField fx:id="dailyPlantSpawnsField" GridPane.rowIndex="9" GridPane.columnIndex="1" />
+                <Label text="Mutation chance per gene on copulation:" GridPane.rowIndex="10" GridPane.columnIndex="0" />
+                <TextField fx:id="geneMutationChance" GridPane.rowIndex="10" GridPane.columnIndex="1" />
+                <Label text="Gene Number:" GridPane.rowIndex="11" GridPane.columnIndex="0" />
+                <TextField fx:id="geneNumber" GridPane.rowIndex="11" GridPane.columnIndex="1" />
             </GridPane>
 
             <Region prefHeight="50"/>

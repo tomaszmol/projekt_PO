@@ -15,5 +15,7 @@ public record SimulationParams(
         boolean oldnessSadnessFlag,
         boolean equatorFlag,
         boolean liveGivingCorpseFlag,
-        int simulationSteps
+        int simulationSteps,
+        double geneMutationChance,
+        int geneNumber
 ) {}

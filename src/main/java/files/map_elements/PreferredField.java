@@ -13,7 +13,7 @@ public class PreferredField implements WorldElement{
     public PreferredField(Vector2d position) {
         this.position = position;
 
-        var res = getClass().getResource("/preferredField.png");
+        var res = getClass().getResource("/preferredFiel.png");
         if (res != null) this.preferredFieldImg = new Image(res.toExternalForm());
     }
 
