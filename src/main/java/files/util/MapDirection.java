@@ -26,9 +26,9 @@ public enum MapDirection {
         return (getMapDirection((this.getValue()+7)%8));
     }
 
-//    public MapDirection reverse() {
-//        return (getMapDirection((this.getValue()+4)%8));
-//    }
+    public MapDirection reverse() {
+        return (getMapDirection((this.getValue()+4)%8));
+    }
 
     public Vector2d toUnitVector() {
         return switch (this) {
