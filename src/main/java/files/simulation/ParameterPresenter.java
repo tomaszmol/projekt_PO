@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -28,12 +27,6 @@ public class ParameterPresenter {
     public TextField geneMutationChance;
     @FXML
     private TextField simulationSteps;
-    @FXML
-    private GridPane mapGrid;  // Powiązanie z kontrolką w FXML
-    @FXML
-    private Label moveDescriptionLabel;  // Powiązanie z kontrolką w FXML
-    @FXML
-    private Label updateCountLabel;  // Powiązanie z kontrolką w FXML
     @FXML
     private TextField mapHeightField;
     @FXML
@@ -73,12 +66,12 @@ public class ParameterPresenter {
 
                 // select simulation map
                 WorldMap map = selectSimulationMap();
-                newPresenter.setSimulationData(params, map, tracker);
 
                 // start new simulation thread
                 Thread simulationThread = new Thread(() -> {
                     try {
                         Simulation newSimulation = new Simulation(params, map, tracker);
+                        newPresenter.setSimulationData(params, map, tracker, newSimulation);
                         newSimulation.run();
                     } catch (Exception e) {
                         System.err.println("Simulation thread error! + " + e.getMessage());

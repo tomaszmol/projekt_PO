@@ -6,9 +6,9 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="800.0" minWidth="1400.0"
@@ -60,6 +60,10 @@
 
     <bottom>
         <VBox>
+            <HBox alignment="CENTER" >
+                <Button fx:id="pauseButton" text="Pause" onAction="#onSimulationPaused" />
+            </HBox>
+
             <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
                 <Label fx:id="updateCountLabel" text="Update count will appear here" />
             </HBox>

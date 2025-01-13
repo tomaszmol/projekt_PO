@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,6 +25,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
     private int updateCount = 0;
     SimulationParams params;
+    boolean simulationPaused;
 
     @FXML
     public VBox animalInfoBoxRight;
@@ -37,6 +39,8 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     private Label moveDescriptionLabel;  // Powiązanie z kontrolką w FXML
     @FXML
     private Label updateCountLabel;  // Powiązanie z kontrolką w FXML
+    @FXML
+    public Button pauseButton;
 
     @FXML
     public LineChart<Number, Number> populationChart;
@@ -52,10 +56,11 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     List<String> graph3Series =  List.of(  );
     private WorldMap simulationMap;
     private StatisticsTracker statsTracker;
+    private Simulation simulation;
 
     @FXML
     public void initialize() {
-        if (animalInfoBoxRight != null) animalInfoBoxRight.setVisible(false);
+        //if (animalInfoBoxRight != null) animalInfoBoxRight.setVisible(false);
     }
 
     public void drawMap() {
@@ -174,9 +179,10 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         });
     }
 
-    public void setSimulationData(SimulationParams params, WorldMap map, StatisticsTracker tracker) {
+    public void setSimulationData(SimulationParams params, WorldMap map, StatisticsTracker tracker, Simulation sim) {
         this.params = params;
 
+        this.simulation = sim;
         this.simulationMap = map;
         simulationMap.addObserver(this);
 
@@ -185,6 +191,12 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         for (String s : graph2Series) statsTracker.addSeries(s);
         for (String s : graph3Series) statsTracker.addSeries(s);
         statsTracker.addObserver(this);
+    }
+
+    public void onSimulationPaused() {
+        simulationPaused = !simulationPaused;
+        pauseButton.setText(simulationPaused ? "Resume" : "Pause");
+        simulation.pause(simulationPaused);
     }
 }
 
