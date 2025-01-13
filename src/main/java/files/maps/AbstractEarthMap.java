@@ -22,6 +22,7 @@ public abstract class AbstractEarthMap implements WorldMap {
         this.plants = new HashMap<>();
         this.preferredFields = new HashMap<>();
         this.id = UUID.randomUUID();
+        this.params = params;
     }
 
     public void addObserver(MapChangeListener observer) {
@@ -124,13 +125,30 @@ public abstract class AbstractEarthMap implements WorldMap {
     }
 
     public boolean canMoveTo(Vector2d position) {
-        return true;
+        return position.follows(new Vector2d(0, 0)) && position.precedes(mapDimensions);
     }
 
+
+    @Override
     public PositionAndOrientation positionAndOrientationAfterMovement(Vector2d origin, MapDirection currentOrientation, MoveDirection direction){
         Vector2d shift = currentOrientation.toUnitVector();
         if (direction == MoveDirection.BACKWARD) shift = shift.multiplyByScalar(-1);
-        return new PositionAndOrientation(origin.add(shift),currentOrientation);
+        PositionAndOrientation afterMovement = new PositionAndOrientation(origin.add(shift),currentOrientation);
+
+        Vector2d afterPos = afterMovement.pos();
+
+        int mapWidth = params.mapWidth();
+        int mapHeight = params.mapHeight();
+
+        // overflow to other side of map
+        int x = afterPos.getX();
+        if (x<0) afterPos.setX(mapWidth+x);
+        if (x>mapWidth) afterPos.setX(x-mapWidth-1);
+
+        // reorient on poles
+        int y = afterPos.getY();
+        if (y<0 || y>mapHeight-2) return new PositionAndOrientation(afterPos,currentOrientation.reverse());
+        else return new PositionAndOrientation(afterPos,currentOrientation);
     }
 
     public String toString() {
