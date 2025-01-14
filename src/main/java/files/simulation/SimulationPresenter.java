@@ -110,6 +110,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     }
     void drawElements (Vector2d lowerLeft, Vector2d upperRight, int cellSize) {
         List<WorldElement> elements = simulationMap.getElements();
+        System.out.println(elements);
 
         for (WorldElement e : elements) {
             int x = e.getPosition().getX() - lowerLeft.getX();
@@ -117,7 +118,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
             if (e.getClass() == Animal.class) {
                 List<Animal> animals = simulationMap.getAnimals(e.getPosition());
-                if (animals.size() > 0)
+                if (!animals.isEmpty())
                     mapGrid.add(createGUIImage(numberImg[Math.min(animals.size()-1,8)], .5, HPos.RIGHT, cellSize),x,y);
             }
             if (e.hasImage()) {
