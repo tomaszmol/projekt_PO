@@ -28,83 +28,85 @@ public class EquatorMap extends AnimalManager {
         int mapHeight = upperRight.getY() - lowerLeft.getY() + 1;
         int fieldsNumber = mapWidth * mapHeight;
 
-        int expectedNumberOfPreferredFields = (int) (fieldsNumber * PREFERRED_ZONE_RATIO);
+        int expectedNumberOfPreferredFields = (int) Math.ceil(fieldsNumber * PREFERRED_ZONE_RATIO);
 
         // Obliczanie preferowanych rzędów
         if (mapHeight % 2 == 0) {
             // MapHeight parzysta
-            int fullPairOfRows = expectedNumberOfPreferredFields / (mapWidth * 2);
-            int fieldsLeft = expectedNumberOfPreferredFields - (fullPairOfRows * mapWidth * 2);
-
-            int lowerEquator = (mapHeight / 2) - fullPairOfRows;
-            int upperEquator = (mapHeight / 2) + fullPairOfRows - 1;
-
-            // Dodajemy preferowane pola w pełnych parach rzędów
-            for (int y = lowerEquator; y <= upperEquator; y++) {
-                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-                    preferredFields.put(new Vector2d(x, y), new PreferredField(new Vector2d(x, y)));
-                }
-            }
-
-            // Rozdzielanie pozostałych pól losowo na sąsiednich rzędach
-            Random random = new Random();
-            List<Vector2d> remainingPositions = new ArrayList<>();
-            for (int y = lowerEquator - 1; y >= lowerLeft.getY(); y--) {
-                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-                    remainingPositions.add(new Vector2d(x, y));
-                }
-            }
-            for (int y = upperEquator + 1; y <= upperRight.getY(); y++) {
-                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-                    remainingPositions.add(new Vector2d(x, y));
-                }
-            }
-            Collections.shuffle(remainingPositions);
-            for (int i = 0; i < fieldsLeft; i++) {
-                Vector2d position = remainingPositions.get(i);
-                preferredFields.put(position, new PreferredField(position));
-            }
+            int gorny = (mapHeight / 2);
+            int dolny = (mapHeight / 2) - 1;
+            generateInRows(lowerLeft, upperRight, mapWidth, mapHeight, gorny, dolny, expectedNumberOfPreferredFields);
 
         } else {
-            // MapHeight nieparzysta
-            int equatorRow = mapHeight / 2; // Centralny rząd
-            int fullPairOfRows = (expectedNumberOfPreferredFields - mapWidth) / (mapWidth * 2);
-            int fieldsLeft = expectedNumberOfPreferredFields - (mapWidth + fullPairOfRows * mapWidth * 2);
+            // MapHeight nieparzysta---
+            int rownik = mapHeight / 2; // Centralny rząd---------------------------------
+            int gorny = rownik + 1;
+            int dolny = rownik - 1;
+            int fieldsLeft = expectedNumberOfPreferredFields;
 
-            int lowerEquator = equatorRow - fullPairOfRows;
-            int upperEquator = equatorRow + fullPairOfRows;
+            if (fieldsLeft >= mapWidth) {
+                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                    preferredFields.put(new Vector2d(x, rownik), new PreferredField(new Vector2d(x, rownik)));
+                    fieldsLeft--;
+                }
+            }
+            else {
+                List<Vector2d> remainingPositions = new ArrayList<>();
+                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                    remainingPositions.add(new Vector2d(x, rownik));
+                }
+                Collections.shuffle(remainingPositions);
+                for (int i = 0; fieldsLeft > 0 & i<mapWidth; i++) {
+                    Vector2d position = remainingPositions.get(i);
+                    preferredFields.put(position, new PreferredField(position));
+                    fieldsLeft--;
+                }
+            }
 
-            // Dodajemy preferowane pola w centralnym rzędzie
+            generateInRows(lowerLeft, upperRight, mapWidth, mapHeight, gorny, dolny, fieldsLeft);
+
+        }
+    }
+
+    private void generateInRows(Vector2d lowerLeft, Vector2d upperRight, int mapWidth, int mapHeight, int gorny, int dolny, int fieldsLeft) {
+        while (gorny < mapHeight & dolny >= 0 & fieldsLeft >= 2*mapWidth) {
             for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-                preferredFields.put(new Vector2d(x, equatorRow), new PreferredField(new Vector2d(x, equatorRow)));
+                preferredFields.put(new Vector2d(x, gorny), new PreferredField(new Vector2d(x, gorny)));
+                fieldsLeft--;
             }
+            for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+                preferredFields.put(new Vector2d(x, dolny), new PreferredField(new Vector2d(x, dolny)));
+                fieldsLeft--;
+            }
+            gorny++;
+            dolny--;
+        }
 
-            // Dodajemy preferowane pola w pozostałych pełnych parach rzędów
-            for (int y = lowerEquator; y <= upperEquator; y++) {
-                if (y == equatorRow) continue; // Pomijamy już dodany centralny rząd
-                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-                    preferredFields.put(new Vector2d(x, y), new PreferredField(new Vector2d(x, y)));
-                }
+        Random random = new Random();
+        List<Vector2d> remainingPositions1 = new ArrayList<>();
+        List<Vector2d> remainingPositions2 = new ArrayList<>();
+        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
+            if (random.nextInt(2) == 0){
+                remainingPositions1.add(new Vector2d(x, gorny));
+                remainingPositions2.add(new Vector2d(x, dolny));
             }
+            else {
+                remainingPositions1.add(new Vector2d(x, dolny));
+                remainingPositions2.add(new Vector2d(x, gorny));
+            }
+        }
+        Collections.shuffle(remainingPositions1);
+        for (int i = 0; fieldsLeft>0 & i<mapWidth; i++) {
+            Vector2d position = remainingPositions1.get(i);
+            preferredFields.put(position, new PreferredField(position));
+            fieldsLeft--;
 
-            // Rozdzielanie pozostałych pól losowo na sąsiednich rzędach
-            Random random = new Random();
-            List<Vector2d> remainingPositions = new ArrayList<>();
-            for (int y = lowerEquator - 1; y >= lowerLeft.getY(); y--) {
-                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-                    remainingPositions.add(new Vector2d(x, y));
-                }
-            }
-            for (int y = upperEquator + 1; y <= upperRight.getY(); y++) {
-                for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-                    remainingPositions.add(new Vector2d(x, y));
-                }
-            }
-            Collections.shuffle(remainingPositions);
-            for (int i = 0; i < fieldsLeft; i++) {
-                Vector2d position = remainingPositions.get(i);
-                preferredFields.put(position, new PreferredField(position));
-            }
+        }
+        Collections.shuffle(remainingPositions2);
+        for (int i = 0; fieldsLeft > 0 & i<mapWidth; i++) {
+            Vector2d position = remainingPositions2.get(i);
+            preferredFields.put(position, new PreferredField(position));
+            fieldsLeft--;
         }
     }
 

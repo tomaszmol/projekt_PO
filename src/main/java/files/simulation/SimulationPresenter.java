@@ -110,7 +110,6 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     }
     void drawElements (Vector2d lowerLeft, Vector2d upperRight, int cellSize) {
         List<WorldElement> elements = simulationMap.getElements();
-        System.out.println(elements);
 
         for (WorldElement e : elements) {
             int x = e.getPosition().getX() - lowerLeft.getX();
