@@ -37,7 +37,7 @@ public class Simulation implements Runnable {
             Vector2d randPos;
             do { randPos = Vector2d.randomInBounds(mapBoundaries);
             } while (map.isOccupied(randPos));
-            Animal animal = new Animal(randPos, params.geneNumber());
+            Animal animal = new Animal(randPos, params.geneNumber() );
             map.placeAnimal(animal);
             putAnimalIntoSimulation(animal);
         }
@@ -61,10 +61,10 @@ public class Simulation implements Runnable {
         for (int day=0; day<params.simulationSteps(); day++) {
 
 
-            map.removeDeadAnimals();
+            removeDeadAnimals();
 
             //poruszanie się zwierzakow
-            int usedEnergyDuringDay = moveAllAnimals(params.waitingTimeBetweenMoves());
+            int usedEnergyDuringDay = moveAllAnimals();
             energySum += usedEnergyDuringDay;
 
             map.resolveConflicts();
@@ -78,12 +78,17 @@ public class Simulation implements Runnable {
 
     }
 
-    public int moveAllAnimals(int waitingTime) {
+    private void updateStats(){
+
+    }
+
+    public int moveAllAnimals() {
+        int waitingTime = params.waitingTimeBetweenMoves();
         List<Animal> listedAnimals = map.getAllAnimalsListed();
         int energySum = 0;
         for (Animal a : listedAnimals) {
             map.moveAnimal(a);
-            energySum += params.dailyAnimalEnergyCost();
+            energySum += params.energyCostPerMove();
             wait(waitingTime);
         }
         return energySum;
@@ -99,5 +104,9 @@ public class Simulation implements Runnable {
 
     public SimulationStats getSimulationStats() {
         return simulationStats;
+    }
+
+    private void removeDeadAnimals() {
+        map.removeDeadAnimals();
     }
 }

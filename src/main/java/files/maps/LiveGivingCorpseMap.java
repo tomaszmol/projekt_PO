@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public abstract class LiveGivingCorpseMap extends AnimalManager {
+public class LiveGivingCorpseMap extends AnimalManager {
 
     public LiveGivingCorpseMap(SimulationParams params) {
         super(params);

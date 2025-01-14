@@ -1,7 +1,6 @@
 package files.maps;
 
 import files.map_elements.Animal;
-import files.map_elements.WorldElement;
 import files.simulation.SimulationParams;
 import files.util.MapDirection;
 import files.util.Vector2d;
@@ -31,7 +30,7 @@ public class AnimalManager extends AbstractEarthMap{
                 MapDirection oldOrientation = animal.getOrientation();
 
                 // Jeśli zwierzak się poruszył
-                if (animal.move(this)) {
+                if (animal.move(this, params.energyCostPerMove())) {
                     // Usuń zwierzaka z poprzedniej pozycji (ze starej listy)
                     animalsOnPosition.remove(animal);
 
@@ -68,15 +67,47 @@ public class AnimalManager extends AbstractEarthMap{
             // Jeśli lista zwierzaków jest null (czyli brak zwierzaków na tej pozycji)
             System.out.println("Błąd: brak zwierzaków na tej pozycji.");
         }
+
     }
 
     public void resolveConflicts(){
         // SMTH
     }
 
-    public void removeDeadAnimals(){
-        // SMTH
+    public List<Animal> getAnimals (Vector2d position) {
+        if (animals.containsKey(position)) {
+            return animals.get(position);
+        }
+        return null;
     }
+
+
+    public void removeDeadAnimals() {
+        final int energyCostPerMove = params.energyCostPerMove();
+        List<Vector2d> emptyPositions = new ArrayList<>();
+
+        // Iterujemy po kluczach (pozycjach)
+        for (Vector2d position : new ArrayList<>(animals.keySet())) {
+            List<Animal> animalList = animals.get(position);
+
+            if (animalList != null) {
+                // Usuwamy martwe zwierzęta
+                animalList.removeIf(animal -> animal.getEnergy() < energyCostPerMove);
+
+                // Jeśli lista jest pusta, dodajemy pozycję do listy pustych pozycji
+                if (animalList.isEmpty()) {
+                    emptyPositions.add(position);
+                }
+            }
+        }
+
+        // Usuwamy pozycje z mapy, gdzie listy były puste
+        for (Vector2d position : emptyPositions) {
+            animals.remove(position);
+        }
+    }
+
+
 
     public void animalFight () {
         // walka

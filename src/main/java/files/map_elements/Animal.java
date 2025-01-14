@@ -11,19 +11,20 @@ public class Animal implements WorldElement {
     private int livedDays;
     private int numberOfChildren;
     private int numberOfDescendants;
+
     private int energy;
+
     Genetics genes;
+
     Animal mother = null;
     Animal father = null;
-
     Image animalImg = null;
-
     public Animal(Vector2d position, int geneNumber) {
         this.position = position;
         livedDays = 0;
         numberOfChildren = 0;
         numberOfDescendants = 0;
-        energy = 0;
+        energy = 12;
 
         genes = new Genetics(geneNumber);
 
@@ -60,18 +61,18 @@ public class Animal implements WorldElement {
     public Genetics getGenetics() {
         return genes;
     }
+
     public int getEnergy() {
         return energy;
     }
+
     public void useEnergy(int amount) {
         energy = Math.max(0,energy-amount);
     }
-
     @Override
     public Color getElementColour() {
         return Color.BROWN;
     }
-
     @Override
     public double getElementSizeMultiplier() {
         return 0.7;
@@ -86,10 +87,11 @@ public class Animal implements WorldElement {
         return this.position.equals(position);
     }
 
-    // returns true when position changed (rotation change still returns false)
-    public boolean move(MoveValidator moveValidator) {
-        var movement = genes.getNextMoveInSequence();
 
+    // returns true when position changed (rotation change still returns false)
+    public boolean move(MoveValidator moveValidator, int energyCostPerMove) {
+        var movement = genes.getNextMoveInSequence();
+        energy -= energyCostPerMove;
         // rotation
         if (movement == MoveDirection.RIGHT) {
             orientation = orientation.next();
@@ -121,15 +123,16 @@ public class Animal implements WorldElement {
         if (mother != null) mother.addDescendant();
         if (father != null) father.addDescendant();
     }
+
     public void setParents(Animal mother, Animal father) {
         this.mother = mother;
         this.father = father;
     }
-
     public String getAnimalInfo() {
         return String.format(
                 "Energy: %d\nAge: %d\nPosition: %s\nGenetic code: %s\nNumber of Children: %d\nNumber of Descendands: %d",
                 energy, livedDays, position, genes.toString(), numberOfChildren, numberOfDescendants
         );
     }
+
 }

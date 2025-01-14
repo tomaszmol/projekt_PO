@@ -8,7 +8,7 @@ public record SimulationParams(
         int plantEnergyProfit,
         int minCopulationEnergy,
         int initialAnimalEnergy,
-        int dailyAnimalEnergyCost,
+        int energyCostPerMove,
         int initialAnimalsOnMap,
         int dailyPlantSpawnNum,
         boolean fullPredestinationFlag,

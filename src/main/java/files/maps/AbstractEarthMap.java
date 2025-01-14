@@ -74,12 +74,6 @@ public abstract class AbstractEarthMap implements WorldMap {
         return animals.get(position) != null;
     }
 
-    public List<Animal> getAnimals (Vector2d position) {
-        if (animals.containsKey(position)) {
-            return animals.get(position);
-        }
-        return null;
-    }
 
     public WorldElement objectAt(Vector2d position) {
         WorldElement element = null;

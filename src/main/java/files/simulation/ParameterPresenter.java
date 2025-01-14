@@ -38,7 +38,7 @@ public class ParameterPresenter {
     @FXML
     private TextField initialAnimalEnergyField;
     @FXML
-    private TextField dailyAnimalEnergyField;
+    private TextField energyCostPerMoveField;
     @FXML
     private TextField initialAnimalsField;
     @FXML
@@ -104,7 +104,7 @@ public class ParameterPresenter {
         plantEnergyField.setText("20");
         copulationEnergyField.setText("15");
         initialAnimalEnergyField.setText("100");
-        dailyAnimalEnergyField.setText("1");
+        energyCostPerMoveField.setText("1");
         initialAnimalsField.setText("3");
         dailyPlantSpawnsField.setText("5");
         simulationSteps.setText("100");
@@ -125,7 +125,7 @@ public class ParameterPresenter {
             int plantEnergyProfit = Integer.parseInt(plantEnergyField.getText().trim());
             int minCopulationEnergy = Integer.parseInt(copulationEnergyField.getText().trim());
             int initialAnimalEnergy = Integer.parseInt(initialAnimalEnergyField.getText().trim());
-            int dailyAnimalEnergy = Integer.parseInt(dailyAnimalEnergyField.getText().trim());
+            int energyCostPerMove = Integer.parseInt(energyCostPerMoveField.getText().trim());
             int initialAnimalsOnMap = Integer.parseInt(initialAnimalsField.getText().trim());
             int dailyPlantSpawns = Integer.parseInt(dailyPlantSpawnsField.getText().trim());
             int simSteps = Integer.parseInt(simulationSteps.getText().trim());
@@ -143,7 +143,7 @@ public class ParameterPresenter {
             return new SimulationParams(
                     mapHeight, mapWidth,
                     plantEnergyProfit, minCopulationEnergy, initialAnimalEnergy,
-                    dailyAnimalEnergy, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
+                    energyCostPerMove, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
                     oldnessSadnessFlagValue, equatorFlagValue, liveGivingCorpseFlagValue,simSteps,
                     mutationChance, geneNum, waitingTime
             );

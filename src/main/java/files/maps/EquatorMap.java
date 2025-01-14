@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public abstract class EquatorMap extends AnimalManager {
+public class EquatorMap extends AnimalManager {
 
     public EquatorMap(SimulationParams params) {
         super(params);
