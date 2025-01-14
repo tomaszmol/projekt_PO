@@ -39,4 +39,9 @@ public class Plant implements WorldElement {
         return 0.8;
     }
 
+    @Override
+    public boolean hasImage() {
+        return plantImg != null;
+    }
+
 }

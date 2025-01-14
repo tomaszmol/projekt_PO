@@ -2,8 +2,6 @@ package files.simulation;
 
 import files.map_elements.Animal;
 import files.map_elements.StatisticsTracker;
-import files.maps.AbstractEarthMap;
-import files.maps.AnimalManager;
 import files.maps.WorldMap;
 import files.util.*;
 
@@ -19,10 +17,11 @@ public class Simulation implements Runnable {
     private final WorldMap map;
     final SimulationParams params;
     StatisticsTracker stats;
+    private boolean paused;
 
     public Simulation(SimulationParams params, WorldMap map, StatisticsTracker stats) throws Exception{
         this.map = map;
-        animals = new ArrayList<Animal>();
+        animals = new ArrayList<>();
         this.params = params;
         this.stats = stats;
 
@@ -47,7 +46,8 @@ public class Simulation implements Runnable {
 
     private void wait(int ms){
         try {
-            Thread.sleep(1000);
+            Thread.sleep(ms);
+            while (paused) Thread.sleep(200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -63,19 +63,23 @@ public class Simulation implements Runnable {
 
             for (Animal a : animals) {
                 map.move(a);
-                wait(25);
                 energySum += a.getEnergy();
+                wait(100);
             }
 
             map.resolveConflicts();
             map.removeDeadAnimals();
 
-            wait(150);
-
             stats.recordValue("animals", animals.size());
             stats.recordValue("plants", map.getPlants().size());
             stats.recordValue("energy", energySum/animals.size());
+
+            wait(300);
         }
 
+    }
+
+    public void pause(boolean state) {
+        paused = state;
     }
 }
