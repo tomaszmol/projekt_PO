@@ -56,13 +56,14 @@ public class Simulation implements Runnable {
         int energySum = 0;
         for (int day=0; day<params.simulationSteps(); day++) {
 
+
+            map.removeDeadAnimals();
+
             //poruszanie się zwierzakow
-            int waitingTimeBetweenMoves = 100;
-            int usedEnergyDuringDay = moveAllAnimals(waitingTimeBetweenMoves);
+            int usedEnergyDuringDay = moveAllAnimals(params.waitingTimeBetweenMoves());
             energySum += usedEnergyDuringDay;
 
             map.resolveConflicts();
-            map.removeDeadAnimals();
 
             stats.recordValue("animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
             stats.recordValue("plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie

@@ -44,6 +44,8 @@ public class ParameterPresenter {
     @FXML
     private TextField dailyPlantSpawnsField;
     @FXML
+    private TextField waitingTimeBetweenMoves;
+    @FXML
     private CheckBox oldnessSadnessFlag;
     @FXML
     private CheckBox liveGivingCorpseFlag;
@@ -112,6 +114,7 @@ public class ParameterPresenter {
         liveGivingCorpseFlag.setSelected(false);
         fullPredestinationFlag.setSelected(true);
         equatorFlag.setSelected(true);
+        waitingTimeBetweenMoves.setText("100");
     }
 
     SimulationParams getSimulationParams(){
@@ -128,6 +131,7 @@ public class ParameterPresenter {
             int simSteps = Integer.parseInt(simulationSteps.getText().trim());
             int geneNum = Integer.parseInt(geneNumber.getText().trim());
             double mutationChance = Double.parseDouble(geneMutationChance.getText().trim());
+            int waitingTime = Integer.parseInt(waitingTimeBetweenMoves.getText().trim());
 
             // Pobieranie wartości boolean z checkboxów
             boolean fullPredestinationFlagValue = fullPredestinationFlag.isSelected();
@@ -141,7 +145,7 @@ public class ParameterPresenter {
                     plantEnergyProfit, minCopulationEnergy, initialAnimalEnergy,
                     dailyAnimalEnergy, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
                     oldnessSadnessFlagValue, equatorFlagValue, liveGivingCorpseFlagValue,simSteps,
-                    mutationChance, geneNum
+                    mutationChance, geneNum, waitingTime
             );
         } catch (NumberFormatException e) {
             System.err.println("Invalid parameters! Please provide valid numeric values.");

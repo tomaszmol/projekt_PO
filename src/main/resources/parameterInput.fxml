@@ -54,6 +54,8 @@
                 <TextField fx:id="geneMutationChance" GridPane.rowIndex="10" GridPane.columnIndex="1" />
                 <Label text="Gene Number:" GridPane.rowIndex="11" GridPane.columnIndex="0" />
                 <TextField fx:id="geneNumber" GridPane.rowIndex="11" GridPane.columnIndex="1" />
+                <Label text="Waiting time between animals moves:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
+                <TextField fx:id="waitingTimeBetweenMoves" GridPane.rowIndex="12" GridPane.columnIndex="1" />
             </GridPane>
 
             <Region prefHeight="50"/>
