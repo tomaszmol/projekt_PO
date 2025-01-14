@@ -18,5 +18,6 @@ public record SimulationParams(
         int simulationSteps,
         double geneMutationChance,
         int geneNumber,
-        int waitingTimeBetweenMoves
+        int waitingTimeBetweenMoves,
+        int initialPlantNumber
 ) {}

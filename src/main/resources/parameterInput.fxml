@@ -56,6 +56,8 @@
                 <TextField fx:id="geneNumber" GridPane.rowIndex="11" GridPane.columnIndex="1" />
                 <Label text="Waiting time between animals moves:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
                 <TextField fx:id="waitingTimeBetweenMoves" GridPane.rowIndex="12" GridPane.columnIndex="1" />
+                <Label text="initialPlantNumber:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
+                <TextField fx:id="initialPlantNumberField" GridPane.rowIndex="13" GridPane.columnIndex="1" />
             </GridPane>
 
             <Region prefHeight="50"/>

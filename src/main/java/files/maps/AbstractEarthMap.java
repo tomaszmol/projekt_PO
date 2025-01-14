@@ -41,7 +41,7 @@ public abstract class AbstractEarthMap implements WorldMap {
 
 
 
-    public void growPlantsOnWholeMap() {
+    public void growPlantsOnWholeMap(int plantsNumber) {
         Random random = new Random();
 
         // Iterujemy po każdej pozycji na mapie
