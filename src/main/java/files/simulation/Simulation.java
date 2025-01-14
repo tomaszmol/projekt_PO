@@ -16,16 +16,20 @@ public class Simulation implements Runnable {
     private List<Animal> animals;
     private final WorldMap map;
     final SimulationParams params;
-    StatisticsTracker stats;
+    StatisticsTracker statisticsTracker;
+    private SimulationStats simulationStats;
     private boolean paused;
 
-    public Simulation(SimulationParams params, WorldMap map, StatisticsTracker stats) throws Exception{
+    public Simulation(SimulationParams params, WorldMap map, StatisticsTracker statisticsTracker) throws Exception{
         this.map = map;
-        animals = new ArrayList<>();
+        this.animals = new ArrayList<>();
         this.params = params;
-        this.stats = stats;
+        this.statisticsTracker = statisticsTracker;
+        spawnInitialAnimals();
 
-        // spawn initial animals:
+    }
+
+    private void spawnInitialAnimals() throws Exception{
         int animalNum = params.initialAnimalsOnMap();
         Boundary mapBoundaries = map.getCurrentBounds();
         System.out.println(mapBoundaries);
@@ -65,9 +69,9 @@ public class Simulation implements Runnable {
 
             map.resolveConflicts();
 
-            stats.recordValue("animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
-            stats.recordValue("plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
-            stats.recordValue("energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
+            statisticsTracker.recordValue("animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
+            statisticsTracker.recordValue("plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
+            statisticsTracker.recordValue("energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
 
             wait(300);
         }
@@ -91,5 +95,9 @@ public class Simulation implements Runnable {
 
     public void pause(boolean state) {
         paused = state;
+    }
+
+    public SimulationStats getSimulationStats() {
+        return simulationStats;
     }
 }

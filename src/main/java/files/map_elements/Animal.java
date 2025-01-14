@@ -13,7 +13,6 @@ public class Animal implements WorldElement {
     private int numberOfDescendants;
     private int energy;
     Genetics genes;
-
     Animal mother = null;
     Animal father = null;
 
