@@ -8,7 +8,7 @@ public class Animal implements WorldElement {
 
     private Vector2d position;
     private MapDirection orientation = MapDirection.NORTH;
-    private int age;
+    private int livedDays;
     private int numberOfChildren;
     private int numberOfDescendants;
     private int energy;
@@ -21,7 +21,7 @@ public class Animal implements WorldElement {
 
     public Animal(Vector2d position, int geneNumber) {
         this.position = position;
-        age = 0;
+        livedDays = 0;
         numberOfChildren = 0;
         numberOfDescendants = 0;
         energy = 0;
@@ -130,7 +130,7 @@ public class Animal implements WorldElement {
     public String getAnimalInfo() {
         return String.format(
                 "Energy: %d\nAge: %d\nPosition: %s\nGenetic code: %s\nNumber of Children: %d\nNumber of Descendands: %d",
-                energy, age, position, genes.toString(), numberOfChildren, numberOfDescendants
+                energy, livedDays, position, genes.toString(), numberOfChildren, numberOfDescendants
         );
     }
 }

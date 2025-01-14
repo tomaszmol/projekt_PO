@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Simulation implements Runnable {
 
-    private final List<Animal> animals;
+    private List<Animal> animals;
     private final WorldMap map;
     final SimulationParams params;
     StatisticsTracker stats;
@@ -35,14 +35,10 @@ public class Simulation implements Runnable {
             } while (map.isOccupied(randPos));
             Animal animal = new Animal(randPos, params.geneNumber());
             map.placeAnimal(animal);
-            addAnimalToSimulation(animal);
+            putAnimalIntoSimulation(animal);
         }
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
-    }
-    public void addAnimalToSimulation(Animal animal) { animals.add(animal); }
 
     private void wait(int ms){
         try {
@@ -57,26 +53,39 @@ public class Simulation implements Runnable {
 
         System.out.println("All objects on map: " + map.getElements());
         wait(1000);
-
+        int energySum = 0;
         for (int day=0; day<params.simulationSteps(); day++) {
-            int energySum = 0;
 
-            for (Animal a : animals) {
-                map.move(a);
-                energySum += a.getEnergy();
-                wait(100);
-            }
+            //poruszanie się zwierzakow
+            int waitingTimeBetweenMoves = 100;
+            int usedEnergyDuringDay = moveAllAnimals(waitingTimeBetweenMoves);
+            energySum += usedEnergyDuringDay;
 
             map.resolveConflicts();
             map.removeDeadAnimals();
 
-            stats.recordValue("animals", animals.size());
-            stats.recordValue("plants", map.getPlants().size());
-            stats.recordValue("energy", energySum/animals.size());
+            stats.recordValue("animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
+            stats.recordValue("plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
+            stats.recordValue("energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
 
             wait(300);
         }
 
+    }
+
+    public int moveAllAnimals(int waitingTime) {
+        List<Animal> listedAnimals = map.getAllAnimalsListed();
+        int energySum = 0;
+        for (Animal a : listedAnimals) {
+            map.moveAnimal(a);
+            energySum += params.dailyAnimalEnergyCost();
+            wait(waitingTime);
+        }
+        return energySum;
+    }
+
+    public void putAnimalIntoSimulation(Animal animal) {
+        animals.add(animal);
     }
 
     public void pause(boolean state) {

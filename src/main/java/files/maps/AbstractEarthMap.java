@@ -39,18 +39,7 @@ public abstract class AbstractEarthMap implements WorldMap {
         }
     }
 
-    public void placeAnimal(Animal animal) {
 
-        // Zaktualizuj listę zwierzaków na nowej pozycji
-        List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
-        if (newAnimalsOnPosition == null) {
-            newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
-        }
-
-        newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
-        animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
-        notifyObservers("Animal placed at " + animal.getPosition());
-    }
 
     public void growPlantsOnWholeMap() {
         Random random = new Random();
@@ -91,6 +80,7 @@ public abstract class AbstractEarthMap implements WorldMap {
         }
         return null;
     }
+
     public WorldElement objectAt(Vector2d position) {
         WorldElement element = null;
 

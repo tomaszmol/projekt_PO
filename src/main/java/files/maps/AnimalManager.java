@@ -1,6 +1,7 @@
 package files.maps;
 
 import files.map_elements.Animal;
+import files.map_elements.WorldElement;
 import files.simulation.SimulationParams;
 import files.util.MapDirection;
 import files.util.Vector2d;
@@ -14,7 +15,10 @@ public class AnimalManager extends AbstractEarthMap{
         super(params);
     }
 
-    public void move(Animal animal) {
+
+    public void moveAnimal(Animal animal) {
+
+
         // Pobierz listę zwierzaków na poprzedniej pozycji
         List<Animal> animalsOnPosition = animals.get(animal.getPosition());
 
@@ -107,5 +111,27 @@ public class AnimalManager extends AbstractEarthMap{
         // update animal statistics
         mother.addChild();
         father.addChild();
+    }
+
+    public void placeAnimal(Animal animal) {
+
+        // Zaktualizuj listę zwierzaków na nowej pozycji
+        List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
+        if (newAnimalsOnPosition == null) {
+            newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
+        }
+
+        newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
+        animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
+        notifyObservers("Animal placed at " + animal.getPosition());
+    }
+
+    public List<Animal> getAllAnimalsListed() {
+        List<Animal> elements = new ArrayList<>();
+
+        for (List<Animal> animalList : animals.values()) {
+            elements.addAll(animalList);  // Dodaj wszystkie zwierzaki do głównej listy
+        }
+        return elements;
     }
 }
