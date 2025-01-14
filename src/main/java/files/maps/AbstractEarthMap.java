@@ -49,6 +49,9 @@ public abstract class AbstractEarthMap implements WorldMap {
         Vector2d lowerLeft = bounds.lowerLeft();
         Vector2d upperRight = bounds.upperRight();
 
+        List<Vector2d> emptyAndNotPreferred = new ArrayList<>();
+        List<Vector2d> emptyAndPreferred = new ArrayList<>();
+
 
         for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
             for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
@@ -56,17 +59,33 @@ public abstract class AbstractEarthMap implements WorldMap {
 
                 // Sprawdzenie, czy pole jest preferowane
                 boolean isPreferred = preferredFields.containsKey(position);
+                boolean isPlanted = plants.containsKey(position);
 
-                // Losowanie zgodnie z zasadą Pareto
-                double chance = isPreferred ? 0.8 : 0.2;
-                if (random.nextDouble() < chance) {
-                    // Dodaj roślinę, jeśli jej tam jeszcze nie ma
-                    if (!plants.containsKey(position)) {
-                        Plant newPlant = new Plant(position);
-                        plants.put(position, newPlant);
+                if (!isPlanted) {
+                    if (isPreferred) {
+                        emptyAndPreferred.add(position);
+                    } else {
+                        emptyAndNotPreferred.add(position);
                     }
                 }
             }
+        }
+
+        int plantsLeft = plantsNumber;
+        Collections.shuffle(emptyAndNotPreferred);
+        Collections.shuffle(emptyAndPreferred);
+        while(plantsLeft>0){
+            if (random.nextDouble() < 0.2){
+                Plant plant = new Plant(emptyAndPreferred.getLast());
+                plants.put(emptyAndPreferred.getLast(), plant);
+                emptyAndPreferred.remove(emptyAndPreferred.getLast());
+            }
+            else {
+                Plant plant = new Plant(emptyAndNotPreferred.getLast());
+                plants.put(emptyAndNotPreferred.getLast(), plant);
+                emptyAndNotPreferred.remove(emptyAndNotPreferred.getLast());
+            }
+            plantsLeft--;
         }
     }
 
