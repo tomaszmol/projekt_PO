@@ -41,7 +41,7 @@ public abstract class AbstractEarthMap implements WorldMap {
 
 
 
-    public void growPlantsOnWholeMap(int plantsNumber) {
+    public void growPlants(int plantsNumber) {
         if (plantsNumber <= 0) {
             System.out.println("Plants number must be greater than zero.");
             return;

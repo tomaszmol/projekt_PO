@@ -60,15 +60,14 @@ public class Simulation implements Runnable {
         int energySum = 0;
         for (int day=0; day<params.simulationSteps(); day++) {
             //usunięcie martwych zwierzaków
-            removeDeadAnimals();
+            simulationRemoveDeadAnimals();
 
             //poruszanie się zwierzakow
-            int usedEnergyDuringDay = moveAllAnimals();
+            int usedEnergyDuringDay = simulationMoveAllAnimals();
             energySum += usedEnergyDuringDay;
 
 
-
-            map.resolveConflicts();
+            simulationEatPlants();
 
             statisticsTracker.recordValue("animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
             statisticsTracker.recordValue("plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
@@ -77,17 +76,23 @@ public class Simulation implements Runnable {
             wait(300);
 
             //wzrost roslin
-            regrowPlants();
+            simulationRegrowPlants();
 
         }
 
     }
 
+    private void simulationEatPlants() {
+        map.eatPlants(params.plantEnergyProfit());
+    }
+
+
+
     private void updateStats(){
 
     }
 
-    public int moveAllAnimals() {
+    public int simulationMoveAllAnimals() {
         int waitingTime = params.waitingTimeBetweenMoves();
         List<Animal> listedAnimals = map.getAllAnimalsListed();
         int energySum = 0;
@@ -111,11 +116,11 @@ public class Simulation implements Runnable {
         return simulationStats;
     }
 
-    private void removeDeadAnimals() {
+    private void simulationRemoveDeadAnimals() {
         map.removeDeadAnimals();
     }
 
-    private void regrowPlants() {
-        map.growPlantsOnWholeMap(params.dailyPlantSpawnNum());
+    private void simulationRegrowPlants() {
+        map.growPlants(params.dailyPlantSpawnNum());
     }
 }

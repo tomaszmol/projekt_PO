@@ -13,7 +13,7 @@ import java.util.UUID;
 
 /**
  * The interface responsible for interacting with the map of the world.
- * Assumes that Vector2d and MoveDirection classes are defined.
+ * Assumes that  and MoveDirection classes are defined.
  *
  * @author apohllo, idzik
  */
@@ -78,9 +78,12 @@ public interface WorldMap extends MoveValidator {
 
     Map<Vector2d, Plant> getPlants();
 
-    void resolveConflicts();
 
     void removeDeadAnimals();
 
-    void growPlantsOnWholeMap(int i);
+    void growPlants(int i);
+
+    Animal resolveFoodConflict(Vector2d position);
+
+    void eatPlants(int energyProfit);
 }

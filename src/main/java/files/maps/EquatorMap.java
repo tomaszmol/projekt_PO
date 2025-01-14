@@ -15,7 +15,7 @@ public class EquatorMap extends AnimalManager {
     public EquatorMap(SimulationParams params) {
         super(params);
         generatePreferredFields();
-        super.growPlantsOnWholeMap(params.initialPlantNumber());
+        super.growPlants(params.initialPlantNumber());
     }
 
     private void generatePreferredFields() {

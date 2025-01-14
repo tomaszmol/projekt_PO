@@ -8,10 +8,9 @@ public class Animal implements WorldElement {
 
     private Vector2d position;
     private MapDirection orientation = MapDirection.NORTH;
-    private int livedDays;
+    private int survivedDays;
     private int numberOfChildren;
     private int numberOfDescendants;
-
     private int energy;
 
     Genetics genes;
@@ -21,7 +20,7 @@ public class Animal implements WorldElement {
     Image animalImg = null;
     public Animal(Vector2d position, int geneNumber) {
         this.position = position;
-        livedDays = 0;
+        survivedDays = 0;
         numberOfChildren = 0;
         numberOfDescendants = 0;
         energy = 12;
@@ -91,7 +90,7 @@ public class Animal implements WorldElement {
     // returns true when position changed (rotation change still returns false)
     public boolean move(MoveValidator moveValidator, int energyCostPerMove) {
         var movement = genes.getNextMoveInSequence();
-        energy -= energyCostPerMove;
+        useEnergy(energyCostPerMove);
         // rotation
         if (movement == MoveDirection.RIGHT) {
             orientation = orientation.next();
@@ -119,7 +118,7 @@ public class Animal implements WorldElement {
         if (father != null) father.addDescendant();
     }
     public void addChild () {
-        numberOfChildren++; numberOfDescendants++; // czy dziecko to od razu potomek ??
+        numberOfChildren++; numberOfDescendants++; // czy dziecko to od razu potomek ?? imo tak
         if (mother != null) mother.addDescendant();
         if (father != null) father.addDescendant();
     }
@@ -131,8 +130,19 @@ public class Animal implements WorldElement {
     public String getAnimalInfo() {
         return String.format(
                 "Energy: %d\nAge: %d\nPosition: %s\nGenetic code: %s\nNumber of Children: %d\nNumber of Descendands: %d",
-                energy, livedDays, position, genes.toString(), numberOfChildren, numberOfDescendants
+                energy, survivedDays, position, genes.toString(), numberOfChildren, numberOfDescendants
         );
     }
 
+    public int getSurvivedDays() {
+        return survivedDays;
+    }
+
+    public int getNumberOfChildren() {
+        return numberOfChildren;
+    }
+
+    public void eatFood(int energyProfit) {
+        energy += energyProfit;
+    }
 }

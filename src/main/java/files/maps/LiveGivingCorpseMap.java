@@ -15,7 +15,7 @@ public class LiveGivingCorpseMap extends AnimalManager {
     public LiveGivingCorpseMap(SimulationParams params) {
         super(params);
         generatePreferredFields();
-        super.growPlantsOnWholeMap(params.initialPlantNumber());
+        super.growPlants(params.initialPlantNumber());
     }
 
     private void generatePreferredFields() {
