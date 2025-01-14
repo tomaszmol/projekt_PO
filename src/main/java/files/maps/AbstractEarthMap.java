@@ -42,24 +42,36 @@ public abstract class AbstractEarthMap implements WorldMap {
 
 
     public void growPlantsOnWholeMap(int plantsNumber) {
-        Random random = new Random();
+        if (plantsNumber <= 0) {
+            System.out.println("Plants number must be greater than zero.");
+            return;
+        }
 
-        // Iterujemy po każdej pozycji na mapie
+        if (preferredFields == null || plants == null) {
+            System.out.println("Preferred fields or plants map is null.");
+            return;
+        }
+
         Boundary bounds = getCurrentBounds();
-        Vector2d lowerLeft = bounds.lowerLeft();
-        Vector2d upperRight = bounds.upperRight();
+        if (bounds == null || bounds.lowerLeft() == null || bounds.upperRight() == null) {
+            System.out.println("Bounds or boundary positions are null.");
+            return;
+        }
 
+        Random random = new Random();
         List<Vector2d> emptyAndNotPreferred = new ArrayList<>();
         List<Vector2d> emptyAndPreferred = new ArrayList<>();
 
+        Vector2d lowerLeft = bounds.lowerLeft();
+        Vector2d upperRight = bounds.upperRight();
 
         for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
             for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
                 Vector2d position = new Vector2d(x, y);
 
                 // Sprawdzenie, czy pole jest preferowane
-                boolean isPreferred = preferredFields.containsKey(position);
-                boolean isPlanted = plants.containsKey(position);
+                boolean isPreferred = preferredFields != null && preferredFields.containsKey(position);
+                boolean isPlanted = plants != null && plants.containsKey(position);
 
                 if (!isPlanted) {
                     if (isPreferred) {
@@ -72,22 +84,37 @@ public abstract class AbstractEarthMap implements WorldMap {
         }
 
         int plantsLeft = plantsNumber;
-        Collections.shuffle(emptyAndNotPreferred);
-        Collections.shuffle(emptyAndPreferred);
-        while(plantsLeft>0){
-            if (random.nextDouble() < 0.2){
-                Plant plant = new Plant(emptyAndPreferred.getLast());
-                plants.put(emptyAndPreferred.getLast(), plant);
-                emptyAndPreferred.remove(emptyAndPreferred.getLast());
+        if (!emptyAndNotPreferred.isEmpty()) {
+            Collections.shuffle(emptyAndNotPreferred);
+        }
+        if (!emptyAndPreferred.isEmpty()) {
+            Collections.shuffle(emptyAndPreferred);
+        }
+
+        while (plantsLeft > 0) {
+            if (random.nextDouble() < 0.2) {
+                if (!emptyAndNotPreferred.isEmpty()) {
+                    Vector2d position = emptyAndNotPreferred.get(emptyAndNotPreferred.size() - 1);
+                    plants.put(position, new Plant(position));
+                    emptyAndNotPreferred.remove(position);
+                    plantsLeft--;
+                }
+            } else {
+                if (!emptyAndPreferred.isEmpty()) {
+                    Vector2d position = emptyAndPreferred.get(emptyAndPreferred.size() - 1);
+                    plants.put(position, new Plant(position));
+                    emptyAndPreferred.remove(position);
+                    plantsLeft--;
+                }
             }
-            else {
-                Plant plant = new Plant(emptyAndNotPreferred.getLast());
-                plants.put(emptyAndNotPreferred.getLast(), plant);
-                emptyAndNotPreferred.remove(emptyAndNotPreferred.getLast());
+
+            // Jeśli nie ma już pól do obsadzenia, przerywamy pętlę
+            if (emptyAndPreferred.isEmpty() && emptyAndNotPreferred.isEmpty()) {
+                break;
             }
-            plantsLeft--;
         }
     }
+
 
     public boolean isOccupied(Vector2d position) {
         return animals.get(position) != null;

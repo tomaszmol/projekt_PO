@@ -59,13 +59,14 @@ public class Simulation implements Runnable {
         wait(1000);
         int energySum = 0;
         for (int day=0; day<params.simulationSteps(); day++) {
-
-
+            //usunięcie martwych zwierzaków
             removeDeadAnimals();
 
             //poruszanie się zwierzakow
             int usedEnergyDuringDay = moveAllAnimals();
             energySum += usedEnergyDuringDay;
+
+
 
             map.resolveConflicts();
 
@@ -74,6 +75,10 @@ public class Simulation implements Runnable {
             statisticsTracker.recordValue("energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
 
             wait(300);
+
+            //wzrost roslin
+            regrowPlants();
+
         }
 
     }
@@ -108,5 +113,9 @@ public class Simulation implements Runnable {
 
     private void removeDeadAnimals() {
         map.removeDeadAnimals();
+    }
+
+    private void regrowPlants() {
+        map.growPlantsOnWholeMap(params.dailyPlantSpawnNum());
     }
 }

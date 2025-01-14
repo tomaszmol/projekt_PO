@@ -81,4 +81,6 @@ public interface WorldMap extends MoveValidator {
     void resolveConflicts();
 
     void removeDeadAnimals();
+
+    void growPlantsOnWholeMap(int i);
 }
