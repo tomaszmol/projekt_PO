@@ -97,22 +97,26 @@ public abstract class AbstractEarthMap implements WorldMap {
                     Vector2d position = emptyAndNotPreferred.get(emptyAndNotPreferred.size() - 1);
                     plants.put(position, new Plant(position));
                     emptyAndNotPreferred.remove(position);
-                    plantsLeft--;
+
                 }
             } else {
                 if (!emptyAndPreferred.isEmpty()) {
                     Vector2d position = emptyAndPreferred.get(emptyAndPreferred.size() - 1);
                     plants.put(position, new Plant(position));
                     emptyAndPreferred.remove(position);
-                    plantsLeft--;
+
                 }
             }
+
+            plantsLeft--;
 
             // Jeśli nie ma już pól do obsadzenia, przerywamy pętlę
             if (emptyAndPreferred.isEmpty() && emptyAndNotPreferred.isEmpty()) {
                 break;
             }
         }
+
+        notifyObservers("Plants have grown.");
     }
 
 
