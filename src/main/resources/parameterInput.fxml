@@ -44,8 +44,8 @@
                 <TextField fx:id="copulationEnergyField" GridPane.rowIndex="5" GridPane.columnIndex="1" />
                 <Label text="Initial animal energy:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
                 <TextField fx:id="initialAnimalEnergyField" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-                <Label text="Daily animal energy cost:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
-                <TextField fx:id="dailyAnimalEnergyField" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+                <Label text="energyCostPerMove:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
+                <TextField fx:id="energyCostPerMoveField" GridPane.rowIndex="7" GridPane.columnIndex="1" />
                 <Label text="Initial animals on map:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
                 <TextField fx:id="initialAnimalsField" GridPane.rowIndex="8" GridPane.columnIndex="1" />
                 <Label text="Daily plant spawns:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
@@ -54,6 +54,10 @@
                 <TextField fx:id="geneMutationChance" GridPane.rowIndex="10" GridPane.columnIndex="1" />
                 <Label text="Gene Number:" GridPane.rowIndex="11" GridPane.columnIndex="0" />
                 <TextField fx:id="geneNumber" GridPane.rowIndex="11" GridPane.columnIndex="1" />
+                <Label text="Waiting time between animals moves:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
+                <TextField fx:id="waitingTimeBetweenMoves" GridPane.rowIndex="12" GridPane.columnIndex="1" />
+                <Label text="initialPlantNumber:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
+                <TextField fx:id="initialPlantNumberField" GridPane.rowIndex="13" GridPane.columnIndex="1" />
             </GridPane>
 
             <Region prefHeight="50"/>

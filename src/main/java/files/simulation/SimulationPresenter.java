@@ -29,6 +29,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     private int updateCount = 0;
     SimulationParams params;
     boolean simulationPaused;
+    private SimulationStats simulationStats;
 
     @FXML
     public Button exportCSVButton;
@@ -116,7 +117,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
             if (e.getClass() == Animal.class) {
                 List<Animal> animals = simulationMap.getAnimals(e.getPosition());
-                if (animals.size() > 0)
+                if (!animals.isEmpty())
                     mapGrid.add(createGUIImage(numberImg[Math.min(animals.size()-1,8)], .5, HPos.RIGHT, cellSize),x,y);
             }
             if (e.hasImage()) {
@@ -208,10 +209,15 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         this.simulationMap = map;
         simulationMap.addObserver(this);
 
+
         this.statsTracker = tracker;
         for (String s : graph1Series) statsTracker.addSeries(s);
         for (String s : graph2Series) statsTracker.addSeries(s);
         for (String s : graph3Series) statsTracker.addSeries(s);
+
+
+        this.simulationStats = sim.getSimulationStats(); // tutaj dodaj sobie obserwatora i jakoś zaimplementuj wyświetlanie tych statystyk
+
         statsTracker.addObserver(this);
     }
 

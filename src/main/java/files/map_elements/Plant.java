@@ -14,6 +14,7 @@ public class Plant implements WorldElement {
 
         var res = getClass().getResource("/plant.png");
         if (res != null) this.plantImg = new Image(res.toExternalForm());
+
     }
 
     public Vector2d getPosition() {

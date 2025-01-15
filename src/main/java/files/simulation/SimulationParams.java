@@ -8,7 +8,7 @@ public record SimulationParams(
         int plantEnergyProfit,
         int minCopulationEnergy,
         int initialAnimalEnergy,
-        int dailyAnimalEnergyCost,
+        int energyCostPerMove,
         int initialAnimalsOnMap,
         int dailyPlantSpawnNum,
         boolean fullPredestinationFlag,
@@ -17,5 +17,7 @@ public record SimulationParams(
         boolean liveGivingCorpseFlag,
         int simulationSteps,
         double geneMutationChance,
-        int geneNumber
+        int geneNumber,
+        int waitingTimeBetweenMoves,
+        int initialPlantNumber
 ) {}
