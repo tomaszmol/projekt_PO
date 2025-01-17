@@ -39,81 +39,117 @@ public abstract class AbstractEarthMap implements WorldMap {
         }
     }
 
-    public void placeAnimal(Animal animal) {
 
-        // Zaktualizuj listę zwierzaków na nowej pozycji
-        List<Animal> newAnimalsOnPosition = animals.get(animal.getPosition());
-        if (newAnimalsOnPosition == null) {
-            newAnimalsOnPosition = new ArrayList<>(); // Inicjujemy nową listę, jeśli na tej pozycji nie ma jeszcze zwierzaków
+
+    public void growPlants(int plantsNumber) {
+        if (plantsNumber <= 0) {
+            System.out.println("Plants number must be greater than zero.");
+            return;
         }
 
-        newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
-        animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
-        notifyObservers("Animal placed at " + animal.getPosition());
-    }
+        if (preferredFields == null || plants == null) {
+            System.out.println("Preferred fields or plants map is null.");
+            return;
+        }
 
-    public void growPlantsOnWholeMap() {
-        Random random = new Random();
-
-        // Iterujemy po każdej pozycji na mapie
         Boundary bounds = getCurrentBounds();
+        if (bounds == null || bounds.lowerLeft() == null || bounds.upperRight() == null) {
+            System.out.println("Bounds or boundary positions are null.");
+            return;
+        }
+
+        Random random = new Random();
+        List<Vector2d> emptyAndNotPreferred = new ArrayList<>();
+        List<Vector2d> emptyAndPreferred = new ArrayList<>();
+
         Vector2d lowerLeft = bounds.lowerLeft();
         Vector2d upperRight = bounds.upperRight();
-
 
         for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
             for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
                 Vector2d position = new Vector2d(x, y);
 
                 // Sprawdzenie, czy pole jest preferowane
-                boolean isPreferred = preferredFields.containsKey(position);
+                boolean isPreferred = preferredFields != null && preferredFields.containsKey(position);
+                boolean isPlanted = plants != null && plants.containsKey(position);
 
-                // Losowanie zgodnie z zasadą Pareto
-                double chance = isPreferred ? 0.8 : 0.2;
-                if (random.nextDouble() < chance) {
-                    // Dodaj roślinę, jeśli jej tam jeszcze nie ma
-                    if (!plants.containsKey(position)) {
-                        Plant newPlant = new Plant(position);
-                        plants.put(position, newPlant);
+                if (!isPlanted) {
+                    if (isPreferred) {
+                        emptyAndPreferred.add(position);
+                    } else {
+                        emptyAndNotPreferred.add(position);
                     }
                 }
             }
         }
+
+        int plantsLeft = plantsNumber;
+        if (!emptyAndNotPreferred.isEmpty()) {
+            Collections.shuffle(emptyAndNotPreferred);
+        }
+        if (!emptyAndPreferred.isEmpty()) {
+            Collections.shuffle(emptyAndPreferred);
+        }
+
+        while (plantsLeft > 0) {
+            if (random.nextDouble() < 0.2) {
+                if (!emptyAndNotPreferred.isEmpty()) {
+                    Vector2d position = emptyAndNotPreferred.get(emptyAndNotPreferred.size() - 1);
+                    plants.put(position, new Plant(position));
+                    emptyAndNotPreferred.remove(position);
+
+                }
+            } else {
+                if (!emptyAndPreferred.isEmpty()) {
+                    Vector2d position = emptyAndPreferred.get(emptyAndPreferred.size() - 1);
+                    plants.put(position, new Plant(position));
+                    emptyAndPreferred.remove(position);
+
+                }
+            }
+
+            plantsLeft--;
+
+            // Jeśli nie ma już pól do obsadzenia, przerywamy pętlę
+            if (emptyAndPreferred.isEmpty() && emptyAndNotPreferred.isEmpty()) {
+                break;
+            }
+        }
+
+        notifyObservers("Plants have grown.");
     }
+
 
     public boolean isOccupied(Vector2d position) {
         return animals.get(position) != null;
     }
 
+
     public WorldElement objectAt(Vector2d position) {
         WorldElement element = null;
+
         if (preferredFields.containsKey(position)) {
             element = preferredFields.get(position);
         }
         if (plants.containsKey(position)) {
             element = plants.get(position);
         }
-        if (animals.containsKey(position)) {
-            List<Animal> animalsOnPosition = animals.get(position);
-            if (animalsOnPosition != null) {
-                element = animalsOnPosition.getLast();
-            }
-        }
         return element;
     }
 
     public List<WorldElement> getElements() {
         List<WorldElement> elements = new ArrayList<>();
-        // Iteruj po każdej liście zwierzaków w mapie
-        for (List<Animal> animalList : animals.values()) {
-            elements.addAll(animalList);  // Dodaj wszystkie zwierzaki do głównej listy
+
+        if (preferredFields != null) {
+            elements.addAll(preferredFields.values());
         }
         if (plants != null) {
             elements.addAll(plants.values());
         }
-        if (preferredFields != null) {
-            elements.addAll(preferredFields.values());
+        for (List<Animal> animalList : animals.values()) {
+            elements.addAll(animalList);  // Dodaj wszystkie zwierzaki do głównej listy
         }
+
         return elements;
     }
     public HashMap<Vector2d, Plant> getPlants() {

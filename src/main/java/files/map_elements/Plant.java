@@ -14,6 +14,7 @@ public class Plant implements WorldElement {
 
         var res = getClass().getResource("/plant.png");
         if (res != null) this.plantImg = new Image(res.toExternalForm());
+
     }
 
     public Vector2d getPosition() {
@@ -37,6 +38,11 @@ public class Plant implements WorldElement {
     @Override
     public double getElementSizeMultiplier() {
         return 0.8;
+    }
+
+    @Override
+    public boolean hasImage() {
+        return plantImg != null;
     }
 
 }

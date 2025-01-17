@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -29,12 +28,6 @@ public class ParameterPresenter {
     @FXML
     private TextField simulationSteps;
     @FXML
-    private GridPane mapGrid;  // Powiązanie z kontrolką w FXML
-    @FXML
-    private Label moveDescriptionLabel;  // Powiązanie z kontrolką w FXML
-    @FXML
-    private Label updateCountLabel;  // Powiązanie z kontrolką w FXML
-    @FXML
     private TextField mapHeightField;
     @FXML
     private TextField mapWidthField;
@@ -45,11 +38,15 @@ public class ParameterPresenter {
     @FXML
     private TextField initialAnimalEnergyField;
     @FXML
-    private TextField dailyAnimalEnergyField;
+    private TextField energyCostPerMoveField;
     @FXML
     private TextField initialAnimalsField;
     @FXML
     private TextField dailyPlantSpawnsField;
+    @FXML
+    private TextField waitingTimeBetweenMoves;
+    @FXML
+    private TextField initialPlantNumberField;
     @FXML
     private CheckBox oldnessSadnessFlag;
     @FXML
@@ -73,12 +70,12 @@ public class ParameterPresenter {
 
                 // select simulation map
                 WorldMap map = selectSimulationMap();
-                newPresenter.setSimulationData(params, map, tracker);
 
                 // start new simulation thread
                 Thread simulationThread = new Thread(() -> {
                     try {
                         Simulation newSimulation = new Simulation(params, map, tracker);
+                        newPresenter.setSimulationData(params, map, tracker, newSimulation);
                         newSimulation.run();
                     } catch (Exception e) {
                         System.err.println("Simulation thread error! + " + e.getMessage());
@@ -109,7 +106,7 @@ public class ParameterPresenter {
         plantEnergyField.setText("20");
         copulationEnergyField.setText("15");
         initialAnimalEnergyField.setText("100");
-        dailyAnimalEnergyField.setText("1");
+        energyCostPerMoveField.setText("1");
         initialAnimalsField.setText("3");
         dailyPlantSpawnsField.setText("5");
         simulationSteps.setText("100");
@@ -119,6 +116,8 @@ public class ParameterPresenter {
         liveGivingCorpseFlag.setSelected(false);
         fullPredestinationFlag.setSelected(true);
         equatorFlag.setSelected(true);
+        waitingTimeBetweenMoves.setText("100");
+        initialPlantNumberField.setText("10");
     }
 
     SimulationParams getSimulationParams(){
@@ -129,12 +128,14 @@ public class ParameterPresenter {
             int plantEnergyProfit = Integer.parseInt(plantEnergyField.getText().trim());
             int minCopulationEnergy = Integer.parseInt(copulationEnergyField.getText().trim());
             int initialAnimalEnergy = Integer.parseInt(initialAnimalEnergyField.getText().trim());
-            int dailyAnimalEnergy = Integer.parseInt(dailyAnimalEnergyField.getText().trim());
+            int energyCostPerMove = Integer.parseInt(energyCostPerMoveField.getText().trim());
             int initialAnimalsOnMap = Integer.parseInt(initialAnimalsField.getText().trim());
             int dailyPlantSpawns = Integer.parseInt(dailyPlantSpawnsField.getText().trim());
             int simSteps = Integer.parseInt(simulationSteps.getText().trim());
             int geneNum = Integer.parseInt(geneNumber.getText().trim());
             double mutationChance = Double.parseDouble(geneMutationChance.getText().trim());
+            int waitingTime = Integer.parseInt(waitingTimeBetweenMoves.getText().trim());
+            int initialPlantNumber = Integer.parseInt(initialPlantNumberField.getText().trim());
 
             // Pobieranie wartości boolean z checkboxów
             boolean fullPredestinationFlagValue = fullPredestinationFlag.isSelected();
@@ -146,9 +147,9 @@ public class ParameterPresenter {
             return new SimulationParams(
                     mapHeight, mapWidth,
                     plantEnergyProfit, minCopulationEnergy, initialAnimalEnergy,
-                    dailyAnimalEnergy, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
+                    energyCostPerMove, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
                     oldnessSadnessFlagValue, equatorFlagValue, liveGivingCorpseFlagValue,simSteps,
-                    mutationChance, geneNum
+                    mutationChance, geneNum, waitingTime, initialPlantNumber
             );
         } catch (NumberFormatException e) {
             System.err.println("Invalid parameters! Please provide valid numeric values.");

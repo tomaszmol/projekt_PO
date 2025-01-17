@@ -2,8 +2,6 @@ package files.simulation;
 
 import files.map_elements.Animal;
 import files.map_elements.StatisticsTracker;
-import files.maps.AbstractEarthMap;
-import files.maps.AnimalManager;
 import files.maps.WorldMap;
 import files.util.*;
 
@@ -15,18 +13,23 @@ import java.util.List;
 
 public class Simulation implements Runnable {
 
-    private final List<Animal> animals;
+    private List<Animal> animals;
     private final WorldMap map;
     final SimulationParams params;
-    StatisticsTracker stats;
+    StatisticsTracker statisticsTracker;
+    private SimulationStats simulationStats;
+    private boolean paused;
 
-    public Simulation(SimulationParams params, WorldMap map, StatisticsTracker stats) throws Exception{
+    public Simulation(SimulationParams params, WorldMap map, StatisticsTracker statisticsTracker) throws Exception{
         this.map = map;
-        animals = new ArrayList<Animal>();
+        this.animals = new ArrayList<>();
         this.params = params;
-        this.stats = stats;
+        this.statisticsTracker = statisticsTracker;
+        spawnInitialAnimals();
 
-        // spawn initial animals:
+    }
+
+    private void spawnInitialAnimals() throws Exception{
         int animalNum = params.initialAnimalsOnMap();
         Boundary mapBoundaries = map.getCurrentBounds();
         System.out.println(mapBoundaries);
@@ -34,20 +37,17 @@ public class Simulation implements Runnable {
             Vector2d randPos;
             do { randPos = Vector2d.randomInBounds(mapBoundaries);
             } while (map.isOccupied(randPos));
-            Animal animal = new Animal(randPos, params.geneNumber());
+            Animal animal = new Animal(randPos, params.geneNumber() );
             map.placeAnimal(animal);
-            addAnimalToSimulation(animal);
+            putAnimalIntoSimulation(animal);
         }
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
-    }
-    public void addAnimalToSimulation(Animal animal) { animals.add(animal); }
 
     private void wait(int ms){
         try {
-            Thread.sleep(1000);
+            Thread.sleep(ms);
+            while (paused) Thread.sleep(200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -57,25 +57,70 @@ public class Simulation implements Runnable {
 
         System.out.println("All objects on map: " + map.getElements());
         wait(1000);
-
+        int energySum = 0;
         for (int day=0; day<params.simulationSteps(); day++) {
-            int energySum = 0;
+            //usunięcie martwych zwierzaków
+            simulationRemoveDeadAnimals();
 
-            for (Animal a : animals) {
-                map.move(a);
-                wait(25);
-                energySum += a.getEnergy();
-            }
+            //poruszanie się zwierzakow
+            int usedEnergyDuringDay = simulationMoveAllAnimals();
+            energySum += usedEnergyDuringDay;
 
-            map.resolveConflicts();
-            map.removeDeadAnimals();
 
-            wait(150);
+            simulationEatPlants();
 
-            stats.recordValue("animals", animals.size());
-            stats.recordValue("plants", map.getPlants().size());
-            stats.recordValue("energy", energySum/animals.size());
+            statisticsTracker.recordValue("animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
+            statisticsTracker.recordValue("plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
+            statisticsTracker.recordValue("energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
+
+            wait(300);
+
+            //wzrost roslin
+            simulationRegrowPlants();
+
         }
 
+    }
+
+    private void simulationEatPlants() {
+        map.eatPlants(params.plantEnergyProfit());
+    }
+
+
+
+    private void updateStats(){
+
+    }
+
+    public int simulationMoveAllAnimals() {
+        int waitingTime = params.waitingTimeBetweenMoves();
+        List<Animal> listedAnimals = map.getAllAnimalsListed();
+        int energySum = 0;
+        for (Animal a : listedAnimals) {
+            map.moveAnimal(a);
+            energySum += params.energyCostPerMove();
+            wait(waitingTime);
+        }
+        return energySum;
+    }
+
+    public void putAnimalIntoSimulation(Animal animal) {
+        animals.add(animal);
+    }
+
+    public void pause(boolean state) {
+        paused = state;
+    }
+
+    public SimulationStats getSimulationStats() {
+        return simulationStats;
+    }
+
+    private void simulationRemoveDeadAnimals() {
+        map.removeDeadAnimals();
+    }
+
+    private void simulationRegrowPlants() {
+        map.growPlants(params.dailyPlantSpawnNum());
     }
 }

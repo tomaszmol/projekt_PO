@@ -9,22 +9,30 @@ import files.util.Boundary;
 import files.util.DataAddedListener;
 import files.util.Vector2d;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.util.List;
+import java.util.Objects;
 
 public class SimulationPresenter implements MapChangeListener, DataAddedListener {
 
     private int updateCount = 0;
     SimulationParams params;
+    boolean simulationPaused;
+    private SimulationStats simulationStats;
 
+    @FXML
+    public Button exportCSVButton;
     @FXML
     public VBox animalInfoBoxRight;
     @FXML
@@ -37,6 +45,8 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     private Label moveDescriptionLabel;  // Powiązanie z kontrolką w FXML
     @FXML
     private Label updateCountLabel;  // Powiązanie z kontrolką w FXML
+    @FXML
+    public Button pauseButton;
 
     @FXML
     public LineChart<Number, Number> populationChart;
@@ -52,17 +62,77 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     List<String> graph3Series =  List.of(  );
     private WorldMap simulationMap;
     private StatisticsTracker statsTracker;
+    private Simulation simulation;
 
-    @FXML
-    public void initialize() {
-        if (animalInfoBoxRight != null) animalInfoBoxRight.setVisible(false);
+    Image[] numberImg = new Image[] {
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num1.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num2.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num3.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num4.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num5.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num6.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num7.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num8.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num9.png")).toExternalForm()),
+        new Image(Objects.requireNonNull(getClass().getResource("/numbers/numOver9.png")).toExternalForm())
+    };
+
+    Rectangle createGUIRectForWorldElement(WorldElement e, int cellSize) {
+        Rectangle rect = new Rectangle(cellSize*e.getElementSizeMultiplier(), cellSize*e.getElementSizeMultiplier());
+        rect.setFill(e.getElementColour());
+        GridPane.setHalignment(rect, HPos.CENTER);
+        return rect;
     }
+    ImageView createGUIImageForWorldElement(WorldElement e, int cellSize) {
+        ImageView iv = createGUIImage(e.getImage(),e.getElementSizeMultiplier(),HPos.CENTER,cellSize);
+        if (e instanceof Animal) {
+            iv.setOnMouseClicked(event -> showAnimalInfo((Animal) e));
+        }
+        return iv;
+    }
+    ImageView createGUIImage(Image img, double sizeMult, HPos alignment, int cellSize) {
+        ImageView imageView = new ImageView(img);
+        imageView.setFitWidth(cellSize*sizeMult); // Szerokość komórki
+        imageView.setFitHeight(cellSize*sizeMult); // Wysokość komórki
+        GridPane.setHalignment(imageView, alignment);
+        return imageView;
+    }
+    void drawGrid (Vector2d lowerLeft, Vector2d upperRight, int cellSize) {
+        int rows = upperRight.getY() - lowerLeft.getY() + 1;
+        int columns = upperRight.getX() - lowerLeft.getX() + 1;
 
-    public void drawMap() {
-        // Czyszczenie siatki
-        clearGrid();
+        for (int i = 0; i < columns; i++) {
+            mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
+        }
+        for (int i = 0; i < rows; i++) {
+            mapGrid.getRowConstraints().add(new RowConstraints(cellSize));
+        }
+    }
+    void drawElements (Vector2d lowerLeft, Vector2d upperRight, int cellSize) {
+        List<WorldElement> elements = simulationMap.getElements();
 
-        // nowa siatka
+        for (WorldElement e : elements) {
+            int x = e.getPosition().getX() - lowerLeft.getX();
+            int y = upperRight.getY() - e.getPosition().getY();
+
+            if (e.getClass() == Animal.class) {
+                List<Animal> animals = simulationMap.getAnimals(e.getPosition());
+                if (!animals.isEmpty())
+                    mapGrid.add(createGUIImage(numberImg[Math.min(animals.size()-1,8)], .5, HPos.RIGHT, cellSize),x,y);
+            }
+            if (e.hasImage()) {
+                mapGrid.add( createGUIImageForWorldElement(e,cellSize),x,y);
+            } else {
+                mapGrid.add( createGUIRectForWorldElement(e,cellSize),x,y);
+            }
+        }
+    }
+    private void clearGrid() {
+        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // Zachowaj linie siatki
+        mapGrid.getColumnConstraints().clear();
+        mapGrid.getRowConstraints().clear();
+    }
+    int calculateCellSize() {
         int cellSize = 50;
 
         // nie dziala za bardzo
@@ -75,58 +145,19 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 //            System.out.println(mapGrid.getScene().getY() / params.mapHeight());
 //        }
 
-        double cellContentSizeMultiplier = 0.8;
-
-        // dane
-        Boundary bounds = simulationMap.getCurrentBounds();
-        Vector2d lowerLeft = bounds.lowerLeft();
-        Vector2d upperRight = bounds.upperRight();
-        int rows = upperRight.getY() - lowerLeft.getY() + 1;
-        int columns = upperRight.getX() - lowerLeft.getX() + 1;
-        for (int i = 0; i < columns; i++) {
-            mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
-        }
-        for (int i = 0; i < rows; i++) {
-            mapGrid.getRowConstraints().add(new RowConstraints(cellSize));
-        }
-
-        // Rysowanie obiektów na siatce
-        for (int x = lowerLeft.getX(); x <= upperRight.getX(); x++) {
-
-            for (int y = lowerLeft.getY(); y <= upperRight.getY(); y++) {
-                Vector2d position = new Vector2d(x, y);
-                WorldElement element = simulationMap.objectAt(position);
-
-                if(element != null){
-                    Image img = element.getImage();
-                    if (img != null) {
-                        ImageView imageView = new ImageView(img);
-                        imageView.setFitWidth(cellSize*cellContentSizeMultiplier); // Szerokość komórki
-                        imageView.setFitHeight(cellSize*cellContentSizeMultiplier); // Wysokość komórki
-                        GridPane.setHalignment(imageView, HPos.CENTER);
-
-                        if (element instanceof Animal) {
-                            imageView.setOnMouseClicked(event -> showAnimalInfo((Animal) element));
-                        }
-
-                        mapGrid.add(imageView, x - lowerLeft.getX(), upperRight.getY() - y);
-
-                    } else {
-                        Rectangle emptyCell = new Rectangle(cellSize*element.getElementSizeMultiplier(), cellSize*element.getElementSizeMultiplier());
-                        emptyCell.setFill(element.getElementColour());
-                        GridPane.setHalignment(emptyCell, HPos.CENTER);
-                        mapGrid.add(emptyCell, x - lowerLeft.getX(), upperRight.getY() - y);
-                    }
-                }
-            }
-
-        }
+        return cellSize;
     }
-    private void clearGrid() {
-        mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst()); // Zachowaj linie siatki
-        mapGrid.getColumnConstraints().clear();
-        mapGrid.getRowConstraints().clear();
+
+
+    public void drawMap() {
+        Boundary b = simulationMap.getCurrentBounds();
+        int cellSize = calculateCellSize();
+
+        clearGrid();
+        drawGrid(b.lowerLeft(), b.upperRight(), cellSize);
+        drawElements(b.lowerLeft(), b.upperRight(), cellSize);
     }
+
 
     @Override
     public synchronized void mapChanged(WorldMap worldMap, String message) {
@@ -145,8 +176,6 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     }
 
     void printGraph(StatisticsTracker tracker, LineChart<Number,Number> chart, String seriesName, int seriesNum){
-        System.out.println("Printing graph " + seriesName);
-
         // rozwiaz problem
         List<Number> data = tracker.getData(seriesName);
 
@@ -163,7 +192,6 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
     @Override
     public void onDataAdded(StatisticsTracker tracker, String seriesName) {
-        System.out.println("PRINTING GRAPHS");
         Platform.runLater(() -> {
             if (graph1Series.contains(seriesName) && populationChart != null)
                 printGraph(tracker, populationChart, seriesName, graph1Series.indexOf(seriesName));
@@ -174,17 +202,37 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         });
     }
 
-    public void setSimulationData(SimulationParams params, WorldMap map, StatisticsTracker tracker) {
+    public void setSimulationData(SimulationParams params, WorldMap map, StatisticsTracker tracker, Simulation sim) {
         this.params = params;
 
+        this.simulation = sim;
         this.simulationMap = map;
         simulationMap.addObserver(this);
+
 
         this.statsTracker = tracker;
         for (String s : graph1Series) statsTracker.addSeries(s);
         for (String s : graph2Series) statsTracker.addSeries(s);
         for (String s : graph3Series) statsTracker.addSeries(s);
+
+
+        this.simulationStats = sim.getSimulationStats(); // tutaj dodaj sobie obserwatora i jakoś zaimplementuj wyświetlanie tych statystyk
+
         statsTracker.addObserver(this);
+    }
+
+    public void onSimulationPaused() {
+        simulationPaused = !simulationPaused;
+        pauseButton.setText(simulationPaused ? "Resume" : "Pause");
+        simulation.pause(simulationPaused);
+
+        exportCSVButton.setText("Export Data");
+    }
+
+    public void onExportData(ActionEvent actionEvent) {
+        if (!simulationPaused) onSimulationPaused();
+        statsTracker.exportAllDataToCsv("simulationStatistics.csv");
+        exportCSVButton.setText("Exported!");
     }
 }
 
