@@ -12,6 +12,11 @@
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
             fx:controller="files.simulation.ParameterPresenter">
+    <left>
+        <VBox alignment="CENTER">
+            <Label text="Select parameter preset:" prefWidth="300"/>
+        </VBox>
+    </left>
     <center>
         <VBox alignment="CENTER">
             <!-- Nagłówek -->
@@ -50,8 +55,9 @@
                 <TextField fx:id="initialAnimalsField" GridPane.rowIndex="8" GridPane.columnIndex="1" />
                 <Label text="Daily plant spawns:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
                 <TextField fx:id="dailyPlantSpawnsField" GridPane.rowIndex="9" GridPane.columnIndex="1" />
-                <Label text="Mutation chance per gene on copulation:" GridPane.rowIndex="10" GridPane.columnIndex="0" />
+                <Label text="Min and Max gene mutations:" GridPane.rowIndex="10" GridPane.columnIndex="0" />
                 <TextField fx:id="geneMutationChance" GridPane.rowIndex="10" GridPane.columnIndex="1" />
+                <TextField fx:id="maxGeneMutationNum" GridPane.rowIndex="10" GridPane.columnIndex="2" />
                 <Label text="Gene Number:" GridPane.rowIndex="11" GridPane.columnIndex="0" />
                 <TextField fx:id="geneNumber" GridPane.rowIndex="11" GridPane.columnIndex="1" />
                 <Label text="Waiting time between animals moves:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
@@ -83,4 +89,39 @@
             </HBox>
         </VBox>
     </center>
+    <right>
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 20;">
+            <Label text="Dane do exportu: " />
+            <HBox>
+                <Label text="Liczba Zwierząt:"/>
+                <CheckBox fx:id="animalNumCheck" />
+            </HBox>
+            <HBox>
+                <Label text="Liczba Roślin: "/>
+                <CheckBox fx:id="plantNumCheck" />
+            </HBox>
+            <HBox>
+                <Label text="Dominant Genotypes: "/>
+                <CheckBox fx:id="genotypeCheck" />
+                <TextField fx:id="genotypeTrackNum" text="0" style="-fx-margin: 5;"/>
+            </HBox>
+            <HBox>
+                <Label text="Average Energy Level: "/>
+                <CheckBox fx:id="avgEnergyCheck" />
+            </HBox>
+            <HBox>
+                <Label text="Average Animal Lifespan: "/>
+                <CheckBox fx:id="avgLifespanCheck" />
+            </HBox>
+            <HBox>
+                <Label text="Average Number of Children: "/>
+                <CheckBox fx:id="avgChildNumCheck" />
+            </HBox>
+            <Region prefHeight="10"/>
+            <HBox>
+                <Label text="Filepath:"/>
+                <TextField text="simulationStats.csv" fx:id="statsExportFilepath"/>
+            </HBox>
+        </VBox>
+    </right>
 </BorderPane>
