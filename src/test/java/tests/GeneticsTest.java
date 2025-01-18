@@ -59,7 +59,7 @@ class GeneticsTest {
     @Test
     void mutateGeneticCodeShouldChangeGenesWithChance() {
         Arrays.fill(genetics.getGenotype(),-1); // outside gene pool
-        genetics.mutateGeneticCode(1.0); // 100% szansa na mutację
+        genetics.mutateGeneticCode(10,10); // 100% szansa na mutację
         int[] mutatedGenes = genetics.getGenotype();
         assertTrue(Arrays.stream(mutatedGenes).allMatch(g -> g != -1)); // wszystkie zmutowane
     }

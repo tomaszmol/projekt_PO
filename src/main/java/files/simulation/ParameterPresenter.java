@@ -29,8 +29,6 @@ public class ParameterPresenter {
     @FXML
     public TextField geneNumber;
     @FXML
-    public TextField geneMutationChance;
-    @FXML
     private TextField simulationSteps;
     @FXML
     private TextField mapHeightField;
@@ -60,6 +58,10 @@ public class ParameterPresenter {
     public CheckBox equatorFlag;
     @FXML
     public CheckBox fullPredestinationFlag;
+    @FXML
+    public TextField maxGeneMutationNum;
+    @FXML
+    public TextField minGeneMutationNum;
 
     private final Map<TextField, double[]> fieldConstraints = new HashMap<>();
 
@@ -96,8 +98,11 @@ public class ParameterPresenter {
         simulationSteps.setText("100");
         fieldConstraints.put(simulationSteps, new double[]{1, 10000});
 
-        geneMutationChance.setText("0.02");
-        fieldConstraints.put(geneMutationChance, new double[]{0, 1});
+        minGeneMutationNum.setText("0");
+        fieldConstraints.put(minGeneMutationNum, new double[]{0, 20});
+
+        maxGeneMutationNum.setText("6");
+        fieldConstraints.put(minGeneMutationNum, new double[]{0, 20});
 
         geneNumber.setText("6");
         fieldConstraints.put(geneNumber, new double[]{1, 20});
@@ -118,6 +123,12 @@ public class ParameterPresenter {
 
     @FXML
     public boolean validateInputs() {
+
+        // custom moving constraints
+        fieldConstraints.replace(minCopulationEnergyField, new double[]{Integer.parseInt(copulationEnergyUseField.getText().trim()), 1000});
+        fieldConstraints.replace(minGeneMutationNum, new double[]{0, Integer.parseInt(geneNumber.getText().trim())});
+        fieldConstraints.replace(maxGeneMutationNum, new double[]{Integer.parseInt(minGeneMutationNum.getText().trim()), Integer.parseInt(geneNumber.getText().trim())});
+
         // Walidacja wartości pól tekstowych
         AtomicBoolean valid = new AtomicBoolean(true);
         fieldConstraints.forEach((field, range) -> {
@@ -193,7 +204,8 @@ public class ParameterPresenter {
             int dailyPlantSpawns = Integer.parseInt(dailyPlantSpawnsField.getText().trim());
             int simSteps = Integer.parseInt(simulationSteps.getText().trim());
             int geneNum = Integer.parseInt(geneNumber.getText().trim());
-            double mutationChance = Double.parseDouble(geneMutationChance.getText().trim());
+            int minMutations = Integer.parseInt(minGeneMutationNum.getText().trim());
+            int maxMutations = Integer.parseInt(maxGeneMutationNum.getText().trim());
             int waitingTime = Integer.parseInt(waitingTimeBetweenMoves.getText().trim());
             int initialPlantNumber = Integer.parseInt(initialPlantNumberField.getText().trim());
 
@@ -208,7 +220,7 @@ public class ParameterPresenter {
                     plantEnergyProfit, minCopulationEnergy, initialAnimalEnergy,
                     energyCostPerMove, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
                     oldnessSadnessFlagValue, equatorFlagValue, liveGivingCorpseFlagValue, simSteps,
-                    mutationChance, geneNum, waitingTime, initialPlantNumber, copulationEnergyUse
+                    geneNum, waitingTime, initialPlantNumber, copulationEnergyUse, minMutations, maxMutations
             );
         } catch (NumberFormatException e) {
             System.err.println("Invalid parameters! Please provide valid numeric values.");

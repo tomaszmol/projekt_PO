@@ -230,7 +230,7 @@ public class AnimalManager extends AbstractEarthMap{
         );
 
         // mutation
-        child.getGenetics().mutateGeneticCode( params.geneMutationChance() );
+        child.getGenetics().mutateGeneticCode( params.minMutationNum(), params.maxMutationNum());
 
         // receive parent energy
         mother.useEnergy(params.copulationEnergyUse());

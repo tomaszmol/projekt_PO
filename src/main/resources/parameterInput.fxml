@@ -67,7 +67,7 @@
                 <Label text="Gene Number:"                  GridPane.rowIndex="11" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
                 <TextField fx:id="geneNumber"               GridPane.rowIndex="11" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
                 <Label text="Min gene mutations:"           GridPane.rowIndex="12" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
-                <TextField fx:id="geneMutationChance"       GridPane.rowIndex="12" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="minGeneMutationNum"       GridPane.rowIndex="12" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
                 <Label text="Max gene mutations:"           GridPane.rowIndex="13" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
                 <TextField fx:id="maxGeneMutationNum"       GridPane.rowIndex="13" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
 
