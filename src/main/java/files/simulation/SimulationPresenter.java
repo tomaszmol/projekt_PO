@@ -172,12 +172,11 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
     @Override
     public synchronized void mapChanged(WorldMap worldMap, String message) {
-        updateCount++;
         // Aktualizacja UI w wątku graficznym
         Platform.runLater(() -> {
             drawMap();
             moveDescriptionLabel.setText((message != null) ? message : "No message");
-            updateCountLabel.setText("Update count: #" + updateCount);
+            updateCountLabel.setText("Simulation day: #" + simulation.getSimulationDay());
         });
     }
 

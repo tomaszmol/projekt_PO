@@ -19,6 +19,7 @@ public class Simulation implements Runnable {
     StatisticsTracker statisticsTracker;
     private SimulationStats simulationStats;
     private boolean paused;
+    private int day;
 
     public Simulation(SimulationParams params, WorldMap map, StatisticsTracker statisticsTracker) throws Exception{
         this.map = map;
@@ -58,7 +59,9 @@ public class Simulation implements Runnable {
         System.out.println("All objects on map: " + map.getElements());
         wait(1000);
         int energySum = 0;
-        for (int day=0; day<params.simulationSteps(); day++) {
+        day = 0;
+
+        for (day=0; day<params.simulationSteps(); day++) {
             //usunięcie martwych zwierzaków
             simulationRemoveDeadAnimals();
 
@@ -120,5 +123,9 @@ public class Simulation implements Runnable {
 
     private void simulationRegrowPlants() {
         map.growPlants(params.dailyPlantSpawnNum());
+    }
+
+    public int getSimulationDay() {
+        return day;
     }
 }

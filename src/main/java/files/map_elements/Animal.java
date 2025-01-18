@@ -90,6 +90,8 @@ public class Animal implements WorldElement {
 
     // returns true when position changed (rotation change still returns false)
     public boolean move(MoveValidator moveValidator, int energyCostPerMove) {
+        survivedDays++;
+
         var movement = genes.getNextMoveInSequence();
         useEnergy(energyCostPerMove);
         // rotation
