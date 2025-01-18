@@ -18,13 +18,13 @@ public class Animal implements WorldElement {
     Animal mother = null;
     Animal father = null;
     Image animalImg = null;
-    public Animal(Vector2d position, int geneNumber) {
+    public Animal(Vector2d position, int geneNumber, int initialEnergy) {
         this.position = position;
         survivedDays = 0;
         numberOfChildren = 0;
         numberOfDescendants = 0;
-        energy = 12;
         this.orientation = MapDirection.getMapDirection((int) (Math.random()*8));
+        energy = initialEnergy;
 
         genes = new Genetics(geneNumber);
 
