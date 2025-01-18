@@ -222,7 +222,7 @@ public class AnimalManager extends AbstractEarthMap{
         }
 
         Vector2d pos = mother.getPosition();
-        Animal child = new Animal(pos,params.geneNumber());
+        Animal child = new Animal(pos,params.geneNumber(), params.initialAnimalEnergy());
 
         // inherit genes
         child.getGenetics().inheritGenesFromParents(
