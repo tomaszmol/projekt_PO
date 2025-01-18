@@ -78,10 +78,10 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     };
 
     Rectangle createGUIRectForWorldElement(WorldElement e, int cellSize) {
-        return createGUIRect(e.getElementColour(), e.getElementSizeMultiplier(), HPos.CENTER, cellSize);
+        return createGUIRect(e.getElementColour(), e.getElementSizeMultiplier(), HPos.CENTER, cellSize, cellSize);
     }
-    Rectangle createGUIRect(Color colour, double sizeMult, HPos alignment, int cellSize) {
-        Rectangle rect = new Rectangle(cellSize*sizeMult, cellSize*sizeMult);
+    Rectangle createGUIRect(Color colour, double sizeMult, HPos alignment, int width, int height) {
+        Rectangle rect = new Rectangle(width*sizeMult, height*sizeMult);
         rect.setFill(colour);
         GridPane.setHalignment(rect, alignment);
         return rect;
@@ -123,10 +123,16 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
                 List<Animal> animals = simulationMap.getAnimals(e.getPosition());
                 isSelected = e == selectedAnimal;
                 if( isSelected ){
-                    mapGrid.add( createGUIRect(Color.BLUE,0.99,HPos.CENTER,cellSize),x,y);
+                    mapGrid.add( createGUIRect(Color.BLUE,0.99,HPos.CENTER,cellSize,cellSize),x,y);
                 }
                 if (animals.size()>=2)
                     mapGrid.add(createGUIImage(numberImg[Math.min(animals.size()-2,8)], .5, HPos.RIGHT, cellSize),x,y);
+
+                // create energy display
+                int maxEnergyDisplay = 300;
+                double sizeMultiplier = (double) Math.min(maxEnergyDisplay, ((Animal) e).getEnergy()) / maxEnergyDisplay;
+                System.out.println(sizeMultiplier +", "+ ((Animal) e).getEnergy() +", "+ getEnergyColour(sizeMultiplier));
+                mapGrid.add( createGUIRect(getEnergyColour(sizeMultiplier),1,HPos.LEFT,cellSize/8,(int)(cellSize*Math.max(0.3,sizeMultiplier))),x, y);
             }
             if (e.hasImage()) {
                 mapGrid.add( createGUIImageForWorldElement(e,cellSize),x,y);
@@ -177,6 +183,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     }
 
     private void showAnimalInfo(Animal animal) {
+        if (animal == null) return;
         animalInfoLabel.setText(animal.getAnimalInfo());
         if (animalInfoBoxRight != null) animalInfoBoxRight.setVisible(true);
     }
@@ -238,6 +245,22 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         if (!simulationPaused) onSimulationPaused();
         statsTracker.exportAllDataToCsv("simulationStatistics.csv");
         exportCSVButton.setText("Exported!");
+    }
+
+    //util lerp colour
+    static Color[] energyColours = {
+            Color.DARKRED,
+            Color.RED,
+            Color.YELLOW,
+            Color.YELLOWGREEN,
+            Color.GREEN,
+            Color.LIMEGREEN,
+            Color.LIME
+    };
+    public static Color getEnergyColour(double t) {
+        // Clamp t to the range [0, 1]
+        t = Math.max(0, Math.min(1, t));
+        return energyColours[(int) (t * (energyColours.length-1))];
     }
 }
 
