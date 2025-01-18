@@ -83,7 +83,7 @@ public class AnimalManager extends AbstractEarthMap{
     }
 
 
-    public List<Vector2d> removeDeadAnimals() {
+    public void removeDeadAnimals() {
         final int energyCostPerMove = params.energyCostPerMove();
         List<Vector2d> emptyPositions = new ArrayList<>();
 
@@ -106,8 +106,6 @@ public class AnimalManager extends AbstractEarthMap{
         }
 
         notifyObservers("Dead animals have been removed");
-
-        return emptyPositions;
     }
 
 
@@ -222,7 +220,7 @@ public class AnimalManager extends AbstractEarthMap{
         }
 
         Vector2d pos = mother.getPosition();
-        Animal child = new Animal(pos,params.geneNumber(), params.initialAnimalEnergy());
+        Animal child = new Animal(pos,params.geneNumber());
 
         // inherit genes
         child.getGenetics().inheritGenesFromParents(

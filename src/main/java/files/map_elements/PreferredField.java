@@ -43,6 +43,4 @@ public class PreferredField implements WorldElement{
     public void setPlantGrown(boolean plantGrown) {
         isPlantGrown = plantGrown;
     }
-
-
 }
