@@ -30,6 +30,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     SimulationParams params;
     boolean simulationPaused;
     private SimulationStats simulationStats;
+    Animal selectedAnimal = null;
 
     @FXML
     public Button exportCSVButton;
@@ -77,15 +78,18 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     };
 
     Rectangle createGUIRectForWorldElement(WorldElement e, int cellSize) {
-        Rectangle rect = new Rectangle(cellSize*e.getElementSizeMultiplier(), cellSize*e.getElementSizeMultiplier());
-        rect.setFill(e.getElementColour());
-        GridPane.setHalignment(rect, HPos.CENTER);
+        return createGUIRect(e.getElementColour(), e.getElementSizeMultiplier(), HPos.CENTER, cellSize);
+    }
+    Rectangle createGUIRect(Color colour, double sizeMult, HPos alignment, int cellSize) {
+        Rectangle rect = new Rectangle(cellSize*sizeMult, cellSize*sizeMult);
+        rect.setFill(colour);
+        GridPane.setHalignment(rect, alignment);
         return rect;
     }
     ImageView createGUIImageForWorldElement(WorldElement e, int cellSize) {
         ImageView iv = createGUIImage(e.getImage(),e.getElementSizeMultiplier(),HPos.CENTER,cellSize);
         if (e instanceof Animal) {
-            iv.setOnMouseClicked(event -> showAnimalInfo((Animal) e));
+            iv.setOnMouseClicked(event -> {selectedAnimal = (Animal)e; showAnimalInfo(selectedAnimal);});
         }
         return iv;
     }
@@ -113,15 +117,20 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         for (WorldElement e : elements) {
             int x = e.getPosition().getX() - lowerLeft.getX();
             int y = upperRight.getY() - e.getPosition().getY();
+            boolean isSelected = false;
 
             if (e.getClass() == Animal.class) {
                 List<Animal> animals = simulationMap.getAnimals(e.getPosition());
+                isSelected = e == selectedAnimal;
+                if( isSelected ){
+                    mapGrid.add( createGUIRect(Color.BLUE,0.99,HPos.CENTER,cellSize),x,y);
+                }
                 if (animals.size()>=2)
                     mapGrid.add(createGUIImage(numberImg[Math.min(animals.size()-2,8)], .5, HPos.RIGHT, cellSize),x,y);
             }
             if (e.hasImage()) {
                 mapGrid.add( createGUIImageForWorldElement(e,cellSize),x,y);
-            } else {
+            } else if(!isSelected) {
                 mapGrid.add( createGUIRectForWorldElement(e,cellSize),x,y);
             }
         }
@@ -152,6 +161,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         clearGrid();
         drawGrid(b.lowerLeft(), b.upperRight(), cellSize);
         drawElements(b.lowerLeft(), b.upperRight(), cellSize);
+        showAnimalInfo(selectedAnimal);
     }
 
 
@@ -188,14 +198,14 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
     @Override
     public void onDataAdded(StatisticsTracker tracker, String seriesName) {
-        Platform.runLater(() -> {
-            if (graph1Series.contains(seriesName) && populationChart != null)
-                printGraph(tracker, populationChart, seriesName, graph1Series.indexOf(seriesName));
-            if (graph2Series.contains(seriesName) && animalDataChart != null)
-                printGraph(tracker, animalDataChart, seriesName, graph2Series.indexOf(seriesName));
-            if (graph3Series.contains(seriesName) && geneticsChart != null)
-                printGraph(tracker, geneticsChart, seriesName, graph3Series.indexOf(seriesName));
-        });
+//        Platform.runLater(() -> {
+//            if (graph1Series.contains(seriesName) && populationChart != null)
+//                printGraph(tracker, populationChart, seriesName, graph1Series.indexOf(seriesName));
+//            if (graph2Series.contains(seriesName) && animalDataChart != null)
+//                printGraph(tracker, animalDataChart, seriesName, graph2Series.indexOf(seriesName));
+//            if (graph3Series.contains(seriesName) && geneticsChart != null)
+//                printGraph(tracker, geneticsChart, seriesName, graph3Series.indexOf(seriesName));
+//        });
     }
 
     public void setSimulationData(SimulationParams params, WorldMap map, StatisticsTracker tracker, Simulation sim) {
@@ -221,7 +231,6 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         simulationPaused = !simulationPaused;
         pauseButton.setText(simulationPaused ? "Resume" : "Pause");
         simulation.pause(simulationPaused);
-
         exportCSVButton.setText("Export Data");
     }
 
