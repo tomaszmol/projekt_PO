@@ -65,7 +65,6 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     private Simulation simulation;
 
     Image[] numberImg = new Image[] {
-        new Image(Objects.requireNonNull(getClass().getResource("/numbers/num1.png")).toExternalForm()),
         new Image(Objects.requireNonNull(getClass().getResource("/numbers/num2.png")).toExternalForm()),
         new Image(Objects.requireNonNull(getClass().getResource("/numbers/num3.png")).toExternalForm()),
         new Image(Objects.requireNonNull(getClass().getResource("/numbers/num4.png")).toExternalForm()),
@@ -117,8 +116,8 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
             if (e.getClass() == Animal.class) {
                 List<Animal> animals = simulationMap.getAnimals(e.getPosition());
-                if (!animals.isEmpty())
-                    mapGrid.add(createGUIImage(numberImg[Math.min(animals.size()-1,8)], .5, HPos.RIGHT, cellSize),x,y);
+                if (animals.size()>=2)
+                    mapGrid.add(createGUIImage(numberImg[Math.min(animals.size()-2,8)], .5, HPos.RIGHT, cellSize),x,y);
             }
             if (e.hasImage()) {
                 mapGrid.add( createGUIImageForWorldElement(e,cellSize),x,y);
@@ -133,19 +132,16 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         mapGrid.getRowConstraints().clear();
     }
     int calculateCellSize() {
-        int cellSize = 50;
+        // Pobierz szerokość i wysokość okna
+        double availableWidth = mapGrid.getScene().getWidth();
+        double availableHeight = mapGrid.getScene().getHeight();
 
-        // nie dziala za bardzo
-//        if (params != null) {
-//            cellSize = (int) Math.min(
-//                    mapGrid.getScene().getX() / params.mapWidth(),
-//                    mapGrid.getScene().getY() / params.mapHeight()
-//            );
-//            System.out.println(mapGrid.getScene().getX() / params.mapWidth());
-//            System.out.println(mapGrid.getScene().getY() / params.mapHeight());
-//        }
+        // Pobierz rozmiar mapy z parametrów
+        int mapWidth = params.mapWidth();
+        int mapHeight = params.mapHeight();
 
-        return cellSize;
+        // Oblicz optymalny rozmiar komórki
+        return (int) (Math.min(availableWidth / mapWidth, availableHeight / mapHeight) * 0.75);
     }
 
 
