@@ -25,6 +25,8 @@ public class ParameterPresenter {
     SimulationParams params;
 
     @FXML
+    public TextField minCopulationEnergyField;
+    @FXML
     public TextField geneNumber;
     @FXML
     public TextField geneMutationChance;
@@ -37,7 +39,7 @@ public class ParameterPresenter {
     @FXML
     private TextField plantEnergyField;
     @FXML
-    private TextField copulationEnergyField;
+    private TextField copulationEnergyUseField;
     @FXML
     private TextField initialAnimalEnergyField;
     @FXML
@@ -73,8 +75,11 @@ public class ParameterPresenter {
         plantEnergyField.setText("20");
         fieldConstraints.put(plantEnergyField, new double[]{0, 1000});
 
-        copulationEnergyField.setText("15");
-        fieldConstraints.put(copulationEnergyField, new double[]{0, 1000});
+        copulationEnergyUseField.setText("50");
+        fieldConstraints.put(copulationEnergyUseField, new double[]{0, 1000});
+
+        minCopulationEnergyField.setText("100");
+        fieldConstraints.put(minCopulationEnergyField, new double[]{0, 1000});
 
         initialAnimalEnergyField.setText("100");
         fieldConstraints.put(initialAnimalEnergyField, new double[]{0, 1000});
@@ -180,7 +185,8 @@ public class ParameterPresenter {
             int mapHeight = Integer.parseInt(mapHeightField.getText().trim());
             int mapWidth = Integer.parseInt(mapWidthField.getText().trim());
             int plantEnergyProfit = Integer.parseInt(plantEnergyField.getText().trim());
-            int minCopulationEnergy = Integer.parseInt(copulationEnergyField.getText().trim());
+            int copulationEnergyUse = Integer.parseInt(copulationEnergyUseField.getText().trim());
+            int minCopulationEnergy = Integer.parseInt(minCopulationEnergyField.getText().trim());
             int initialAnimalEnergy = Integer.parseInt(initialAnimalEnergyField.getText().trim());
             int energyCostPerMove = Integer.parseInt(energyCostPerMoveField.getText().trim());
             int initialAnimalsOnMap = Integer.parseInt(initialAnimalsField.getText().trim());
@@ -202,7 +208,7 @@ public class ParameterPresenter {
                     plantEnergyProfit, minCopulationEnergy, initialAnimalEnergy,
                     energyCostPerMove, initialAnimalsOnMap, dailyPlantSpawns, fullPredestinationFlagValue,
                     oldnessSadnessFlagValue, equatorFlagValue, liveGivingCorpseFlagValue, simSteps,
-                    mutationChance, geneNum, waitingTime, initialPlantNumber
+                    mutationChance, geneNum, waitingTime, initialPlantNumber, copulationEnergyUse
             );
         } catch (NumberFormatException e) {
             System.err.println("Invalid parameters! Please provide valid numeric values.");

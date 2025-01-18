@@ -215,7 +215,8 @@ public class AnimalManager extends AbstractEarthMap{
 
     // funckje nie testowana w ogole :[
     public void animalCopulation (Animal mother, Animal father) {
-        if (mother.getEnergy() < params.minCopulationEnergy() || father.getEnergy() < params.minCopulationEnergy()) {
+        int minEnergy = Math.max(params.minCopulationEnergy(), params.copulationEnergyUse());
+        if (mother.getEnergy() < minEnergy|| father.getEnergy() < minEnergy) {
             return;
         }
 
@@ -232,9 +233,9 @@ public class AnimalManager extends AbstractEarthMap{
         child.getGenetics().mutateGeneticCode( params.geneMutationChance() );
 
         // receive parent energy
-        mother.useEnergy(params.minCopulationEnergy());
-        father.useEnergy(params.minCopulationEnergy());
-        child.useEnergy(-2*params.minCopulationEnergy()); // po ci za duzo funkcji -\ :] /-
+        mother.useEnergy(params.copulationEnergyUse());
+        father.useEnergy(params.copulationEnergyUse());
+        child.useEnergy(-2*params.copulationEnergyUse()); // po ci za duzo funkcji -\ :] /-
 
         // place on map
         placeAnimal(child);
