@@ -4,13 +4,30 @@ import files.util.Vector2d;
 import javafx.scene.paint.Color;
 
 public class TemporaryPreferredField extends PreferredField {
-    public TemporaryPreferredField(Vector2d position) {
+    private int daysToLive;
+    int daysCounter = 0;
+    public TemporaryPreferredField(Vector2d position, int daysToLive) {
         super(position);
+        this.daysToLive = daysToLive;
+    }
+
+    public void incrementDaysCounter() {
+        daysCounter++;
     }
 
     @Override
     public Color getElementColour() {
-        return Color.DARKGREEN;
+        return Color.LAWNGREEN;
     }
 
+    public int getDaysToLive() {
+        return daysToLive;
+    }
+
+    public boolean isTooOld() {
+        if (daysCounter >= daysToLive) {
+            return true;
+        }
+        return false;
+    }
 }

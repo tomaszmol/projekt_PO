@@ -37,7 +37,7 @@ public class Simulation implements Runnable {
             Vector2d randPos;
             do { randPos = Vector2d.randomInBounds(mapBoundaries);
             } while (map.isOccupied(randPos));
-            Animal animal = new Animal(randPos, params.geneNumber() );
+            Animal animal = new Animal(randPos, params.geneNumber(), params.initialAnimalEnergy());
             map.placeAnimal(animal);
             putAnimalIntoSimulation(animal);
         }
