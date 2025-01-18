@@ -18,12 +18,12 @@ public class Animal implements WorldElement {
     Animal mother = null;
     Animal father = null;
     Image animalImg = null;
-    public Animal(Vector2d position, int geneNumber, int initialEnergy) {
+    public Animal(Vector2d position, int geneNumber) {
         this.position = position;
         survivedDays = 0;
         numberOfChildren = 0;
         numberOfDescendants = 0;
-        energy = initialEnergy;
+        energy = 12;
 
         genes = new Genetics(geneNumber);
 
