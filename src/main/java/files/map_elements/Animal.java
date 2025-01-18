@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 public class Animal implements WorldElement {
 
     private Vector2d position;
-    private MapDirection orientation = MapDirection.NORTH;
+    private MapDirection orientation;
     private int survivedDays;
     private int numberOfChildren;
     private int numberOfDescendants;
@@ -24,6 +24,7 @@ public class Animal implements WorldElement {
         numberOfChildren = 0;
         numberOfDescendants = 0;
         energy = 12;
+        this.orientation = MapDirection.getMapDirection((int) (Math.random()*8));
 
         genes = new Genetics(geneNumber);
 

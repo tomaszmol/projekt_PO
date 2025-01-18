@@ -17,7 +17,8 @@ public class Genetics {
     public Genetics(int geneNumber) {
         genotype = new int[geneNumber];
         Arrays.fill(genotype, 0);
-        currentGenePosition = -1;
+        for (int i = 0; i < geneNumber; i++) genotype[i] = (int) (Math.random()*8);
+        currentGenePosition = (int) (Math.random()*geneNumber);
     }
 
     public MoveDirection getNextMoveInSequence() {
