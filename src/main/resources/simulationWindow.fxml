@@ -18,29 +18,29 @@
     <left>
         <VBox spacing="10" alignment="TOP_CENTER" style="-fx-padding: 10;">
             <Label text="Wykres populacji:" style="-fx-font-size: 16px;" />
-            <LineChart fx:id="populationChart" prefHeight="150" prefWidth="200">
+            <LineChart fx:id="populationChart" styleClass="populationChart" prefHeight="200" prefWidth="200" animated="false">
                 <xAxis>
-                    <NumberAxis label="Czas symulacji" />
+                    <NumberAxis />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Ilość elementów" />
+                    <NumberAxis />
                 </yAxis>
             </LineChart>
             <Label text="Średnie Wartości:" style="-fx-font-size: 16px;" />
-            <LineChart fx:id="animalDataChart" prefHeight="150" prefWidth="200">
+            <LineChart fx:id="animalDataChart" styleClass="animalDataChart" prefHeight="200" prefWidth="200" animated="false">
                 <xAxis>
-                    <NumberAxis label="Czas symulacji" />
+                    <NumberAxis />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Wartość" />
+                    <NumberAxis />
                 </yAxis>
             </LineChart>
-            <LineChart fx:id="geneticsChart" prefHeight="150" prefWidth="200">
+            <LineChart fx:id="geneticsChart" styleClass="geneticsChart" prefHeight="200" prefWidth="200" animated="false">
                 <xAxis>
-                    <NumberAxis label="Czas symulacji" />
+                    <NumberAxis />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Dominacja Genu" />
+                    <NumberAxis />
                 </yAxis>
             </LineChart>
             <HBox alignment="CENTER" >

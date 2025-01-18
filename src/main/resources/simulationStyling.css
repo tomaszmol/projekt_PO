@@ -4,35 +4,22 @@
     -fx-font-size: 14px;
 }
 
-.default-color0.chart-line-symbol {
-    -fx-background-color: #0095ff;
-    -fx-background-radius: 2px;
-    -fx-padding: 3px;
-}
+/*.populationChart.default-color0.chart-line-line {*/
+/*    -fx-stroke: #089f00;*/
+/*}*/
 
-.default-color0.chart-series-line {
-    -fx-stroke-width: 2px;
-    -fx-stroke: #00b6ff;
-}
+/*.populationChart.default-color1.chart-series-line {*/
+/*    -fx-stroke: #ff0000;*/
+/*}*/
 
-.default-color1.chart-line-symbol {
-    -fx-background-color: #ff3e00;
-    -fx-background-radius: 2px;
-    -fx-padding: 3px;
-}
+/*.animalDataChart.default-color0.chart-line-line {*/
+/*    -fx-stroke: #84ff00;*/
+/*}*/
 
-.default-color1.chart-series-line {
-    -fx-stroke-width: 2px;
-    -fx-stroke: #ff3e00;
-}
 
-.default-color0.chart-line-symbol {
-    -fx-background-color: #84ff00;
-    -fx-background-radius: 2px;
-    -fx-padding: 3px;
-}
-
-.default-color0.chart-series-line {
-    -fx-stroke-width: 2px;
-    -fx-stroke: #84ff00;
+.chart-series-line .chart-line-symbol {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-stroke: transparent;
+    -fx-padding: 0;
 }

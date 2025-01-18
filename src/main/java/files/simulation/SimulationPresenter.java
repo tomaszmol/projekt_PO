@@ -51,11 +51,11 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
     @FXML
     public LineChart<Number, Number> populationChart;
-    List<String> graph1Series = List.of("animals", "plants");
+    List<String> graph1Series = List.of("Num animals", "Num plants");
 
     @FXML
     public LineChart<Number, Number> animalDataChart;
-    List<String> graph2Series = List.of( "energy" );
+    List<String> graph2Series = List.of( "Avg energy" );
 
     @FXML
     public LineChart<Number, Number> geneticsChart;
@@ -131,7 +131,6 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
                 // create energy display
                 int maxEnergyDisplay = 300;
                 double sizeMultiplier = (double) Math.min(maxEnergyDisplay, ((Animal) e).getEnergy()) / maxEnergyDisplay;
-                System.out.println(sizeMultiplier +", "+ ((Animal) e).getEnergy() +", "+ getEnergyColour(sizeMultiplier));
                 mapGrid.add( createGUIRect(getEnergyColour(sizeMultiplier),1,HPos.LEFT,cellSize/8,(int)(cellSize*Math.max(0.3,sizeMultiplier))),x, y);
             }
             if (e.hasImage()) {
@@ -194,6 +193,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
         // wprowadz nowe dane
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setName(seriesName);
         for (int i = 0; i < data.size(); i++) {
             series.getData().add(new XYChart.Data<>(i, data.get(i)));
         }
@@ -205,14 +205,14 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
 
     @Override
     public void onDataAdded(StatisticsTracker tracker, String seriesName) {
-//        Platform.runLater(() -> {
-//            if (graph1Series.contains(seriesName) && populationChart != null)
-//                printGraph(tracker, populationChart, seriesName, graph1Series.indexOf(seriesName));
-//            if (graph2Series.contains(seriesName) && animalDataChart != null)
-//                printGraph(tracker, animalDataChart, seriesName, graph2Series.indexOf(seriesName));
-//            if (graph3Series.contains(seriesName) && geneticsChart != null)
-//                printGraph(tracker, geneticsChart, seriesName, graph3Series.indexOf(seriesName));
-//        });
+        Platform.runLater(() -> {
+            if (graph1Series.contains(seriesName) && populationChart != null)
+                printGraph(tracker, populationChart, seriesName, graph1Series.indexOf(seriesName));
+            if (graph2Series.contains(seriesName) && animalDataChart != null)
+                printGraph(tracker, animalDataChart, seriesName, graph2Series.indexOf(seriesName));
+            if (graph3Series.contains(seriesName) && geneticsChart != null)
+                printGraph(tracker, geneticsChart, seriesName, graph3Series.indexOf(seriesName));
+        });
     }
 
     public void setSimulationData(SimulationParams params, WorldMap map, StatisticsTracker tracker, Simulation sim) {
@@ -261,6 +261,13 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         // Clamp t to the range [0, 1]
         t = Math.max(0, Math.min(1, t));
         return energyColours[(int) (t * (energyColours.length-1))];
+    }
+
+    @FXML
+    void initialize() {
+        populationChart.setCreateSymbols(false);
+        animalDataChart.setCreateSymbols(false);
+        geneticsChart.setCreateSymbols(false);
     }
 }
 

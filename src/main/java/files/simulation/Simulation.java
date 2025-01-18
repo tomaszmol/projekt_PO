@@ -63,15 +63,13 @@ public class Simulation implements Runnable {
             simulationRemoveDeadAnimals();
 
             //poruszanie się zwierzakow
-            int usedEnergyDuringDay = simulationMoveAllAnimals();
-            energySum += usedEnergyDuringDay;
-
+            energySum = simulationMoveAllAnimals();
 
             simulationEatPlants();
 
-            statisticsTracker.recordValue("animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
-            statisticsTracker.recordValue("plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
-            statisticsTracker.recordValue("energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
+            statisticsTracker.recordValue("Num animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
+            statisticsTracker.recordValue("Num plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
+            statisticsTracker.recordValue("Avg energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
 
             wait(300);
 
@@ -98,7 +96,7 @@ public class Simulation implements Runnable {
         int energySum = 0;
         for (Animal a : listedAnimals) {
             map.moveAnimal(a);
-            energySum += params.energyCostPerMove();
+            energySum += a.getEnergy();
             wait(waitingTime);
         }
         return energySum;
