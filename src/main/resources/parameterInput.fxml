@@ -27,8 +27,8 @@
             <!-- Pola liczbowe -->
             <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
                 <Label text="Map dimensions:" />
-                <TextField fx:id="mapWidthField" promptText="Width" />
-                <TextField fx:id="mapHeightField" promptText="Height" />
+                <TextField fx:id="mapWidthField" promptText="Width" onKeyReleased="#validateInputs"/>
+                <TextField fx:id="mapHeightField" promptText="Height" onKeyReleased="#validateInputs"/>
             </HBox>
 <!--            <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">-->
 <!--                <Label text="Jungle dimensions:" />-->
@@ -43,27 +43,39 @@
                 <Label fx:id="infoLabel2" text="Provide Simulation Parameters:" />
             </HBox>
             <GridPane hgap="10" vgap="10" alignment="CENTER">
-                <Label text="Plant energy profit:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-                <TextField fx:id="plantEnergyField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-                <Label text="Min copulation energy:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
-                <TextField fx:id="copulationEnergyField" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-                <Label text="Initial animal energy:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-                <TextField fx:id="initialAnimalEnergyField" GridPane.rowIndex="6" GridPane.columnIndex="1" />
-                <Label text="energyCostPerMove:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
-                <TextField fx:id="energyCostPerMoveField" GridPane.rowIndex="7" GridPane.columnIndex="1" />
-                <Label text="Initial animals on map:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
-                <TextField fx:id="initialAnimalsField" GridPane.rowIndex="8" GridPane.columnIndex="1" />
-                <Label text="Daily plant spawns:" GridPane.rowIndex="9" GridPane.columnIndex="0" />
-                <TextField fx:id="dailyPlantSpawnsField" GridPane.rowIndex="9" GridPane.columnIndex="1" />
-                <Label text="Min and Max gene mutations:" GridPane.rowIndex="10" GridPane.columnIndex="0" />
-                <TextField fx:id="geneMutationChance" GridPane.rowIndex="10" GridPane.columnIndex="1" />
-                <TextField fx:id="maxGeneMutationNum" GridPane.rowIndex="10" GridPane.columnIndex="2" />
-                <Label text="Gene Number:" GridPane.rowIndex="11" GridPane.columnIndex="0" />
-                <TextField fx:id="geneNumber" GridPane.rowIndex="11" GridPane.columnIndex="1" />
-                <Label text="Waiting time between animals moves:" GridPane.rowIndex="12" GridPane.columnIndex="0" />
-                <TextField fx:id="waitingTimeBetweenMoves" GridPane.rowIndex="12" GridPane.columnIndex="1" />
-                <Label text="initialPlantNumber:" GridPane.rowIndex="13" GridPane.columnIndex="0" />
-                <TextField fx:id="initialPlantNumberField" GridPane.rowIndex="13" GridPane.columnIndex="1" />
+                <Label text="Animal Parameters:"            GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <Label text="Initial animals on map:"       GridPane.rowIndex="1" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="initialAnimalsField"      GridPane.rowIndex="1" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Initial animal energy:"        GridPane.rowIndex="2" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="initialAnimalEnergyField" GridPane.rowIndex="2" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Energy use per animal move:"   GridPane.rowIndex="3" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="energyCostPerMoveField"   GridPane.rowIndex="3" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+
+                <Label text="Plant Parameters:"             GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                <Label text="initialPlantNumber:"           GridPane.rowIndex="5" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="initialPlantNumberField"  GridPane.rowIndex="5" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Plant energy profit:"          GridPane.rowIndex="6" GridPane.columnIndex="0"  onKeyReleased="#validateInputs"  />
+                <TextField fx:id="plantEnergyField"         GridPane.rowIndex="6" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Daily plant spawns:"           GridPane.rowIndex="7" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="dailyPlantSpawnsField"    GridPane.rowIndex="7" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+
+                <Label text="Copulation and Genetic Parameters:" GridPane.rowIndex="8" GridPane.columnIndex="0" />
+                <Label text="Min energy to copulate:"       GridPane.rowIndex="9" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="minCopulationEnergyField" GridPane.rowIndex="9" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Copulation energy consumption:" GridPane.rowIndex="10" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="copulationEnergyUseField" GridPane.rowIndex="10" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Gene Number:"                  GridPane.rowIndex="11" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="geneNumber"               GridPane.rowIndex="11" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Min gene mutations:"           GridPane.rowIndex="12" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="minGeneMutationNum"       GridPane.rowIndex="12" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Max gene mutations:"           GridPane.rowIndex="13" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="maxGeneMutationNum"       GridPane.rowIndex="13" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+
+                <Label text="Simulation Parameters:"        GridPane.rowIndex="14" GridPane.columnIndex="0" />
+                <Label text="Time between moves:"           GridPane.rowIndex="15" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="waitingTimeBetweenMoves"  GridPane.rowIndex="15" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
+                <Label text="Number of Simulation Steps:"   GridPane.rowIndex="16" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <TextField fx:id="simulationSteps"          GridPane.rowIndex="16" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
             </GridPane>
 
             <Region prefHeight="50"/>
@@ -83,8 +95,6 @@
             <Region prefHeight="50"/>
 
             <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
-                <Label text="Number of Simulation Steps:"/>
-                <TextField fx:id="simulationSteps" GridPane.rowIndex="9" GridPane.columnIndex="1" />
                 <Button fx:id="startButton" text="Start" onAction="#onSimulationStartClicked"/>
             </HBox>
         </VBox>

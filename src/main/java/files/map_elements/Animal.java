@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 public class Animal implements WorldElement {
 
     private Vector2d position;
-    private MapDirection orientation = MapDirection.NORTH;
+    private MapDirection orientation;
     private int survivedDays;
     private int numberOfChildren;
     private int numberOfDescendants;
@@ -23,6 +23,7 @@ public class Animal implements WorldElement {
         survivedDays = 0;
         numberOfChildren = 0;
         numberOfDescendants = 0;
+        this.orientation = MapDirection.getMapDirection((int) (Math.random()*8));
         energy = initialEnergy;
 
         genes = new Genetics(geneNumber);
@@ -89,6 +90,8 @@ public class Animal implements WorldElement {
 
     // returns true when position changed (rotation change still returns false)
     public boolean move(MoveValidator moveValidator, int energyCostPerMove) {
+        survivedDays++;
+
         var movement = genes.getNextMoveInSequence();
         useEnergy(energyCostPerMove);
         // rotation

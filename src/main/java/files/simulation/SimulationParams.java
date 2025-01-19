@@ -16,8 +16,10 @@ public record SimulationParams(
         boolean equatorFlag,
         boolean liveGivingCorpseFlag,
         int simulationSteps,
-        double geneMutationChance,
         int geneNumber,
         int waitingTimeBetweenMoves,
-        int initialPlantNumber
+        int initialPlantNumber,
+        int copulationEnergyUse,
+        int minMutationNum,
+        int maxMutationNum
 ) {}

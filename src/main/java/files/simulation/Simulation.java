@@ -19,6 +19,7 @@ public class Simulation implements Runnable {
     StatisticsTracker statisticsTracker;
     private SimulationStats simulationStats;
     private boolean paused;
+    private int day;
 
     public Simulation(SimulationParams params, WorldMap map, StatisticsTracker statisticsTracker) throws Exception{
         this.map = map;
@@ -58,20 +59,20 @@ public class Simulation implements Runnable {
         System.out.println("All objects on map: " + map.getElements());
         wait(1000);
         int energySum = 0;
-        for (int day=0; day<params.simulationSteps(); day++) {
+        day = 0;
+
+        for (day=0; day<params.simulationSteps(); day++) {
             //usunięcie martwych zwierzaków
             simulationRemoveDeadAnimals();
 
             //poruszanie się zwierzakow
-            int usedEnergyDuringDay = simulationMoveAllAnimals();
-            energySum += usedEnergyDuringDay;
-
+            energySum = simulationMoveAllAnimals();
 
             simulationEatPlants();
 
-            statisticsTracker.recordValue("animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
-            statisticsTracker.recordValue("plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
-            statisticsTracker.recordValue("energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
+            statisticsTracker.recordValue("Num animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
+            statisticsTracker.recordValue("Num plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
+            statisticsTracker.recordValue("Avg energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
 
             wait(300);
 
@@ -98,7 +99,7 @@ public class Simulation implements Runnable {
         int energySum = 0;
         for (Animal a : listedAnimals) {
             map.moveAnimal(a);
-            energySum += params.energyCostPerMove();
+            energySum += a.getEnergy();
             wait(waitingTime);
         }
         return energySum;
@@ -122,5 +123,9 @@ public class Simulation implements Runnable {
 
     private void simulationRegrowPlants() {
         map.growPlants(params.dailyPlantSpawnNum());
+    }
+
+    public int getSimulationDay() {
+        return day;
     }
 }

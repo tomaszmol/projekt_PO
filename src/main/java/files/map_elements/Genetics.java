@@ -3,7 +3,10 @@ package files.map_elements;
 import files.util.MapDirection;
 import files.util.MoveDirection;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Genetics {
@@ -14,7 +17,8 @@ public class Genetics {
     public Genetics(int geneNumber) {
         genotype = new int[geneNumber];
         Arrays.fill(genotype, 0);
-        currentGenePosition = -1;
+        for (int i = 0; i < geneNumber; i++) genotype[i] = (int) (Math.random()*8);
+        currentGenePosition = (int) (Math.random()*geneNumber);
     }
 
     public MoveDirection getNextMoveInSequence() {
@@ -60,11 +64,19 @@ public class Genetics {
         }
     }
 
-    public void mutateGeneticCode(double mutationChance) {
+    public void mutateGeneticCode(int minMutations, int maxMutations) {
+        int mutationNum = (int) (Math.random() * (maxMutations - minMutations + 1)) + minMutations;
+
+        List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < genotype.length; i++) {
-            if (Math.random() < mutationChance) {
-                genotype[i] = (int) (Math.random() * 8);
-            }
+            indices.add(i);
+        }
+        Collections.shuffle(indices);
+
+        // Mutowanie wybranych genów
+        for (int i = 0; i < mutationNum && i < genotype.length; i++) {
+            int indexToMutate = indices.get(i);
+            genotype[indexToMutate] = (int) (Math.random() * 8); // Nowa losowa wartość
         }
     }
 
