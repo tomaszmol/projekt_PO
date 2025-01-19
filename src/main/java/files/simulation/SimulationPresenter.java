@@ -29,7 +29,6 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     private int updateCount = 0;
     SimulationParams params;
     boolean simulationPaused;
-    private SimulationStats simulationStats;
     Animal selectedAnimal = null;
 
     @FXML
