@@ -88,7 +88,7 @@ public class Genetics {
                 .collect(Collectors.joining());
     }
 
-    public String getActiveGene() {
+    public String toStringActiveGene() {
         StringBuilder activeGene = new StringBuilder();
         for (int i = 0; i < genotype.length; i++) {
             if (i == currentGenePosition) {

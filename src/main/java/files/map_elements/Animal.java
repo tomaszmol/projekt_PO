@@ -137,7 +137,7 @@ public class Animal implements WorldElement {
     public String getAnimalInfo() {
         String result = String.format(
                 "Position: %s\nOrientation: %s\nGenetic code: %s\nActive gene: %s\nEnergy: %d\nEaten plants: %d\nNumber of Children: %d\nNumber of Descendants: %d\nSurvived days (age): %d" ,
-                position, orientation, genes.toString(), genes.getActiveGene(), energy, eatenPlants, numberOfChildren, numberOfDescendants, survivedDays
+                position, orientation, genes.toString(), genes.toStringActiveGene(), energy, eatenPlants, numberOfChildren, numberOfDescendants, survivedDays
         );
         if (dayOfDeath != -1) {
             result += String.format("\nDay of death: %d", dayOfDeath);
