@@ -17,7 +17,6 @@ public class Simulation implements Runnable {
     private final WorldMap map;
     final SimulationParams params;
     StatisticsTracker statisticsTracker;
-    private SimulationStats simulationStats;
     private boolean paused;
     private int day;
 
@@ -123,9 +122,6 @@ public class Simulation implements Runnable {
         paused = state;
     }
 
-    public SimulationStats getSimulationStats() {
-        return simulationStats;
-    }
 
     private void simulationRemoveDeadAnimals(int currentDay) {
         map.removeDeadAnimals(currentDay);
