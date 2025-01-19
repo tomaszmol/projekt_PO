@@ -89,7 +89,7 @@ public class Simulation implements Runnable {
     private void incrementAnimalsSurvivedDays() {
         List<Animal> listedAnimals = map.getAllAnimalsListed();
         for (Animal a : listedAnimals) {
-            a.incrementSurvivedDays();
+            a.setSurvivedDays(a.getSurvivedDays() + 1);
         }
     }
 
