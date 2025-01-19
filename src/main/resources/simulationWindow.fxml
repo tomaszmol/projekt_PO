@@ -11,7 +11,7 @@
 <?import javafx.scene.control.Button?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minHeight="800.0" minWidth="1400.0"
+            minHeight="700.0" minWidth="1400.0"
             fx:controller="files.simulation.SimulationPresenter"
             stylesheets="@simulationStyling.css">
 
