@@ -85,21 +85,6 @@
         </VBox>
     </right>
 
-<!--    <bottom>-->
-<!--        <VBox>-->
-<!--            <HBox alignment="CENTER" >-->
-<!--                <Label fx:id="dummy1" />-->
-<!--            </HBox>-->
-
-<!--            <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">-->
-<!--                <Label fx:id="dummy2"/>-->
-<!--            </HBox>-->
-
-<!--            <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">-->
-<!--                <Label fx:id="dummy3" />-->
-<!--            </HBox>-->
-<!--        </VBox>-->
-<!--    </bottom>-->
 
 
 

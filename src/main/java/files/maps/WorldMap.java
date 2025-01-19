@@ -79,7 +79,7 @@ public interface WorldMap extends MoveValidator {
     Map<Vector2d, Plant> getPlants();
 
 
-    List<Vector2d>  removeDeadAnimals();
+    List<Vector2d>  removeDeadAnimals(int currentDay);
 
     void growPlants(int i);
 

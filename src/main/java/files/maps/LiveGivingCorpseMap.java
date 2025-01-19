@@ -47,8 +47,8 @@ public class LiveGivingCorpseMap extends AnimalManager {
     }
 
     @Override
-    public List<Vector2d> removeDeadAnimals(){
-        List<Vector2d> deadPositions = super.removeDeadAnimals();
+    public List<Vector2d> removeDeadAnimals(int currentDay){
+        List<Vector2d> deadPositions = super.removeDeadAnimals(currentDay);
         incrementTemporaryPreferredFields();
         removeTooOldTemporaryPreferredFields();
         generateTemporaryPreferredField(deadPositions);

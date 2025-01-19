@@ -83,7 +83,7 @@ public class AnimalManager extends AbstractEarthMap{
     }
 
 
-    public List<Vector2d> removeDeadAnimals() {
+    public List<Vector2d> removeDeadAnimals(int currentDay) {
         final int energyCostPerMove = params.energyCostPerMove();
         List<Vector2d> emptyPositions = new ArrayList<>();
 
@@ -91,8 +91,16 @@ public class AnimalManager extends AbstractEarthMap{
             Vector2d position = entry.getKey();
             List<Animal> animalList = entry.getValue();
 
+
+            List<Animal> animalsToRemove = new ArrayList<>();
             // Usuwamy martwe zwierzęta z listy
-            animalList.removeIf(animal -> animal.getEnergy() < energyCostPerMove);
+            for (Animal animal : animalList) {
+                if (animal.getEnergy() <= 0) {
+                    animalsToRemove.add(animal);
+                    animal.setDayOfDeath(currentDay);
+                }
+            }
+            animalList.removeIf(animal -> animalsToRemove.contains(animal));
 
             // Jeśli lista jest pusta, dodajemy jej pozycję do listy do usunięcia
             if (animalList.isEmpty()) {
@@ -221,6 +229,7 @@ public class AnimalManager extends AbstractEarthMap{
         if (mother.getEnergy() < minEnergy|| father.getEnergy() < minEnergy) {
             return;
         }
+
 
         Vector2d pos = mother.getPosition();
         Animal child = new Animal(pos,params.geneNumber(), params.initialAnimalEnergy());

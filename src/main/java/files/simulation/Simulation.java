@@ -41,16 +41,7 @@ public class Simulation implements Runnable {
             Animal animal = new Animal(randPos, params.geneNumber(), params.initialAnimalEnergy());
             map.placeAnimal(animal);
             putAnimalIntoSimulation(animal);
-        }
-    }
-
-
-    private void wait(int ms){
-        try {
-            Thread.sleep(ms);
-            while (paused) Thread.sleep(200);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            animal.setDayOfBirth(0);
         }
     }
 
@@ -63,7 +54,7 @@ public class Simulation implements Runnable {
 
         for (day=0; day<params.simulationSteps(); day++) {
             //usunięcie martwych zwierzaków
-            simulationRemoveDeadAnimals();
+            simulationRemoveDeadAnimals(day);
 
             //poruszanie się zwierzakow
             energySum = simulationMoveAllAnimals();
@@ -79,8 +70,27 @@ public class Simulation implements Runnable {
             //wzrost roslin
             simulationRegrowPlants();
 
+            incrementAnimalsSurvivedDays();
+
         }
 
+    }
+
+
+    private void wait(int ms){
+        try {
+            Thread.sleep(ms);
+            while (paused) Thread.sleep(200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void incrementAnimalsSurvivedDays() {
+        List<Animal> listedAnimals = map.getAllAnimalsListed();
+        for (Animal a : listedAnimals) {
+            a.incrementSurvivedDays();
+        }
     }
 
     private void simulationEatPlants() {
@@ -117,8 +127,8 @@ public class Simulation implements Runnable {
         return simulationStats;
     }
 
-    private void simulationRemoveDeadAnimals() {
-        map.removeDeadAnimals();
+    private void simulationRemoveDeadAnimals(int currentDay) {
+        map.removeDeadAnimals(currentDay);
     }
 
     private void simulationRegrowPlants() {
