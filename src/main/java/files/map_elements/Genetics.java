@@ -17,24 +17,25 @@ public class Genetics {
     public Genetics(int geneNumber) {
         genotype = new int[geneNumber];
         Arrays.fill(genotype, 0);
-        for (int i = 0; i < geneNumber; i++) genotype[i] = (int) (Math.random()*8);
-        currentGenePosition = (int) (Math.random()*geneNumber);
+        for (int i = 0; i < geneNumber; i++) genotype[i] = (int) (Math.random() * 8);
+        currentGenePosition = (int) (Math.random() * geneNumber);
     }
 
     public MoveDirection getNextMoveInSequence() {
         currentGenePosition = (currentGenePosition + 1) % genotype.length;
-        return MoveDirection.getMoveDirection( genotype[currentGenePosition] );
+        return MoveDirection.getMoveDirection(genotype[currentGenePosition]);
     }
+
     public MapDirection getNextTurnInSequence() {
         currentGenePosition = (currentGenePosition + 1) % genotype.length;
-        return MapDirection.getMapDirection( genotype[currentGenePosition] );
+        return MapDirection.getMapDirection(genotype[currentGenePosition]);
     }
 
     public int[] getGenotype() {
         return genotype;
     }
 
-    public void inheritGenesFromParents (Genetics parent1, double geneticContributionWeightParent1, Genetics parent2, double geneticContributionWeightParent2) {
+    public void inheritGenesFromParents(Genetics parent1, double geneticContributionWeightParent1, Genetics parent2, double geneticContributionWeightParent2) {
         double geneProportionParent1 = (geneticContributionWeightParent1) / (geneticContributionWeightParent1 + geneticContributionWeightParent2);
         double geneProportionParent2 = (geneticContributionWeightParent2) / (geneticContributionWeightParent1 + geneticContributionWeightParent2);
 
@@ -85,5 +86,17 @@ public class Genetics {
         return Arrays.stream(genotype)
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining());
+    }
+
+    public String getActiveGene() {
+        StringBuilder activeGene = new StringBuilder();
+        for (int i = 0; i < genotype.length; i++) {
+            if (i == currentGenePosition) {
+                activeGene.append("(").append(String.valueOf(genotype[i])).append(")");
+            } else {
+                activeGene.append(String.valueOf(genotype[i]));
+            }
+        }
+        return activeGene.toString();
     }
 }

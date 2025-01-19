@@ -13,11 +13,12 @@ public class Animal implements WorldElement {
     private int numberOfDescendants;
     private int energy;
     private int dayOfBirth;
-    private int dayOfDeath;
+    private int dayOfDeath = -1;
     Genetics genes;
     Animal mother = null;
     Animal father = null;
     Image animalImg = null;
+    private int eatenPlants;
 
     public Animal(Vector2d position, int geneNumber, int initialEnergy) {
         this.position = position;
@@ -132,10 +133,14 @@ public class Animal implements WorldElement {
     }
 
     public String getAnimalInfo() {
-        return String.format(
-                "Energy: %d\nAge: %d\nPosition: %s\nGenetic code: %s\nNumber of Children: %d\nNumber of Descendands: %d",
-                energy, survivedDays, position, genes.toString(), numberOfChildren, numberOfDescendants
+        String result = String.format(
+                "Position: %s\nOrientation: %s\nGenetic code: %s\nActive gene: %s\nEnergy: %d\nEaten plants: %d\nNumber of Children: %d\nNumber of Descendants: %d\nSurvived days (age): %d" ,
+                position, orientation, genes.toString(), genes.getActiveGene(), energy, eatenPlants, numberOfChildren, numberOfDescendants, survivedDays
         );
+        if (dayOfDeath != -1) {
+            result += String.format("\nDay of death: %d", dayOfDeath);
+        }
+        return result;
     }
     public int getSurvivedDays() {
         return survivedDays;
@@ -147,6 +152,7 @@ public class Animal implements WorldElement {
 
     public void eatFood(int energyProfit) {
         energy += energyProfit;
+        eatenPlants += 1;
     }
 
     public int getDayOfBirth() {
