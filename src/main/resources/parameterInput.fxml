@@ -77,7 +77,7 @@
                 <Label text="Simulation Parameters:"        GridPane.rowIndex="14" GridPane.columnIndex="0" />
                 <Label text="Time between moves:"           GridPane.rowIndex="15" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
                 <TextField fx:id="waitingTimeBetweenMoves"  GridPane.rowIndex="15" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
-                <Label text="Number of Simulation Steps:"   GridPane.rowIndex="16" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
+                <Label text="Number of Simulation Steps (days):"   GridPane.rowIndex="16" GridPane.columnIndex="0"  onKeyReleased="#validateInputs" />
                 <TextField fx:id="simulationSteps"          GridPane.rowIndex="16" GridPane.columnIndex="1"  onKeyReleased="#validateInputs" />
             </GridPane>
 

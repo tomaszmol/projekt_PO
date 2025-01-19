@@ -24,7 +24,7 @@ public interface WorldMap extends MoveValidator {
      *
      * @param animal The animal to place on the map.
      */
-    void placeAnimal(Animal animal) throws Exception;
+    void placeAnimal(Animal animal);
 
 
     /**
@@ -86,4 +86,6 @@ public interface WorldMap extends MoveValidator {
     Animal resolveFoodConflict(Vector2d position);
 
     void eatPlants(int energyProfit);
+
+    List<Animal> animalsReproduce();
 }

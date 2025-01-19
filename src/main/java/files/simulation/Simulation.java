@@ -20,6 +20,7 @@ public class Simulation implements Runnable {
     private boolean paused;
     private int day;
     private SimulationStats simulationStats;
+    private int energySum;
 
     public Simulation(SimulationParams params, WorldMap map, StatisticsTracker statisticsTracker) throws Exception{
         this.map = map;
@@ -40,6 +41,7 @@ public class Simulation implements Runnable {
             } while (map.isOccupied(randPos));
             Animal animal = new Animal(randPos, params.geneNumber(), params.initialAnimalEnergy());
             map.placeAnimal(animal);
+            map.notifyObservers("Animal placed at " + animal.getPosition());
             putAnimalIntoSimulation(animal);
             animal.setDayOfBirth(0);
         }
@@ -49,31 +51,51 @@ public class Simulation implements Runnable {
 
         System.out.println("All objects on map: " + map.getElements());
         wait(1000);
-        int energySum = 0;
-        day = 0;
+        energySum = 0;
 
         for (day=0; day<params.simulationSteps(); day++) {
             //usunięcie martwych zwierzaków
-            simulationRemoveDeadAnimals(day);
+            simulationRemoveDeadAnimals();
 
             //poruszanie się zwierzakow
-            energySum = simulationMoveAllAnimals();
+            simulationMoveAllAnimals();
 
             simulationEatPlants();
+
+
+            simulationReproduceAnimals();
+
+
 
             statisticsTracker.recordValue("Num animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
             statisticsTracker.recordValue("Num plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
             statisticsTracker.recordValue("Avg energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
-
-            wait(300);
 
             //wzrost roslin
             simulationRegrowPlants();
 
             incrementAnimalsSurvivedDays();
 
+
+            wait(300);
+
         }
 
+    }
+
+    private void simulationReproduceAnimals() {
+        List <Animal> toAdd = map.animalsReproduce();
+        for (Animal a : toAdd) {
+            if (toAdd!=null)
+                System.out.println("toAdd: " + a.getPosition());
+            if (a != null){
+                putAnimalIntoSimulation(a);
+                map.placeAnimal(a);
+                a.setDayOfBirth(day);
+                map.notifyObservers("Animal born at " + a.getPosition());
+            }
+
+        }
     }
 
 
@@ -103,20 +125,24 @@ public class Simulation implements Runnable {
 
     }
 
-    public int simulationMoveAllAnimals() {
+    public void simulationMoveAllAnimals() {
         int waitingTime = params.waitingTimeBetweenMoves();
         List<Animal> listedAnimals = map.getAllAnimalsListed();
-        int energySum = 0;
         for (Animal a : listedAnimals) {
             map.moveAnimal(a);
             energySum += a.getEnergy();
             wait(waitingTime);
         }
-        return energySum;
     }
 
     public void putAnimalIntoSimulation(Animal animal) {
-        animals.add(animal);
+        if (animal != null) {
+            animals.add(animal);
+        }
+        else {
+            System.out.println("Animal is null");
+        }
+
     }
 
     public void pause(boolean state) {
@@ -124,8 +150,8 @@ public class Simulation implements Runnable {
     }
 
 
-    private void simulationRemoveDeadAnimals(int currentDay) {
-        map.removeDeadAnimals(currentDay);
+    private void simulationRemoveDeadAnimals() {
+        map.removeDeadAnimals(day);
     }
 
     private void simulationRegrowPlants() {

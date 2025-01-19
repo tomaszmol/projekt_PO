@@ -17,7 +17,11 @@ public class SimulationEngine {
 
     public void runSync() {
         for (Simulation simulation : simulations) {
-            simulation.run();
+            try {
+                simulation.run();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

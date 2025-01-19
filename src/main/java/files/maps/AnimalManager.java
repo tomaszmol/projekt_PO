@@ -6,10 +6,7 @@ import files.simulation.SimulationParams;
 import files.util.MapDirection;
 import files.util.Vector2d;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AnimalManager extends AbstractEarthMap{
@@ -180,6 +177,50 @@ public class AnimalManager extends AbstractEarthMap{
         return resolveConflict(position, animalsAtPosition);
     }
 
+    public List<Animal> animalsReproduce() {
+        List<Animal> newAnimals = new ArrayList<>();
+        for (Map.Entry<Vector2d, List<Animal>> entry : animals.entrySet()){
+            Vector2d position = entry.getKey();
+            List <Animal> animalsAtPosition = animals.get(position);
+            if (animalsAtPosition!=null && animalsAtPosition.size()>=2){
+                if (animalsAtPosition.size() == 2){
+                    Animal mother = animalsAtPosition.get(0);
+                    Animal father = animalsAtPosition.get(1);
+                    Animal child = animalCopulation(mother, father);
+                    if (child != null){
+                        newAnimals.add(child);
+                        child.setMother(mother);
+                        child.setFather(father);
+                    }
+                }
+                else {
+                    Animal mother = resolveConflict(position, animalsAtPosition);
+
+                    List<Animal> animalsWithoutMother = new ArrayList<>();
+                    for (Animal animal : animalsAtPosition) {
+                        if (animal != mother) {
+                            animalsWithoutMother.add(animal);
+                        }
+                    }
+                    Animal father = resolveConflict(position, animalsWithoutMother);
+
+                    animalCopulation(mother, father);
+                    Animal child = animalCopulation(mother, father);
+                    if (child != null){
+                        newAnimals.add(child);
+                        child.setMother(mother);
+                        child.setFather(father);
+                    }
+
+                }
+            }
+
+        }
+
+        return newAnimals;
+
+    }
+
     public void eatPlants(int energyProfit) {
         // Iterujemy po wszystkich roślinach na mapie
         List<Vector2d> plantsToRemove = new ArrayList<>();
@@ -219,15 +260,12 @@ public class AnimalManager extends AbstractEarthMap{
     }
 
 
-    public void animalFight () {
-        // walka
-    }
 
     // funckje nie testowana w ogole :[
-    public void animalCopulation (Animal mother, Animal father) {
+    public Animal animalCopulation (Animal mother, Animal father) {
         int minEnergy = Math.max(params.minCopulationEnergy(), params.copulationEnergyUse());
-        if (mother.getEnergy() < minEnergy|| father.getEnergy() < minEnergy) {
-            return;
+        if (mother.getEnergy() < minEnergy || father.getEnergy() < minEnergy) {
+            return null;
         }
 
 
@@ -243,17 +281,19 @@ public class AnimalManager extends AbstractEarthMap{
         // mutation
         child.getGenetics().mutateGeneticCode( params.minMutationNum(), params.maxMutationNum());
 
-        // receive parent energy
+        // receive parents energy
         mother.useEnergy(params.copulationEnergyUse());
         father.useEnergy(params.copulationEnergyUse());
-        child.useEnergy(-2*params.copulationEnergyUse()); // po ci za duzo funkcji -\ :] /-
+        child.useEnergy(-2*params.copulationEnergyUse()); // po ci za duzo funkcji -\ :] /-  hahahaah kocham <3
 
-        // place on map
-        placeAnimal(child);
+//        // place on map - przeniesione do symulacji
+//        placeAnimal(child);
 
         // update animal statistics
         mother.addChild();
         father.addChild();
+
+        return child;
     }
 
     public void placeAnimal(Animal animal) {
@@ -265,8 +305,7 @@ public class AnimalManager extends AbstractEarthMap{
         }
 
         newAnimalsOnPosition.add(animal); // Dodajemy zwierzaka na nową pozycję
-        animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
-        notifyObservers("Animal placed at " + animal.getPosition());
+        animals.put(animal.getPosition(), newAnimalsOnPosition);
     }
 
     public List<Animal> getAllAnimalsListed() {

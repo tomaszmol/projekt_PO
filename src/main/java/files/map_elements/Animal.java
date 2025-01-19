@@ -17,8 +17,10 @@ public class Animal implements WorldElement {
     private int dayOfBirth;
     private int dayOfDeath = -1;
     Genetics genes;
-    Animal mother = null;
-    Animal father = null;
+
+    private Animal mother = null;
+
+    private Animal father = null;
     Image animalImg = null;
     private int eatenPlants;
     public Animal(Vector2d position, int geneNumber, int initialEnergy) {
@@ -34,14 +36,13 @@ public class Animal implements WorldElement {
         var res = getClass().getResource("/animal.png");
         if (res != null) this.animalImg = new Image(res.toExternalForm());
     }
-
     public MapDirection getOrientation() {
         return orientation;
     }
+
     public Vector2d getPosition() {
         return position;
     }
-
     public String toString() {
         return switch (orientation) {
             case NORTH_EAST -> "NE";
@@ -81,6 +82,7 @@ public class Animal implements WorldElement {
     public double getElementSizeMultiplier() {
         return 0.7;
     }
+
     @Override
     public boolean hasImage() {
         return animalImg != null;
@@ -90,8 +92,8 @@ public class Animal implements WorldElement {
     }
 
 
-
     // returns true when position changed (rotation change still returns false)
+
     public boolean move(MoveValidator moveValidator, int energyCostPerMove) {
 
         var movement = genes.getNextMoveInSequence();
@@ -116,22 +118,22 @@ public class Animal implements WorldElement {
         }
         else return false;
     }
-
     public void addDescendant () { // bedzie kaskadowac az do samej gory
         numberOfDescendants++;
         if (mother != null) mother.addDescendant();
         if (father != null) father.addDescendant();
     }
+
     public void addChild () {
         numberOfChildren++; numberOfDescendants++; // czy dziecko to od razu potomek ?? imo tak
         if (mother != null) mother.addDescendant();
         if (father != null) father.addDescendant();
     }
-
     public void setParents(Animal mother, Animal father) {
         this.mother = mother;
         this.father = father;
     }
+
     public String getAnimalInfo() {
         String result = String.format(
                 "Position: %s\nOrientation: %s\nGenetic code: %s\nActive gene: %s\nEnergy: %d\nEaten plants: %d\nNumber of Children: %d\nNumber of Descendants: %d\nSurvived days (age): %d" ,
@@ -142,14 +144,13 @@ public class Animal implements WorldElement {
         }
         return result;
     }
-
     public int getSurvivedDays() {
         return survivedDays;
     }
+
     public int getNumberOfChildren() {
         return numberOfChildren;
     }
-
     public void eatFood(int energyProfit) {
         energy += energyProfit;
         eatenPlants += 1;
@@ -177,5 +178,21 @@ public class Animal implements WorldElement {
 
     public void setSurvivedDays(int survivedDays) {
         this.survivedDays = survivedDays;
+    }
+
+    public Animal getMother() {
+        return mother;
+    }
+
+    public void setMother(Animal mother) {
+        this.mother = mother;
+    }
+
+    public Animal getFather() {
+        return father;
+    }
+
+    public void setFather(Animal father) {
+        this.father = father;
     }
 }
