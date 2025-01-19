@@ -19,6 +19,7 @@ public class Simulation implements Runnable {
     StatisticsTracker statisticsTracker;
     private boolean paused;
     private int day;
+    private SimulationStats simulationStats;
 
     public Simulation(SimulationParams params, WorldMap map, StatisticsTracker statisticsTracker) throws Exception{
         this.map = map;
@@ -133,5 +134,9 @@ public class Simulation implements Runnable {
 
     public int getSimulationDay() {
         return day;
+    }
+
+    public SimulationStats getSimulationStats() {
+        return simulationStats;
     }
 }

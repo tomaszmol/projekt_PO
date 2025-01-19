@@ -75,6 +75,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         new Image(Objects.requireNonNull(getClass().getResource("/numbers/num9.png")).toExternalForm()),
         new Image(Objects.requireNonNull(getClass().getResource("/numbers/numOver9.png")).toExternalForm())
     };
+    private SimulationStats simulationStats;
 
     Rectangle createGUIRectForWorldElement(WorldElement e, int cellSize) {
         return createGUIRect(e.getElementColour(), e.getElementSizeMultiplier(), HPos.CENTER, cellSize, cellSize);
