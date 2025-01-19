@@ -78,7 +78,7 @@
     </center>
 
     <right>
-        <VBox fx:id="animalInfoBoxRight" alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10; -fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-width: 1; -fx-min-width: 350; -fx-pref-width:">
+        <VBox fx:id="animalInfoBoxRight" alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 10; -fx-background-color: #f4f4f4; -fx-border-color: #ccc; -fx-border-width: 1; -fx-min-width: 350; -fx-pref-width:350">
             <Label fx:id="dominantGene" text="Dominujacy Gen: XXXXXX" style="-fx-font-size: 16px;" />
             <Label fx:id="animalInfoLabel" text="Info Zwierzęcia tutaj" style="-fx-font-size: 16px;" />
 
