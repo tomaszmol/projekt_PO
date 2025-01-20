@@ -50,14 +50,14 @@ public class AnimalManager extends AbstractEarthMap{
                     animals.put(animal.getPosition(), newAnimalsOnPosition); // Aktualizujemy HashMap
 
                     // Powiadom obserwatorów
-                    notifyObservers("Animal moved from " + oldPos + " to " + animal.getPosition());
+//                    notifyObservers("Animal moved from " + oldPos + " to " + animal.getPosition());
                 } else {
                     // Sprawdzenie, czy orientacja zmieniła się
                     MapDirection newOrientation = animal.getOrientation();
                     if (oldOrientation != newOrientation) {
-                        notifyObservers("Animal changed orientation from " + oldOrientation + " to " + newOrientation);
+//                        notifyObservers("Animal changed orientation from " + oldOrientation + " to " + newOrientation);
                     } else {
-                        notifyObservers("Animal did not move and did not change orientation");
+//                        notifyObservers("Animal did not move and did not change orientation");
                     }
                 }
             } else {
