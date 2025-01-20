@@ -139,8 +139,12 @@ public class Animal implements WorldElement {
                 "Position: %s\nOrientation: %s\nGenetic code: %s\nActive gene: %s\nEnergy: %d\nEaten plants: %d\nNumber of Children: %d\nNumber of Descendants: %d\nSurvived days (age): %d" ,
                 position, orientation, genes.toString(), genes.toStringActiveGene(), energy, eatenPlants, numberOfChildren, numberOfDescendants, survivedDays
         );
+        result += String.format("\nDay of death: ");
         if (dayOfDeath != -1) {
-            result += String.format("\nDay of death: %d", dayOfDeath);
+            result += String.format("%d", dayOfDeath);
+        }
+        else {
+            result += "still alive";
         }
         return result;
     }
