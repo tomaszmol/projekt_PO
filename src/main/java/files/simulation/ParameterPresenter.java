@@ -101,7 +101,7 @@ public class ParameterPresenter {
         minGeneMutationNum.setText("0");
         fieldConstraints.put(minGeneMutationNum, new double[]{0, 20});
 
-        maxGeneMutationNum.setText("6");
+        maxGeneMutationNum.setText("2");
         fieldConstraints.put(minGeneMutationNum, new double[]{0, 20});
 
         geneNumber.setText("6");
