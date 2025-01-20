@@ -1,25 +1,26 @@
 package files.simulation;
 
 import files.map_elements.Animal;
+import files.map_elements.Genetics;
 import files.map_elements.StatisticsTracker;
 import files.maps.WorldMap;
 import files.util.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 // KOMENTARZ DO WYBRANEGO RODZAJU LISTY:
 // do realizacji zadania najlepiej użyć listy ArrayList, ponieważ liczba elementów nie zmienia się w czasie działania programu - szybki dostęp do elementów jest ważniejszy niż usuwanie i dodawanie elementów.
 
-public class Simulation implements Runnable {
+public class Simulation extends SimulationStats implements Runnable  {
 
     private List<Animal> animals;
     private final WorldMap map;
     final SimulationParams params;
     StatisticsTracker statisticsTracker;
-    private SimulationStats simulationStats;
     private boolean paused;
-    private int day;
+    private SimulationStats simulationStats;
 
     public Simulation(SimulationParams params, WorldMap map, StatisticsTracker statisticsTracker) throws Exception{
         this.map = map;
@@ -27,6 +28,14 @@ public class Simulation implements Runnable {
         this.params = params;
         this.statisticsTracker = statisticsTracker;
         spawnInitialAnimals();
+        notifyObservers(String.format("Day: \n" +
+                        "Number of living animals: \n" +
+                        "Number of plants: \n" +
+                        "Number of empty fields: \n" +
+                        "Most popular genetics: \n" +
+                        "Average energy of living animals: \n" +
+                        "Average life length of dead animals: \n"+
+                        "Average number of children: \n"));
 
     }
 
@@ -40,7 +49,59 @@ public class Simulation implements Runnable {
             } while (map.isOccupied(randPos));
             Animal animal = new Animal(randPos, params.geneNumber(), params.initialAnimalEnergy());
             map.placeAnimal(animal);
+            map.notifyObservers("Animal placed at " + animal.getPosition());
             putAnimalIntoSimulation(animal);
+            animal.setDayOfBirth(0);
+        }
+    }
+
+    public void run() {
+
+        System.out.println("All objects on map: " + map.getElements());
+        wait(1000);
+        energySum = 0;
+
+        for (day=0; day<params.simulationSteps(); day++) {
+            //usunięcie martwych zwierzaków
+            simulationRemoveDeadAnimals();
+
+            //poruszanie się zwierzakow
+            simulationMoveAllAnimals();
+
+            simulationEatPlants();
+
+
+            simulationReproduceAnimals();
+
+
+            updateAllStats();
+            statisticsTracker.recordValue("Num animals", numberOfLivingAnimals); // to odpowiada za wszystkie zwierzaki w symulacji, wraz z tymi, ktore juz umarły
+            statisticsTracker.recordValue("Num plants", numberOfPlants);// liczba wszystkich roslin ktore obecnie sa na mapie
+            statisticsTracker.recordValue("Avg energy", averageEnergyOfLivingAnimals); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnieja
+            //wzrost roslin
+            simulationRegrowPlants();
+
+            incrementAnimalsSurvivedDays();
+
+
+            wait(300);
+
+        }
+
+    }
+
+    private void simulationReproduceAnimals() {
+        List <Animal> toAdd = map.animalsReproduce();
+        for (Animal a : toAdd) {
+            if (toAdd!=null)
+                System.out.println("toAdd: " + a.getPosition());
+            if (a != null){
+                putAnimalIntoSimulation(a);
+                map.placeAnimal(a);
+                a.setDayOfBirth(day);
+                map.notifyObservers("Animal born at " + a.getPosition());
+            }
+
         }
     }
 
@@ -54,33 +115,11 @@ public class Simulation implements Runnable {
         }
     }
 
-    public void run() {
-
-        System.out.println("All objects on map: " + map.getElements());
-        wait(1000);
-        int energySum = 0;
-        day = 0;
-
-        for (day=0; day<params.simulationSteps(); day++) {
-            //usunięcie martwych zwierzaków
-            simulationRemoveDeadAnimals();
-
-            //poruszanie się zwierzakow
-            energySum = simulationMoveAllAnimals();
-
-            simulationEatPlants();
-
-            statisticsTracker.recordValue("Num animals", this.animals.size()); // to odpowiada za wszystkie zwierzaki na mapie, wraz z tymi, ktore juz umarły
-            statisticsTracker.recordValue("Num plants", map.getPlants().size()); // liczba wszystkich roslin ktore obecnie sa na mapie
-            statisticsTracker.recordValue("Avg energy", energySum/this.animals.size()); // to jest średnia energia, ktora przypada na wszystkie zwierzaki, ktore istnialy
-
-            wait(300);
-
-            //wzrost roslin
-            simulationRegrowPlants();
-
+    private void incrementAnimalsSurvivedDays() {
+        List<Animal> listedAnimals = map.getAllAnimalsListed();
+        for (Animal a : listedAnimals) {
+            a.setSurvivedDays(a.getSurvivedDays() + 1);
         }
-
     }
 
     private void simulationEatPlants() {
@@ -93,32 +132,33 @@ public class Simulation implements Runnable {
 
     }
 
-    public int simulationMoveAllAnimals() {
+    public void simulationMoveAllAnimals() {
         int waitingTime = params.waitingTimeBetweenMoves();
         List<Animal> listedAnimals = map.getAllAnimalsListed();
-        int energySum = 0;
         for (Animal a : listedAnimals) {
             map.moveAnimal(a);
             energySum += a.getEnergy();
             wait(waitingTime);
         }
-        return energySum;
     }
 
     public void putAnimalIntoSimulation(Animal animal) {
-        animals.add(animal);
+        if (animal != null) {
+            animals.add(animal);
+        }
+        else {
+            System.out.println("Animal is null");
+        }
+
     }
 
     public void pause(boolean state) {
         paused = state;
     }
 
-    public SimulationStats getSimulationStats() {
-        return simulationStats;
-    }
 
     private void simulationRemoveDeadAnimals() {
-        map.removeDeadAnimals();
+        map.removeDeadAnimals(day);
     }
 
     private void simulationRegrowPlants() {
@@ -127,5 +167,99 @@ public class Simulation implements Runnable {
 
     public int getSimulationDay() {
         return day;
+    }
+
+    public SimulationStats getSimulationStatsToString() {
+        return simulationStats;
+    }
+
+    public void updateAllStats() {
+        updateEnergySum();
+        updateNumberOfLivingAnimals();
+        updateNumberOfPlants();
+        updateAverageEnergyOfLivingAnimals();
+        childrenSum();
+        updateAverageNumberOfChildren();
+        updateNumberOfEmptyFields();
+        updateNumberOfDeathAnimalsAndSurvivedDays();
+        updateAverageLifeLengthOfDeadAnimals();
+        updateMostPopularGenetics();
+        notifyObservers(this.toString());
+    }
+
+    public void updateEnergySum() {
+        energySum = 0;
+        for (Animal a : map.getAllAnimalsListed()) {
+            energySum += a.getEnergy();
+        }
+    }
+
+    public void updateNumberOfLivingAnimals() {
+        numberOfLivingAnimals = map.getAllAnimalsListed().size();
+    }
+    public void updateNumberOfPlants() {
+        numberOfPlants = map.getPlants().size();
+    }
+    public void updateAverageEnergyOfLivingAnimals() {
+        averageEnergyOfLivingAnimals = (double) energySum /numberOfLivingAnimals;
+    }
+
+    public void childrenSum() {
+        childrenSum = 0;
+        for (Animal a : map.getAllAnimalsListed()) {
+            childrenSum += a.getNumberOfChildren();
+        }
+    }
+
+    public void updateAverageNumberOfChildren() {
+        averageNumberOfChildren = (double) childrenSum / numberOfLivingAnimals;
+    }
+
+    public void updateNumberOfEmptyFields() {
+        numberOfEmptyFields = 0;
+        Boundary bounds = map.getCurrentBounds();
+        for (int x = bounds.lowerLeft().getX(); x <= bounds.upperRight().getX(); x++) {
+            for (int y = bounds.lowerLeft().getY(); y <= bounds.upperRight().getY(); y++) {
+                Vector2d position = new Vector2d(x, y);
+                if (!map.isOccupied(position) && map.objectAt(position) == null) {
+                    numberOfEmptyFields++;
+                }
+            }
+        }
+    }
+
+    public void updateNumberOfDeathAnimalsAndSurvivedDays() {
+        numberOfDeathAnimals = 0;
+        sumNumberOfSurvivedDays = 0;
+        for (Animal a : animals) {
+            if (a.getDayOfDeath() != -1) {
+                numberOfDeathAnimals++;
+                sumNumberOfSurvivedDays += a.getSurvivedDays();
+            }
+        }
+    }
+
+    public void updateAverageLifeLengthOfDeadAnimals() {
+        averageLifeLengthOfDeadAnimals = (double) sumNumberOfSurvivedDays / numberOfDeathAnimals;
+    }
+
+    public void updateMostPopularGenetics() {
+
+        mostPopularGenetics = new HashMap<Genetics, Integer>();
+        mostPopularGenetic = null;
+        mostPopularGeneticsCount = 0;
+        for (Animal a : animals) {
+            Genetics genetics = a.getGenetics();
+            if (mostPopularGenetics.containsKey(genetics)) {
+                int newCount = mostPopularGenetics.get(genetics) + 1;
+                mostPopularGenetics.put(genetics, newCount);
+            } else {
+                mostPopularGenetics.put(genetics, 1);
+            }
+            if (mostPopularGenetics.get(genetics) > mostPopularGeneticsCount) {
+                mostPopularGeneticsCount = mostPopularGenetics.get(genetics);
+                mostPopularGenetic = genetics;
+            }
+        }
     }
 }

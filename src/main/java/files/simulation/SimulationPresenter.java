@@ -24,12 +24,11 @@ import javafx.scene.shape.Rectangle;
 import java.util.List;
 import java.util.Objects;
 
-public class SimulationPresenter implements MapChangeListener, DataAddedListener {
+public class SimulationPresenter implements MapChangeListener, DataAddedListener, SimulationStatsListener {
 
     private int updateCount = 0;
     SimulationParams params;
     boolean simulationPaused;
-    private SimulationStats simulationStats;
     Animal selectedAnimal = null;
 
     @FXML
@@ -48,6 +47,8 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     private Label updateCountLabel;  // Powiązanie z kontrolką w FXML
     @FXML
     public Button pauseButton;
+    @FXML
+    public Label simulationStatsLabel;
 
     @FXML
     public LineChart<Number, Number> populationChart;
@@ -203,7 +204,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     }
 
     @Override
-    public void onDataAdded(StatisticsTracker tracker, String seriesName) {
+    public synchronized void onDataAdded(StatisticsTracker tracker, String seriesName) {
         Platform.runLater(() -> {
             if (graph1Series.contains(seriesName) && populationChart != null)
                 printGraph(tracker, populationChart, seriesName, graph1Series.indexOf(seriesName));
@@ -220,7 +221,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         this.simulation = sim;
         this.simulationMap = map;
         simulationMap.addObserver(this);
-
+        simulation.addObserver(this);
 
         this.statsTracker = tracker;
         for (String s : graph1Series) statsTracker.addSeries(s);
@@ -228,7 +229,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         for (String s : graph3Series) statsTracker.addSeries(s);
 
 
-        this.simulationStats = sim.getSimulationStats(); // tutaj dodaj sobie obserwatora i jakoś zaimplementuj wyświetlanie tych statystyk
+//        this.simulationStats = sim.getSimulationStats(); // tutaj dodaj sobie obserwatora i jakoś zaimplementuj wyświetlanie tych statystyk
 
         statsTracker.addObserver(this);
     }
@@ -267,6 +268,14 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
         populationChart.setCreateSymbols(false);
         animalDataChart.setCreateSymbols(false);
         geneticsChart.setCreateSymbols(false);
+    }
+
+    @Override
+    public synchronized void SimulationStatsChanged(SimulationStats simulationStats, String message) {
+        // Aktualizacja UI w wątku graficznym
+        Platform.runLater(() -> {
+            simulationStatsLabel.setText((message != null) ? message : "No message");
+        });
     }
 }
 

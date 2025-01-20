@@ -14,7 +14,7 @@ public abstract class AbstractEarthMap implements WorldMap {
     private final List<MapChangeListener> observers = new ArrayList<>();
     private final UUID id;
     private final Vector2d mapDimensions;
-    SimulationParams params;
+    protected SimulationParams params;
 
     public AbstractEarthMap(SimulationParams params) {
         this.mapDimensions = new Vector2d(params.mapWidth() - 1, params.mapHeight() - 1);
