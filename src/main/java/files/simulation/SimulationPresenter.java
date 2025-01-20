@@ -59,7 +59,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     List<String> graph2Series = List.of( "Avg energy" );
 
     @FXML
-    public LineChart<Number, Number> geneticsChart;
+    //public LineChart<Number, Number> geneticsChart;
 
     List<String> graph3Series =  List.of(  );
     private WorldMap simulationMap;
@@ -210,8 +210,8 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
                 printGraph(tracker, populationChart, seriesName, graph1Series.indexOf(seriesName));
             if (graph2Series.contains(seriesName) && animalDataChart != null)
                 printGraph(tracker, animalDataChart, seriesName, graph2Series.indexOf(seriesName));
-            if (graph3Series.contains(seriesName) && geneticsChart != null)
-                printGraph(tracker, geneticsChart, seriesName, graph3Series.indexOf(seriesName));
+//            if (graph3Series.contains(seriesName) && geneticsChart != null)
+//                printGraph(tracker, geneticsChart, seriesName, graph3Series.indexOf(seriesName));
         });
     }
 
@@ -267,7 +267,7 @@ public class SimulationPresenter implements MapChangeListener, DataAddedListener
     void initialize() {
         populationChart.setCreateSymbols(false);
         animalDataChart.setCreateSymbols(false);
-        geneticsChart.setCreateSymbols(false);
+        //geneticsChart.setCreateSymbols(false);
     }
 
     @Override
