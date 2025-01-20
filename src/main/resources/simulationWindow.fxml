@@ -36,14 +36,14 @@
                     <NumberAxis />
                 </yAxis>
             </LineChart>
-            <LineChart fx:id="geneticsChart" styleClass="geneticsChart" prefHeight="200" prefWidth="200" animated="false">
-                <xAxis>
-                    <NumberAxis />
-                </xAxis>
-                <yAxis>
-                    <NumberAxis />
-                </yAxis>
-            </LineChart>
+<!--            <LineChart fx:id="geneticsChart" styleClass="geneticsChart" prefHeight="200" prefWidth="200" animated="false">-->
+<!--                <xAxis>-->
+<!--                    <NumberAxis />-->
+<!--                </xAxis>-->
+<!--                <yAxis>-->
+<!--                    <NumberAxis />-->
+<!--                </yAxis>-->
+<!--            </LineChart>-->
             <HBox alignment="CENTER" >
                 <Button fx:id="exportCSVButton" text="Export Data" onAction="#onExportData" />
             </HBox>
