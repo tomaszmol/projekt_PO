@@ -138,8 +138,9 @@ public class Simulation extends SimulationStats implements Runnable  {
         for (Animal a : listedAnimals) {
             map.moveAnimal(a);
             energySum += a.getEnergy();
-            wait(waitingTime);
+//             wait(waitingTime);
         }
+        map.notifyObservers(" Animals moved");
     }
 
     public void putAnimalIntoSimulation(Animal animal) {
