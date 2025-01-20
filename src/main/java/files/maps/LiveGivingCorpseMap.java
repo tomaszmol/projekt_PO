@@ -99,7 +99,7 @@ public class LiveGivingCorpseMap extends AnimalManager {
             positionsToCheck.add(new Vector2d(position.getX() + 1, position.getY() - 1));
             positionsToCheck.add(new Vector2d(position.getX() - 1, position.getY() + 1));
 
-            System.out.println("Positions to check: " + positionsToCheck);
+//            System.out.println("Positions to check: " + positionsToCheck);
             // Iterate through the positions to check for preferredField
             for (Vector2d pos : positionsToCheck) {
                 if (pos.getX() < bounds.lowerLeft().getX()){

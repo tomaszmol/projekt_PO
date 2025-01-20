@@ -15,7 +15,7 @@ public class OldnessSadnessEquatorMap extends EquatorMap {
         if (utility.animalSkippedMove(animal)) {
             animal.useEnergy(params.energyCostPerMove());
             notifyObservers("Animal at: " + animal.getPosition() + " skipped move");
-            System.out.println("Animal at: " + animal.getPosition() + " skipped move");
+//            System.out.println("Animal at: " + animal.getPosition() + " skipped move");
         }
         else{
             super.moveAnimal(animal);

@@ -94,7 +94,7 @@ public class Simulation extends SimulationStats implements Runnable  {
         List <Animal> toAdd = map.animalsReproduce();
         for (Animal a : toAdd) {
             if (toAdd!=null)
-                System.out.println("toAdd: " + a.getPosition());
+//                System.out.println("toAdd: " + a.getPosition());
             if (a != null){
                 putAnimalIntoSimulation(a);
                 map.placeAnimal(a);
