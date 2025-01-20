@@ -39,14 +39,13 @@ public class Genetics {
         double geneProportionParent1 = (geneticContributionWeightParent1) / (geneticContributionWeightParent1 + geneticContributionWeightParent2);
         double geneProportionParent2 = (geneticContributionWeightParent2) / (geneticContributionWeightParent1 + geneticContributionWeightParent2);
 
-        System.out.println(geneProportionParent1 + ", 2: " + geneProportionParent2);
+//        System.out.println(geneProportionParent1 + ", 2: " + geneProportionParent2);
 
         int[] genesParent1 = parent1.getGenotype();
         int[] genesParent2 = parent2.getGenotype();
 
         // generate father mother side 50/50
         if (Math.random() > 0.5) { // parent1 left side
-            System.out.println("left side");
             for (int i = 0; i < genotype.length; i++) {
                 if (geneProportionParent1 > (double) i / genotype.length) {
                     genotype[i] = genesParent1[i];
