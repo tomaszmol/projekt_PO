@@ -1,5 +1,7 @@
 
-[Opis wymagań]([https://github.com/tomaszmol](https://github.com/Soamid/obiektowe-lab/tree/master/proj))
+
+
+Repozytorium zawiera projekt symulującego ewolucyjnego świata, w którym zwierzęta (roślinożerne) szukają jedzenia (roślin) i ewoluują w czasie. Gra rozgrywa się na siatce, a mechanika obejmuje poziom energii, ruch i rozwój gatunków za pomocą algorytmów genetycznych. Inspiracją były m.in. "Land of Lisp". Projekt pozwala na adaptację zwierząt do zmieniającego się środowiska. Więcej informacji znajdziesz na stronie [opisu wymagań]([https://github.com/tomaszmol](https://github.com/Soamid/obiektowe-lab/tree/master/proj))
 
 ---
 
