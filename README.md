@@ -1,3 +1,5 @@
+
+[Opis wymagań]([https://github.com/tomaszmol](https://github.com/Soamid/obiektowe-lab/tree/master/proj))
 ---
 
 ### Współautorzy:
@@ -6,25 +8,30 @@
 
 ---
 
-### 1. Install Java 21
-Make sure you have Java 21 installed.
+### Jak uruchomić projekt?
 
-### 2. Clone the Repository
+### 1. Zainstaluj Java 21
+Upewnij się, że masz zainstalowaną wersję Java 21.
+
+### 2. Sklonuj repozytorium
 ```bash
 git clone https://github.com/tomaszmol/projekt_PO.git
 cd projekt_PO
 ```
 
-### 3. Build the Project
-Ensure you have Gradle installed. Then run:
+### 3. Zbuduj projekt
+Upewnij się, że masz zainstalowany Gradle. Następnie uruchom:
 ```bash
 gradle build
 ```
 
-### 4. Run the Project
+### 4. Uruchom projekt
 ```bash
 gradle run
 ```
 
-Check the `build.gradle` file for any additional configurations or dependencies.
+Sprawdź plik `build.gradle` w celu uzyskania dodatkowych konfiguracji lub zależności.
+
+---
+
 
