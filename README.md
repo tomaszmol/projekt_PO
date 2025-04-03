@@ -1,7 +1,7 @@
 
 Współautorzy:
 - [tomaszmol](https://github.com/tomaszmol)
-- [Karolk99](https://github.com/Karolk99)
+- [DominikMat](https://github.com/DominikMat)
 
 ### 1. Install Java 21
 Make sure you have Java 21 installed.
