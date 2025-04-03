@@ -1,5 +1,5 @@
 
-Współautorzy:
+### Współautorzy:
 - [tomaszmol](https://github.com/tomaszmol)
 - [DominikMat](https://github.com/DominikMat)
 
