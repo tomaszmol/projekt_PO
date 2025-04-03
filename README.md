@@ -7,8 +7,8 @@ Repozytorium zawiera projekt symulującego ewolucyjnego świata, w którym zwier
 ---
 
 ### Współautorzy:
-- [tomaszmol](https://github.com/tomaszmol)
-- [DominikMat](https://github.com/DominikMat)
+- Tomasz Mol - [tomaszmol](https://github.com/tomaszmol)
+- Dominik Matuszczyk - [DominikMat](https://github.com/DominikMat)
 
 ---
 
